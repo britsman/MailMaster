@@ -52,6 +52,8 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     	if(!temp.equals(columns.get(position))){
     		accEdit.putString("default", columns.get(position));
     		accEdit.commit();
+    		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
+                    R.id.account_text, columns));
     	}
     }
     public void add(View v){

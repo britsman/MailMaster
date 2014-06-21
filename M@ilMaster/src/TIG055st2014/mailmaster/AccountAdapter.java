@@ -40,14 +40,12 @@ public class AccountAdapter extends ArrayAdapter<String> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.account_item, null);
         }
-        else{
-        	if(s.equals(defAcc)){
-        		convertView.setBackgroundColor(Color.GREEN);
-        	}
-        	else{
-        		convertView.setBackgroundColor(Color.TRANSPARENT);
-        	}
-        }
+        if(s.equals(defAcc)){
+       		convertView.setBackgroundColor(Color.GREEN);
+       	}
+       	else{
+       		convertView.setBackgroundColor(Color.TRANSPARENT);
+       	}
         TextView tv = (TextView) convertView.findViewById(R.id.account_text);
         tv.setText(s);
         ImageButton delete = (ImageButton) convertView.findViewById(R.id.delete_button);
