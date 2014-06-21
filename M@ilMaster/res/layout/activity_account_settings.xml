@@ -6,11 +6,41 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
-    <ListView android:id="@+id/account_list"
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal" >
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_acc"
+        android:onClick="add"
+        android:id="@+id/goto_add" />
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal" >
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/inbox"
+        android:onClick="toInbox"
+        android:id="@+id/goto_inbox" />
+</LinearLayout>
+
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/account_list"
+        android:layout_alignParentStart="true"
         android:layout_weight="1"
         android:drawSelectorOnTop="false"/>
+
 </LinearLayout>
 
 

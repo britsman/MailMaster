@@ -29,12 +29,12 @@ public class LoginActivity extends Activity {
     }
 
     /**
-* onClick for the login button, evaluates if info is valid.
+* onClick for the add account button, evaluates if info is valid.
 */
     public void login(View view) {
         final String email = ((EditText)findViewById(R.id.email)).getText().toString().trim().toLowerCase();
         final String pw = ((EditText)findViewById(R.id.password)).getText().toString().trim();
-        final String value = accounts.getString("password", "");
+        final String value = accounts.getString(email, "");
         final String[] pieces = email.split("@");
 
         if(email.length() < 1 || pw.length() < 1){
@@ -52,8 +52,8 @@ public class LoginActivity extends Activity {
             	pieces[1].equalsIgnoreCase("gmail.com") ||
             	pieces[1].equalsIgnoreCase("student.gu.se"))) {//Also need to check if login succeeds (acc exists).
                 //Account remembered even if app is force stopped.
-                accEdit.putString("email", email);
-                accEdit.putString("password", pw);
+                accEdit.putString(email, pw);
+                accEdit.putString("default", email);
                 accEdit.commit();
                 startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
             }
@@ -65,36 +65,23 @@ public class LoginActivity extends Activity {
                 toast.show();
             }
         }
-        else if (value.equals(pw)) {
-             if (true) {//Need to check for failed authentication.
-                 //Logging in with existing account
-                 startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
-             }
-            else{
-                 //Password for this email account has been changed.
-                 Toast toast = Toast.makeText(getApplicationContext(),
-                         "Password is no longer valid", Toast.LENGTH_SHORT);
-                 toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-                 toast.show();
-             }
-        }
         else {
-            //Password does not match saved password.
+            //Accoount already added
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "Missmatch with stored password", Toast.LENGTH_SHORT);
+                    "This account has already been added.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
         }
     }
     /**
-    * User is redirected if the account picking button is pressed.
+    * User is redirected if the account settings button is pressed.
     */
     public void pickAcc(View view) {//Disabled until multiaccount is enabled.
-        //startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
+        startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
     }
 
     /**
-    * We disable the back button while the user is on the login screen, in order to prevent
+    * We disable the back button while the user is on the add account screen, in order to prevent
     * certain possible issues.
     */
     @Override

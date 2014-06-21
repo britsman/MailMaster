@@ -10,5 +10,8 @@
     <string name="add_acc">Add Account</string>
     <string name="email">Email...</string>
     <string name="password">Password...</string>
+    <string name="inbox">Inbox...</string>
+    <string name="send">Send Email</string>
+    <string name="settings">Account Settings</string>
 
 </resources>
