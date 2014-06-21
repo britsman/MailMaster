@@ -56,11 +56,16 @@ public class AccountAdapter extends ArrayAdapter<String> {
                 @Override
                 public void onClick(View v) {
                 accEdit.remove(s);
-                if(s.equals(defAcc)){
-                	accEdit.remove(defAcc);
+                names.remove(position);
+                if(s.equals(defAcc)){                	
+                	if(names.size() > 0){
+                		accEdit.putString("default", names.get(0));
+                	}
+                	else{
+                		accEdit.remove("default");
+                	}
                 }
                 accEdit.commit();
-                names.remove(position);
                 remove(s);
                 }
             }
