@@ -43,6 +43,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ComposeActivity"
+            android:label="@string/title_activity_compose" >
+            <intent-filter>
+                <action android:name="TIG055st2014.mailmaster.ComposeActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

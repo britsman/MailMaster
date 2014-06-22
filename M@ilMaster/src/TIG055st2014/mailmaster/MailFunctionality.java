@@ -7,6 +7,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;   
 import javax.activation.MailcapCommandMap;
 import javax.mail.Message;   
+import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Transport;   
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;   
 import java.security.Security;   
 import java.util.Properties;   
+import java.util.concurrent.ExecutionException;
 
 public class MailFunctionality extends Authenticator {
     private String user;   
@@ -82,7 +84,7 @@ public class MailFunctionality extends Authenticator {
         return new PasswordAuthentication(user, password);   
     }   
 
-    public /*synchronized**/ void sendMail(String subject, String body, String sender, String recipients) throws Exception {   
+    public void sendMail(String subject, String body, String sender, String recipients) {   
         try{
         	Log.d("MailFunctionality", "Send");
         	SendTask task = new SendTask(subject,body,sender,recipients);
@@ -121,6 +123,38 @@ public class MailFunctionality extends Authenticator {
     			e.printStackTrace();
     		}
     		return null;
+    	}
+    }
+    public boolean validate() {	
+		try {
+    			ConnectTest c = new ConnectTest(user,password);
+    			c.executeOnExecutor(c.THREAD_POOL_EXECUTOR);
+    			return(c.get());
+			} 
+			catch (Exception e) {
+				return false;
+			}
+    }
+    private class ConnectTest extends AsyncTask<Void, Void, Boolean>{
+    	
+    	private String user, password;
+    	
+    	private ConnectTest(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected Boolean doInBackground(Void... arg0) {
+			try {
+				Transport t = session.getTransport("smtp");
+	    		t.connect(user, password);
+	    		return true;
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
     	}
     }
 }  

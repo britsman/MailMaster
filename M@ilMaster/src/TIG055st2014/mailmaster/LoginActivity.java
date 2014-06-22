@@ -51,22 +51,33 @@ public class LoginActivity extends Activity {
             	pieces[1].equalsIgnoreCase("outlook.com") || 
             	pieces[1].equalsIgnoreCase("gmail.com") ||
             	pieces[1].equalsIgnoreCase("student.gu.se"))) {//Also need to check if login succeeds (acc exists).
-                //Account remembered even if app is force stopped.
-                accEdit.putString(email, pw);
-                accEdit.putString("default", email);
-                accEdit.commit();
-                startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
+            	
+            		MailFunctionality mf = new MailFunctionality(email, pw, pieces[1]);
+            		if(mf.validate()){
+            			//Account remembered even if app is force stopped.
+            			accEdit.putString(email, pw);
+            			accEdit.putString("default", email);
+            			accEdit.commit();
+            			startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
+            		}
+            		else{
+            			//Invalid email account (will also trigger if no internet connection).
+            			Toast toast = Toast.makeText(getApplicationContext(),
+            					"Wrong password or inexistant account.", Toast.LENGTH_SHORT);
+            			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            			toast.show();
+            		}
             }
             else{
-                //Invalid  or unsupported Email.
+                //Unsupported Email.
                 Toast toast = Toast.makeText(getApplicationContext(),
-                        "Not a valid/supported Email adress", Toast.LENGTH_SHORT);
+                        "Email provider not supported.", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
                 toast.show();
             }
         }
         else {
-            //Accoount already added
+            //Account already added
             Toast toast = Toast.makeText(getApplicationContext(),
                     "This account has already been added.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);

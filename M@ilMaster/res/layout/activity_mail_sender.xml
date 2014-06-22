@@ -9,20 +9,20 @@
     tools:context=".MailSenderActivity" >
 
     <Button
-        android:id="@+id/send_button"
+        android:id="@+id/compose_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="135dp"
-        android:text="@string/send"
-        android:onClick="onClickSend"/>
+        android:text="@string/compose"
+        android:onClick="onClickCompose"/>
 
     <Button
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/send_button"
+        android:layout_alignBottom="@+id/compose_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="56dp"
         android:text="@string/settings" 

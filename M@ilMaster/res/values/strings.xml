@@ -13,5 +13,11 @@
     <string name="inbox">Inbox...</string>
     <string name="send">Send Email</string>
     <string name="settings">Account Settings</string>
+    <string name="title_activity_compose">ComposeActivity</string>
+    <string name="sender">From:</string>
+    <string name="receiver">To:</string>
+    <string name="subject">Subject:</string>
+    <string name="message">Message:</string>
+    <string name="compose">Compose Email...</string>
 
 </resources>
