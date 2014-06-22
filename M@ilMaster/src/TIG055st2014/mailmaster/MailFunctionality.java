@@ -149,6 +149,7 @@ public class MailFunctionality extends Authenticator {
 			try {
 				Transport t = session.getTransport("smtp");
 	    		t.connect(user, password);
+	    		t.close();
 	    		return true;
 			} 
 			catch (Exception e) {
