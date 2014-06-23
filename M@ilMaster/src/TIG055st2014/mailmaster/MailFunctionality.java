@@ -6,6 +6,7 @@ import javax.activation.CommandMap;
 import javax.activation.DataHandler;   
 import javax.activation.DataSource;   
 import javax.activation.MailcapCommandMap;
+import javax.mail.Address;
 import javax.mail.Message;   
 import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;   
@@ -108,15 +109,16 @@ public class MailFunctionality extends Authenticator {
     	@Override
     	protected Void doInBackground(Void... arg0) {
     		try{
-    	        MimeMessage message = new MimeMessage(session);   
-    	        message.setSender(new InternetAddress(sd));  
+    	        MimeMessage message = new MimeMessage(session); 
     	        message.setFrom(new InternetAddress(sd));
     	        message.setSubject(sb);   
     	        message.setText(bd);
-    	        if (rcp.indexOf(',') > 0)   
+    	        if (rcp.indexOf(',') > 0){
     	            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rcp));   
-    	        else  
+    	        }
+    	        else{  
     	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(rcp));   
+    	        }
     	        Transport.send(message);   
     		}
     		catch(Exception e){
