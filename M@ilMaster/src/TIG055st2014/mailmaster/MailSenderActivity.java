@@ -19,7 +19,7 @@ public class MailSenderActivity extends Activity {
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         if(defaultAcc.equals("")){
-        	startActivity(new Intent("TIG055st2014.mailmaster.LoginActivity"));
+        	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
         }
     }
     public void onClickCompose(View v) {

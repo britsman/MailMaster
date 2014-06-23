@@ -30,11 +30,6 @@
             android:alpha="0.75"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></LinearLayout>
-
     <EditText
         android:layout_width="240dp"
         android:layout_height="40dp"
@@ -52,7 +47,7 @@
         android:layout_height="wrap_content"
         android:text="@string/add_acc"
         android:id="@+id/button"
-        android:onClick="login"
+        android:onClick="add"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:alpha="0.75"/>

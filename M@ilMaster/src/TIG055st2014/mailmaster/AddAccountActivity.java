@@ -12,9 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
-* Activity representing the application's login screen.
+* Activity representing the application's add accounts screen.
 */
-public class LoginActivity extends Activity {
+public class AddAccountActivity extends Activity {
 
     private SharedPreferences accounts;
     private SharedPreferences.Editor accEdit;
@@ -23,7 +23,7 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_add_account);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         accEdit = accounts.edit();
     }
@@ -31,7 +31,7 @@ public class LoginActivity extends Activity {
     /**
 * onClick for the add account button, evaluates if info is valid.
 */
-    public void login(View view) {
+    public void add(View view) {
         final String email = ((EditText)findViewById(R.id.email)).getText().toString().trim().toLowerCase();
         final String pw = ((EditText)findViewById(R.id.password)).getText().toString().trim();
         final String value = accounts.getString(email, "");
@@ -50,7 +50,7 @@ public class LoginActivity extends Activity {
             	pieces[1].equalsIgnoreCase("live.com") || 
             	pieces[1].equalsIgnoreCase("outlook.com") || 
             	pieces[1].equalsIgnoreCase("gmail.com") ||
-            	pieces[1].equalsIgnoreCase("student.gu.se"))) {//Also need to check if login succeeds (acc exists).
+            	pieces[1].equalsIgnoreCase("student.gu.se"))) {
             	
             		MailFunctionality mf = new MailFunctionality(email, pw, pieces[1]);
             		if(mf.validate()){

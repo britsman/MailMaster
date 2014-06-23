@@ -57,7 +57,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     	}
     }
     public void add(View v){
-    	startActivity(new Intent("TIG055st2014.mailmaster.LoginActivity"));
+    	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
     }
     public void toInbox(View v){
     	startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
