@@ -51,12 +51,15 @@ public class MailFunctionality extends Authenticator {
         props.setProperty("mail.transport.protocol", "smtp");  
         props.setProperty("mail.store.protocol", "imaps"); 
         props.setProperty("mail.imaps.auth.plain.disable", "true");
-        props.setProperty("mail.imaps.ssl.enable", "true");
+        props.setProperty("mail.imaps.auth.ntlm.disable", "true");
+        props.setProperty("mail.imaps.auth.gssapi.disable", "true");
+        props.put("mail.imaps.ssl.enable", "true");  
+        props.setProperty("mail.imap.starttls.enable", "true");
         
         if(!type.equalsIgnoreCase("gmail.com")){ //Use TLS security and port 587
         	if(type.equalsIgnoreCase("student.gu.se")){
         		props.setProperty("mail.host", "smtpgw.gu.se");
-        		imapHost = "mail.gu.se";
+        		imapHost = "imap.gmail.com";
         		
         	}
         	else{
@@ -69,14 +72,13 @@ public class MailFunctionality extends Authenticator {
         else{ // Use SSL security and port 465
         	props.setProperty("mail.host", "smtp.gmail.com");
         	imapHost = "imap.gmail.com";
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); 
-            props.put("mail.smtp.socketFactory.fallback", "false");   
+            props.put("mail.smtp.ssl.enable", "true");   
             this.port = "465";
         }
         props.put("mail.smtp.auth", "true");   
         props.put("mail.smtp.port", port); //587 live/hotmail/outlook  //465 gmail 
-        props.put("mail.smtp.socketFactory.port", port);    //587 live/hotmail/outlook  //465 gmail  
-        props.setProperty("mail.smtp.quitwait", "false");   
+        
+        
         // There is something wrong with MailCap, javamail can not find a handler for the multipart/mixed part, 
         //so this bit needs to be added. 
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
@@ -87,6 +89,7 @@ public class MailFunctionality extends Authenticator {
         mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822"); 
         CommandMap.setDefaultCommandMap(mc); 
         session = Session.getInstance(props, this);   
+        session.setDebug(true);
         }
         catch (Exception e){
         	Log.e("error", e.getMessage());
@@ -202,9 +205,14 @@ public class MailFunctionality extends Authenticator {
 			    Folder inbox = store.getFolder("INBOX");
 			    inbox.open(Folder.READ_ONLY);
 			    Message message = inbox.getMessage(inbox.getMessageCount());
-			    Multipart mp = (Multipart) message.getContent();
-	            BodyPart bp = mp.getBodyPart(0);
-			    Log.d("SUCESS", bp.getContent().toString());
+			    try{
+			    	Multipart mp = (Multipart) message.getContent();
+			    	BodyPart bp = mp.getBodyPart(0);
+			    	Log.d("SUCESS", bp.getContent().toString());
+			    }
+			    catch(Exception e){
+			    	Log.d("SUCESS", message.getContent().toString());
+			    }
 	    		return true;
 			} 
 			catch (Exception e) {
