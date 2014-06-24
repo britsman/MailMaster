@@ -11,6 +11,7 @@ public class MailSenderActivity extends Activity {
 	
     private SharedPreferences accounts;
     private String defaultAcc;
+    private String pw;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,8 +19,13 @@ public class MailSenderActivity extends Activity {
         setContentView(R.layout.activity_mail_sender);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
+        pw = accounts.getString(defaultAcc, "");
         if(defaultAcc.equals("")){
         	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
+        }
+        else{
+			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+			mf.getInbox(); 
         }
     }
     public void onClickCompose(View v) {

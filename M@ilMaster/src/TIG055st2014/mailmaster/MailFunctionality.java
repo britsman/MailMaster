@@ -7,10 +7,14 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;   
 import javax.activation.MailcapCommandMap;
 import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Folder;
 import javax.mail.Message;   
+import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
+import javax.mail.Store;
 import javax.mail.Transport;   
 import javax.mail.internet.InternetAddress;   
 import javax.mail.internet.MimeMessage;   
@@ -30,7 +34,8 @@ public class MailFunctionality extends Authenticator {
     private String user;   
     private String password;   
     private Session session;   
-    private String port;  
+    private String port; 
+    private String imapHost;  
     private static MailFunctionality mf;
 
     static {   
@@ -44,18 +49,26 @@ public class MailFunctionality extends Authenticator {
         try{
         Properties props = new Properties();   
         props.setProperty("mail.transport.protocol", "smtp");  
+        props.setProperty("mail.store.protocol", "imaps"); 
+        props.setProperty("mail.imaps.auth.plain.disable", "true");
+        props.setProperty("mail.imaps.ssl.enable", "true");
+        
         if(!type.equalsIgnoreCase("gmail.com")){ //Use TLS security and port 587
         	if(type.equalsIgnoreCase("student.gu.se")){
         		props.setProperty("mail.host", "smtpgw.gu.se");
+        		imapHost = "mail.gu.se";
+        		
         	}
         	else{
         		props.setProperty("mail.host", "smtp.live.com");
+        		imapHost = "imap-mail.outlook.com";
         	}
         	props.put("mail.smtp.starttls.enable","true");
         	this.port = "587";
         }
         else{ // Use SSL security and port 465
         	props.setProperty("mail.host", "smtp.gmail.com");
+        	imapHost = "imap.gmail.com";
             props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); 
             props.put("mail.smtp.socketFactory.fallback", "false");   
             this.port = "465";
@@ -152,6 +165,46 @@ public class MailFunctionality extends Authenticator {
 				Transport t = session.getTransport("smtp");
 	    		t.connect(user, password);
 	    		t.close();
+	    		return true;
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+    	}
+    }
+    public boolean getInbox() {	
+		try {
+    			ReadTask task = new ReadTask(user,password);
+    			task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
+    			Log.d("MailFunctionality",  "Reading reached");
+    			return true;
+			} 
+			catch (Exception e) {
+				return false;
+			}
+    }
+    //Partly based on http://www.compiletimeerror.com/2013/06/reading-email-using-javamail-api-example.html
+    private class ReadTask extends AsyncTask<Void, Void, Boolean>{
+    	
+    	private String user, password;
+    	
+    	private ReadTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected Boolean doInBackground(Void... arg0) {
+			try {
+			    Store store = session.getStore();
+			    store.connect(imapHost, user, password);
+			    Folder inbox = store.getFolder("INBOX");
+			    inbox.open(Folder.READ_ONLY);
+			    Message message = inbox.getMessage(inbox.getMessageCount());
+			    Multipart mp = (Multipart) message.getContent();
+	            BodyPart bp = mp.getBodyPart(0);
+			    Log.d("SUCESS", bp.getContent().toString());
 	    		return true;
 			} 
 			catch (Exception e) {
