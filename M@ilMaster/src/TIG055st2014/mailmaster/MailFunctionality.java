@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.OutputStream;   
 import java.security.Security;   
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;   
 import java.util.concurrent.ExecutionException;
 
@@ -233,14 +235,16 @@ public class MailFunctionality extends Authenticator {
 			    store.connect(imapHost, user, password);
 			    Folder inbox = store.getFolder("INBOX");
 			    inbox.open(Folder.READ_ONLY);
-			    int limit = 20;
+			    int limit = 19;
 			    int count = inbox.getMessageCount();
 			    if(count < 20){
-			    	limit = count;
-			    }    
-			    for(int i = 0; i < limit; i++){
-			    	emails.add(inbox.getMessage(count-i));
-			    	Log.d("MailFunctionality", inbox.getMessage(count-i).getSubject());
+			    	limit = count-1;
+			    } 
+			    Message[] temp = inbox.getMessages(count-limit, count);
+			    Collections.addAll(emails, temp);
+			    Collections.reverse(emails);
+			    for(int i = 0; i < emails.size(); i++){//Crashes with folderclosed exception if printout is removed.
+			    	Log.d("MailFunctionality", emails.get(i).getSubject());
 			    } 
 			    inbox.close(false);
 			    store.close();
