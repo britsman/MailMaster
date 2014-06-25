@@ -19,5 +19,6 @@
     <string name="subject">Subject:</string>
     <string name="message">Message:</string>
     <string name="compose">Compose Email...</string>
+    <string name="attach">Attach</string>
 
 </resources>
