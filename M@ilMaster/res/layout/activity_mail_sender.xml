@@ -1,31 +1,47 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MailSenderActivity" >
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal" >
     <Button
-        android:id="@+id/compose_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="135dp"
+        android:text="@string/add_acc"
+        android:onClick="onClickSettings"
+        android:id="@+id/settings_button" />
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="horizontal" >
+
+        <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:text="@string/compose"
-        android:onClick="onClickCompose"/>
+        android:onClick="onClickCompose"
+        android:id="@+id/compose_button" />
+        
+</LinearLayout>
 
-    <Button
-        android:id="@+id/settings_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/compose_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="56dp"
-        android:text="@string/settings" 
-        android:onClick="onClickSettings"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/inbox_list"
+        android:layout_alignParentStart="true"
+        android:layout_weight="1"
+        android:drawSelectorOnTop="false"/>
 
-</RelativeLayout>
+</LinearLayout>
+

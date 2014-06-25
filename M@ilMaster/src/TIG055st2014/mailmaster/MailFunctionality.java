@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;   
 import java.io.OutputStream;   
 import java.security.Security;   
+import java.util.ArrayList;
 import java.util.Properties;   
 import java.util.concurrent.ExecutionException;
 
@@ -89,7 +90,7 @@ public class MailFunctionality extends Authenticator {
         mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822"); 
         CommandMap.setDefaultCommandMap(mc); 
         session = Session.getInstance(props, this);   
-        session.setDebug(true);
+        //session.setDebug(true);
         }
         catch (Exception e){
         	Log.e("error", e.getMessage());
@@ -176,19 +177,19 @@ public class MailFunctionality extends Authenticator {
 			}
     	}
     }
-    public boolean getInbox() {	
+    public ArrayList<Message> getInbox() {	
 		try {
     			ReadTask task = new ReadTask(user,password);
     			task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
     			Log.d("MailFunctionality",  "Reading reached");
-    			return true;
+    			return task.get();
 			} 
 			catch (Exception e) {
-				return false;
+				return new ArrayList<Message>();
 			}
     }
     //Partly based on http://www.compiletimeerror.com/2013/06/reading-email-using-javamail-api-example.html
-    private class ReadTask extends AsyncTask<Void, Void, Boolean>{
+    private class ReadTask extends AsyncTask<Void, Void, ArrayList<Message>>{
     	
     	private String user, password;
     	
@@ -198,26 +199,29 @@ public class MailFunctionality extends Authenticator {
     	}
     	
     	@Override
-    	protected Boolean doInBackground(Void... arg0) {
+    	protected ArrayList<Message> doInBackground(Void... arg0) {
+    		ArrayList<Message> emails = new ArrayList<Message>();
 			try {
 			    Store store = session.getStore();
 			    store.connect(imapHost, user, password);
 			    Folder inbox = store.getFolder("INBOX");
 			    inbox.open(Folder.READ_ONLY);
-			    Message message = inbox.getMessage(inbox.getMessageCount());
-			    try{
-			    	Multipart mp = (Multipart) message.getContent();
-			    	BodyPart bp = mp.getBodyPart(0);
-			    	Log.d("SUCESS", bp.getContent().toString());
-			    }
-			    catch(Exception e){
-			    	Log.d("SUCESS", message.getContent().toString());
-			    }
-	    		return true;
-			} 
+			    int limit = 20;
+			    int count = inbox.getMessageCount();
+			    if(count < 20){
+			    	limit = count;
+			    }    
+			    for(int i = 0; i < limit; i++){
+			    	emails.add(inbox.getMessage(count-i));
+			    	Log.d("MailFunctionality", inbox.getMessage(count-i).getSubject());
+			    } 
+			    inbox.close(false);
+			    store.close();
+    			return emails;
+			}
 			catch (Exception e) {
 				e.printStackTrace();
-				return false;
+				return emails;
 			}
     	}
     }
