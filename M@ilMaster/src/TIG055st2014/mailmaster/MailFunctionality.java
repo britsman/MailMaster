@@ -5,6 +5,7 @@ import javax.mail.Authenticator;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;   
 import javax.activation.DataSource;   
+import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -17,7 +18,10 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;   
 import javax.mail.internet.InternetAddress;   
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -37,7 +41,7 @@ public class MailFunctionality extends Authenticator {
     private Session session;   
     private String port; 
     private String imapHost;  
-    private static MailFunctionality mf;
+    private Multipart mp;
 
     static {   
         Security.addProvider(new JSSEProvider());   
@@ -102,10 +106,10 @@ public class MailFunctionality extends Authenticator {
         return new PasswordAuthentication(user, password);   
     }   
 
-    public void sendMail(String subject, String body, String sender, String recipients) {   
+    public void sendMail(String subject, String body, String sender, String recipients, ArrayList<String> attachments) {   
         try{
         	Log.d("MailFunctionality", "Send");
-        	SendTask task = new SendTask(subject,body,sender,recipients);
+        	SendTask task = new SendTask(subject,body,sender,recipients, attachments);
         	task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
@@ -115,27 +119,38 @@ public class MailFunctionality extends Authenticator {
     private class SendTask extends AsyncTask<Void, Void, Void>{
     	
     	private String sb, bd, sd , rcp;
+    	private ArrayList<String> atch;
     	
-    	private SendTask(String subject, String body, String sender, String recipients){
+    	private SendTask(String subject, String body, String sender, String recipients, ArrayList<String> attachments){
     		sb = subject;
     		bd = body;
     		sd = sender;
     		rcp = recipients;
+    		atch = attachments;
     	}
     	
     	@Override
     	protected Void doInBackground(Void... arg0) {
     		try{
+    			mp = new MimeMultipart();
     	        MimeMessage message = new MimeMessage(session); 
     	        message.setFrom(new InternetAddress(sd));
+    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/plain"));  
+    	        message.setDataHandler(handler);
     	        message.setSubject(sb);   
-    	        message.setText(bd);
+    	        BodyPart messageBodyPart = new MimeBodyPart(); 
+    	        messageBodyPart.setText(bd); 
+    	        mp.addBodyPart(messageBodyPart); 
+    	        for(String file : atch){
+    	        	addAttachment(file);
+    	        }
     	        if (rcp.indexOf(',') > 0){
     	            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rcp));   
     	        }
     	        else{  
     	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(rcp));   
     	        }
+    	        message.setContent(mp);
     	        Transport.send(message);   
     		}
     		catch(Exception e){
@@ -144,6 +159,18 @@ public class MailFunctionality extends Authenticator {
     		return null;
     	}
     }
+	private void addAttachment(String filePath){
+		try{
+			BodyPart messageBodyPart = new MimeBodyPart(); 
+			DataSource source = new FileDataSource(filePath); 
+			messageBodyPart.setDataHandler(new DataHandler(source)); 
+			messageBodyPart.setFileName(filePath);
+			mp.addBodyPart(messageBodyPart);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
     public boolean validate() {	
 		try {
     			ConnectTest c = new ConnectTest(user,password);

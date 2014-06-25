@@ -89,9 +89,19 @@ android:layout_gravity="center">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:text="@string/send"
         android:onClick="onClickSend"/>
 
+    
+    <Button
+        android:id="@+id/attach_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBaseline="@+id/send_button"
+        android:layout_alignBottom="@+id/send_button"
+        android:layout_alignRight="@+id/body"
+        android:text="@string/attach"
+        android:onClick="onClickAttach"/>
 </RelativeLayout>
 </ScrollView>
