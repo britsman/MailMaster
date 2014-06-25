@@ -14,7 +14,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_acc"
+        android:text="@string/settings"
         android:onClick="onClickSettings"
         android:id="@+id/settings_button" />
 
