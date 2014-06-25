@@ -243,8 +243,8 @@ public class MailFunctionality extends Authenticator {
 			    Message[] temp = inbox.getMessages(count-limit, count);
 			    Collections.addAll(emails, temp);
 			    Collections.reverse(emails);
-			    for(int i = 0; i < emails.size(); i++){//Crashes with folderclosed exception if printout is removed.
-			    	Log.d("MailFunctionality", emails.get(i).getSubject());
+			    for(int i = 0; i < emails.size(); i++){//Crashes with folderclosed exception for any message that is not accessed atleast once.
+			    	emails.get(i).getSize();
 			    } 
 			    inbox.close(false);
 			    store.close();
