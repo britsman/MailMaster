@@ -44,8 +44,13 @@ public class MailSenderActivity extends Activity implements AdapterView.OnItemCl
     public void onClickCompose(View v) {
     	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
     }
+   
     public void onClickSettings(View v) {
     	startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
+    }
+    
+    public void onClickAttach(View v) {
+    	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
     }
     /**
     * We disable the back button while the user is on the add account screen, in order to prevent

@@ -1,7 +1,6 @@
 package TIG055st2014.mailmaster;
 
 import java.util.ArrayList;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -24,10 +23,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ComposeActivity extends Activity {
+public class ComposeActivity extends Activity{
 	
     private SharedPreferences accounts;
     private String defaultAcc;
@@ -36,6 +36,7 @@ public class ComposeActivity extends Activity {
     String  attachmentFile;
     int columnIndex;
     ArrayList<String> attachments;
+    Uri URI = null;
     
 
 	@Override
@@ -89,7 +90,7 @@ public class ComposeActivity extends Activity {
         startActivityForResult(
                      Intent.createChooser(intent, "Complete action using"),
                      PICK_FROM_GALLERY);
-	}
+	}	
 	public void onClickSend(View v){
 		String recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
 		String subject = ((EditText) findViewById(R.id.subject)).getText().toString();
@@ -97,6 +98,12 @@ public class ComposeActivity extends Activity {
 		
 		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 			try {   
+				 final Intent emailIntent = new Intent(
+                         android.content.Intent.ACTION_SEND);
+				if (URI != null) {
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
+             }
+ 
 				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 				mf.sendMail(subject, body, defaultAcc, recipients, attachments);  
 			} 
@@ -112,6 +119,4 @@ public class ComposeActivity extends Activity {
             toast.show();
 		}
 	}
-
-	
 }
