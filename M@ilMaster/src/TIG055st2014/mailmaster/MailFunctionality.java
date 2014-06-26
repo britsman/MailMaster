@@ -7,12 +7,10 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;   
 import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
-import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;   
 import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Store;
@@ -22,20 +20,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-
 import android.os.AsyncTask;
-import android.util.Log;
-
-import java.io.ByteArrayInputStream;   
-import java.io.IOException;   
-import java.io.InputStream;   
-import java.io.OutputStream;   
+import android.util.Log; 
 import java.security.Security;   
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;   
-import java.util.concurrent.ExecutionException;
 
 public class MailFunctionality extends Authenticator {
     private String user;   
@@ -44,6 +34,7 @@ public class MailFunctionality extends Authenticator {
     private String port; 
     private String imapHost;  
     private Multipart mp;
+    private String sendProtocol;
 
     static {   
         Security.addProvider(new JSSEProvider());   
@@ -55,13 +46,13 @@ public class MailFunctionality extends Authenticator {
         Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
         try{
         Properties props = new Properties();   
-        props.setProperty("mail.transport.protocol", "smtp");  
+          
         props.setProperty("mail.store.protocol", "imaps"); 
         props.setProperty("mail.imaps.auth.plain.disable", "true");
         props.setProperty("mail.imaps.auth.ntlm.disable", "true");
         props.setProperty("mail.imaps.auth.gssapi.disable", "true");
-        props.put("mail.imaps.ssl.enable", "true");  
-        props.setProperty("mail.imap.starttls.enable", "true");
+        props.setProperty("mail.imaps.ssl.enable", "true");  
+        props.setProperty("mail.imaps.starttls.enable", "true");
         
         if(!type.equalsIgnoreCase("gmail.com")){ //Use TLS security and port 587
         	if(type.equalsIgnoreCase("student.gu.se")){
@@ -73,18 +64,22 @@ public class MailFunctionality extends Authenticator {
         		props.setProperty("mail.host", "smtp.live.com");
         		imapHost = "imap-mail.outlook.com";
         	}
-        	props.put("mail.smtp.starttls.enable","true");
-        	this.port = "587";
+        	sendProtocol = "smtp";
+        	props.setProperty("mail.transport.protocol", sendProtocol);
+        	props.setProperty("mail.smtp.starttls.enable","true");
+        	port = "587";
+            props.setProperty("mail.smtp.auth", "true");   
+            props.setProperty("mail.smtp.port", port); 
         }
         else{ // Use SSL security and port 465
+        	sendProtocol = "smtps";
+        	props.setProperty("mail.transport.protocol", sendProtocol);
         	props.setProperty("mail.host", "smtp.gmail.com");
         	imapHost = "imap.gmail.com";
-            props.put("mail.smtp.ssl.enable", "true");   
-            this.port = "465";
+            port = "465";
+            props.setProperty("mail.smtps.auth", "true");   
+            props.setProperty("mail.smtps.port", port); 
         }
-        props.put("mail.smtp.auth", "true");   
-        props.put("mail.smtp.port", port); //587 live/hotmail/outlook  //465 gmail 
-        
         
         // There is something wrong with MailCap, javamail can not find a handler for the multipart/mixed part, 
         //so this bit needs to be added. 
@@ -99,7 +94,7 @@ public class MailFunctionality extends Authenticator {
         //session.setDebug(true);
         }
         catch (Exception e){
-        	Log.e("error", e.getMessage());
+        	e.printStackTrace();
         }
     }
 
@@ -153,7 +148,11 @@ public class MailFunctionality extends Authenticator {
     	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(rcp));   
     	        }
     	        message.setContent(mp);
-    	        Transport.send(message);   
+				Transport t = session.getTransport(sendProtocol);
+	    		t.connect(user, password);
+	    		t.sendMessage(message, message.getAllRecipients());
+	    		t.close();
+    	        //Transport.send(message);   
     		}
     		catch(Exception e){
     			e.printStackTrace();
@@ -195,7 +194,7 @@ public class MailFunctionality extends Authenticator {
     	@Override
     	protected Boolean doInBackground(Void... arg0) {
 			try {
-				Transport t = session.getTransport("smtp");
+				Transport t = session.getTransport(sendProtocol);
 	    		t.connect(user, password);
 	    		t.close();
 	    		return true;
@@ -231,7 +230,7 @@ public class MailFunctionality extends Authenticator {
     	protected ArrayList<Message> doInBackground(Void... arg0) {
     		ArrayList<Message> emails = new ArrayList<Message>();
 			try {
-			    Store store = session.getStore();
+			    Store store = session.getStore("imaps");
 			    store.connect(imapHost, user, password);
 			    Folder inbox = store.getFolder("INBOX");
 			    inbox.open(Folder.READ_ONLY);
