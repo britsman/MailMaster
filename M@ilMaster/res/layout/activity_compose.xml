@@ -3,14 +3,13 @@ android:layout_width="fill_parent"
 android:layout_height="fill_parent"
 android:layout_gravity="center">
 
-<RelativeLayout 
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="344dp"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
-    
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
     <TextView
         android:id="@+id/sender"
@@ -46,6 +45,7 @@ android:layout_gravity="center">
         android:layout_height="wrap_content"
         android:layout_below="@+id/receiver"
         android:ems="10"
+        android:hint="Write receiver email here"
         android:singleLine="true" />
 
     <TextView
@@ -63,6 +63,7 @@ android:layout_gravity="center">
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:ems="10" 
+        android:hint="Write subject here"
         android:singleLine="true" />
 
     <TextView
@@ -81,27 +82,28 @@ android:layout_gravity="center">
         android:layout_alignLeft="@+id/message"
         android:layout_below="@+id/message"
         android:ems="10"
+        android:hint="Write receiver message here"
         android:singleLine="false" />
 
-    <Button
-        android:id="@+id/send_button"
-        android:layout_below="@+id/body"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/send"
-        android:onClick="onClickSend"/>
-
-    
-    <Button
+    <ImageButton
         android:id="@+id/attach_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/send_button"
-        android:layout_alignBottom="@+id/send_button"
         android:layout_alignRight="@+id/body"
-        android:text="@string/attach"
-        android:onClick="onClickAttach"/>
+        android:layout_below="@+id/body"
+        android:src="@drawable/attach1"
+        android:text="@string/attach" 
+         android:onClick="onClickAttach" android:contentDescription="TODO"/>
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/attach_button"
+        android:layout_alignLeft="@+id/sendAcc"
+        android:layout_marginBottom="16dp"
+        android:onClick="onClickSend"
+        android:text="@string/send" />
+
 </RelativeLayout>
 </ScrollView>

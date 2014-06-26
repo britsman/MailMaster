@@ -19,11 +19,14 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ComposeActivity extends Activity {
+public class ComposeActivity extends Activity implements OnClickListener {
 	
     private SharedPreferences accounts;
     private String defaultAcc;
@@ -32,7 +35,8 @@ public class ComposeActivity extends Activity {
     String  attachmentFile;
     Uri URI = null;
     int columnIndex;
- //   private Multipart _multipart; 
+   
+   private Multipart _multipart; 
     
 
 	@Override
@@ -42,6 +46,7 @@ public class ComposeActivity extends Activity {
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
+  
 	}
 	
 	@Override
@@ -73,16 +78,18 @@ public class ComposeActivity extends Activity {
 	@SuppressLint("SdCardPath")
 	public void onClickAttach(View v) {
 		try{
-			/*BodyPart messageBodyPart = new MimeBodyPart(); 
-			String filelocation="downloadfile.bin";
-			DataSource source = new FileDataSource(filelocation); 
+			
+			openGallery();
+			BodyPart messageBodyPart = new MimeBodyPart(); 
+			
+			DataSource source = new FileDataSource(attachmentFile); 
 			messageBodyPart.setDataHandler(new DataHandler(source)); 
-			messageBodyPart.setFileName(filelocation);
+			messageBodyPart.setFileName(attachmentFile);
 			String body = ((EditText) findViewById(R.id.body)).getText().toString();
 		      messageBodyPart.setText(body); 
-		       _multipart.addBodyPart(messageBodyPart);*/
+		       _multipart.addBodyPart(messageBodyPart);
 		
-			openGallery();
+	
 			
 		 }catch (Exception e) {   
 				Log.e("FileAttach", e.getMessage(), e);   
@@ -107,6 +114,12 @@ public class ComposeActivity extends Activity {
 		
 		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 			try {   
+				 final Intent emailIntent = new Intent(
+                         android.content.Intent.ACTION_SEND);
+				if (URI != null) {
+                    emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
+             }
+ 
 				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 				mf.sendMail(subject, body, defaultAcc, recipients);  
 			} 
@@ -122,4 +135,12 @@ public class ComposeActivity extends Activity {
             toast.show();
 		}
 	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }
