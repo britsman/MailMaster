@@ -8,9 +8,12 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.mail.BodyPart;
+import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;   
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Store;
@@ -22,6 +25,11 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import android.os.AsyncTask;
 import android.util.Log; 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +43,7 @@ public class MailFunctionality extends Authenticator {
     private String imapHost;  
     private Multipart mp;
     private String sendProtocol;
+    private boolean textIsHtml = false;
 
     static {   
         Security.addProvider(new JSSEProvider());   
@@ -132,7 +141,7 @@ public class MailFunctionality extends Authenticator {
     			mp = new MimeMultipart();
     	        MimeMessage message = new MimeMessage(session); 
     	        message.setFrom(new InternetAddress(sd));
-    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/plain"));  
+    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/html"));  
     	        message.setDataHandler(handler);
     	        message.setSubject(sb);   
     	        BodyPart messageBodyPart = new MimeBodyPart(); 
@@ -147,12 +156,11 @@ public class MailFunctionality extends Authenticator {
     	        else{  
     	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(rcp));   
     	        }
-    	        message.setContent(mp);
+    	        message.setContent(mp, "text/html");
 				Transport t = session.getTransport(sendProtocol);
 	    		t.connect(user, password);
 	    		t.sendMessage(message, message.getAllRecipients());
 	    		t.close();
-    	        //Transport.send(message);   
     		}
     		catch(Exception e){
     			e.printStackTrace();
@@ -230,9 +238,17 @@ public class MailFunctionality extends Authenticator {
     	protected ArrayList<Message> doInBackground(Void... arg0) {
     		ArrayList<Message> emails = new ArrayList<Message>();
 			try {
+				DisplayEmail d = DisplayEmail.getInstance();
+				if(d.getStore()!=null && !d.getStore().isConnected()){
+					d.getStore().close();
+				}
 			    Store store = session.getStore("imaps");
 			    store.connect(imapHost, user, password);
+			    if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+			    	d.getEmailFolder().close(false);
+			    }
 			    Folder inbox = store.getFolder("INBOX");
+			    d.setEmailFolder(inbox);
 			    inbox.open(Folder.READ_ONLY);
 			    int limit = 19;
 			    int count = inbox.getMessageCount();
@@ -240,13 +256,15 @@ public class MailFunctionality extends Authenticator {
 			    	limit = count-1;
 			    } 
 			    Message[] temp = inbox.getMessages(count-limit, count);
+			    //Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
+			    //Noticeable improvement compared to looping through each message.
+			    FetchProfile profile = new FetchProfile();
+			    profile.add(FetchProfile.Item.CONTENT_INFO);
+			    profile.add(FetchProfile.Item.ENVELOPE);
+			    profile.add(FetchProfile.Item.FLAGS);
+			    inbox.fetch(temp, profile);
 			    Collections.addAll(emails, temp);
 			    Collections.reverse(emails);
-			    for(int i = 0; i < emails.size(); i++){//Crashes with folderclosed exception for any message that is not accessed atleast once.
-			    	emails.get(i).getSize();
-			    } 
-			    inbox.close(false);
-			    store.close();
     			return emails;
 			}
 			catch (Exception e) {
@@ -254,5 +272,59 @@ public class MailFunctionality extends Authenticator {
 				return emails;
 			}
     	}
+    }
+    public String getContents() {	
+		try {
+    			ContentsTask ct = new ContentsTask(user,password);
+    			ct.executeOnExecutor(ct.THREAD_POOL_EXECUTOR);
+    			Log.d("MailFunctionality",  "Getting contents");
+    			return ct.get();
+			} 
+			catch (Exception e) {
+				return "";
+			}
+    }
+    private class ContentsTask extends AsyncTask<Void, Void, String>{
+    	
+    	private String user, password;
+    	
+    	private ContentsTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected String doInBackground(Void... arg0) {
+    		String contents = "";
+    		DisplayEmail d = DisplayEmail.getInstance();
+			try {
+				Log.d("type message", d.getEmail().getContentType());
+				if(d.getEmail().isMimeType("text/*")){
+					contents = d.getEmail().getContent().toString();
+				}
+				else{
+					MimeMultipart _mp = (MimeMultipart) d.getEmail().getContent();
+					for(int i = 0; i < _mp.getCount(); i++){
+						BodyPart bp = _mp.getBodyPart(i);
+						Log.d("type bp", bp.getContentType());
+						if(bp.isMimeType("text/html")){
+							contents = bp.getContent().toString();
+						}
+						else if(bp.isMimeType("text/plain")){
+								contents += bp.getContent().toString() + "\n";
+						}
+						else{
+							String [] temp = bp.getDataHandler().getName().split("/");
+							contents += temp[temp.length-1] + "\n";
+						}
+					}
+				}
+				return contents;
+			}
+			catch(Exception e){
+				e.printStackTrace();
+		    	return contents;
+			}
+		}   	
     }
 }  

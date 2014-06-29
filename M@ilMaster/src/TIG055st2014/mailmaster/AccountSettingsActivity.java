@@ -60,7 +60,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
     }
     public void toInbox(View v){
-    	startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
+    	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
     }
     /**
     * We disable the back button while the user is on the add account screen, in order to prevent

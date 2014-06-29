@@ -29,14 +29,15 @@ public final class R {
     public static final class id {
         public static final int account_list=0x7f080004;
         public static final int account_text=0x7f080001;
-        public static final int action_settings=0x7f080017;
+        public static final int action_settings=0x7f080018;
         public static final int attach_button=0x7f080011;
         public static final int body=0x7f080010;
         public static final int button=0x7f080008;
         public static final int compose_button=0x7f080014;
         public static final int delete_button=0x7f080000;
+        public static final int display=0x7f080016;
         public static final int email=0x7f080005;
-        public static final int email_preview=0x7f080016;
+        public static final int email_preview=0x7f080017;
         public static final int goto_add=0x7f080002;
         public static final int goto_inbox=0x7f080003;
         public static final int inbox_list=0x7f080015;
@@ -57,14 +58,16 @@ public final class R {
         public static final int activity_account_settings=0x7f030001;
         public static final int activity_add_account=0x7f030002;
         public static final int activity_compose=0x7f030003;
-        public static final int activity_mail_sender=0x7f030004;
-        public static final int email_item=0x7f030005;
+        public static final int activity_inbox=0x7f030004;
+        public static final int activity_show_email=0x7f030005;
+        public static final int email_item=0x7f030006;
     }
     public static final class menu {
         public static final int account_picker=0x7f070000;
         public static final int compose=0x7f070001;
         public static final int login=0x7f070002;
         public static final int mail_sender=0x7f070003;
+        public static final int show_email=0x7f070004;
     }
     public static final class string {
         public static final int action_settings=0x7f050002;
@@ -86,6 +89,7 @@ public final class R {
         public static final int title_activity_compose=0x7f05000c;
         public static final int title_activity_login=0x7f050004;
         public static final int title_activity_mail_sender=0x7f050001;
+        public static final int title_activity_show_email=0x7f050013;
     }
     public static final class style {
         /** 

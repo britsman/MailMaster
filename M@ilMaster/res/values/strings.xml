@@ -20,5 +20,6 @@
     <string name="message">Message:</string>
     <string name="compose">Compose Email...</string>
     <string name="attach">Attach File...</string>
+    <string name="title_activity_show_email">ShowEmailActivity</string>
 
 </resources>

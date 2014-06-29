@@ -58,7 +58,7 @@ public class AddAccountActivity extends Activity {
             			accEdit.putString(email, pw);
             			accEdit.putString("default", email);
             			accEdit.commit();
-            			startActivity(new Intent("TIG055st2014.mailmaster.MailSenderActivity"));
+            			startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
             		}
             		else{
             			//Invalid email account (will also trigger if no internet connection).
@@ -87,7 +87,7 @@ public class AddAccountActivity extends Activity {
     /**
     * User is redirected if the account settings button is pressed.
     */
-    public void pickAcc(View view) {//Disabled until multiaccount is enabled.
+    public void pickAcc(View view) {
         startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
     }
 

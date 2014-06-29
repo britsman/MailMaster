@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class MailSenderActivity extends Activity implements AdapterView.OnItemClickListener{
+public class InboxActivity extends Activity implements AdapterView.OnItemClickListener{
 	
     private SharedPreferences accounts;
     private String defaultAcc;
@@ -24,7 +24,7 @@ public class MailSenderActivity extends Activity implements AdapterView.OnItemCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mail_sender);
+        setContentView(R.layout.activity_inbox);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
@@ -62,7 +62,8 @@ public class MailSenderActivity extends Activity implements AdapterView.OnItemCl
     }
 	@Override
 	public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-		// TODO Auto-generated method stub
-		
+		DisplayEmail d = DisplayEmail.getInstance();
+		d.setEmail(emails.get(position));
+		startActivity(new Intent("TIG055st2014.mailmaster.ShowEmailActivity"));
 	}
 }

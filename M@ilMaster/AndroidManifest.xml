@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,14 +19,16 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MailSenderActivity"
+            android:name=".InboxActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.MailSenderActivity" />
+                <action android:name="TIG055st2014.mailmaster.InboxActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -35,6 +37,7 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AddAccountActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -43,6 +46,7 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AccountSettingsActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -51,15 +55,25 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.ComposeActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-         <activity
+        <activity
             android:name=".FileAttachmentActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.FileAttachmentActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ShowEmailActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="TIG055st2014.mailmaster.ShowEmailActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
