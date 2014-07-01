@@ -47,13 +47,49 @@ android:layout_gravity="center">
         android:ems="10"
         android:hint="Write receiver email here"
         android:singleLine="true" />
+    
+        <TextView
+        android:id="@+id/cc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/receiveAccs"
+        android:layout_below="@+id/receiveAccs"
+        android:text="@string/cc"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <EditText
+        android:id="@+id/ccAccs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cc"
+        android:ems="10" 
+        android:hint="Write emails to CC here"
+        android:singleLine="true" />
+        
+        <TextView
+        android:id="@+id/bcc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ccAccs"
+        android:layout_below="@+id/ccAccs"
+        android:text="@string/bcc"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <EditText
+        android:id="@+id/bccAccs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bcc"
+        android:ems="10" 
+        android:hint="Write emails to BCC here"
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/receiveAccs"
-        android:layout_below="@+id/receiveAccs"
+        android:layout_alignLeft="@+id/bccAccs"
+        android:layout_below="@+id/bccAccs"
         android:text="@string/subject"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

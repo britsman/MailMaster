@@ -112,10 +112,11 @@ public class MailFunctionality extends Authenticator {
         return new PasswordAuthentication(user, password);   
     }   
 
-    public void sendMail(String subject, String body, String sender, String recipients, ArrayList<String> attachments) {   
+    public void sendMail(String subject, String body, String sender, String recipients, 
+    		             String cc, String bcc, ArrayList<String> attachments) {   
         try{
         	Log.d("MailFunctionality", "Send");
-        	SendTask task = new SendTask(subject,body,sender,recipients, attachments);
+        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments);
         	task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
@@ -124,14 +125,17 @@ public class MailFunctionality extends Authenticator {
     }   
     private class SendTask extends AsyncTask<Void, Void, Void>{
     	
-    	private String sb, bd, sd , rcp;
+    	private String sb, bd, sd , rcp, cc, bcc;
     	private ArrayList<String> atch;
     	
-    	private SendTask(String subject, String body, String sender, String recipients, ArrayList<String> attachments){
+    	private SendTask(String subject, String body, String sender, String recipients, 
+    					 String _cc, String _bcc,ArrayList<String> attachments){
     		sb = subject;
     		bd = body;
     		sd = sender;
     		rcp = recipients;
+    		cc = _cc;
+    	    bcc = _bcc;
     		atch = attachments;
     	}
     	
@@ -150,12 +154,15 @@ public class MailFunctionality extends Authenticator {
     	        for(String file : atch){
     	        	addAttachment(file);
     	        }
-    	        if (rcp.indexOf(',') > 0){
-    	            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rcp));   
+    	        if(!rcp.equals("")){
+    	        	addRecipients(message, rcp, Message.RecipientType.TO);
     	        }
-    	        else{  
-    	            message.setRecipient(Message.RecipientType.TO, new InternetAddress(rcp));   
+    	        if(!cc.equals("")){
+    	        	addRecipients(message, cc, Message.RecipientType.CC);
     	        }
+    	        if(!bcc.equals("")){
+    	        	addRecipients(message, bcc, Message.RecipientType.BCC);
+    	        };
     	        message.setContent(mp, "text/html");
 				Transport t = session.getTransport(sendProtocol);
 	    		t.connect(user, password);
@@ -166,6 +173,15 @@ public class MailFunctionality extends Authenticator {
     			e.printStackTrace();
     		}
     		return null;
+    	}
+    	private void addRecipients(Message msg, String adresses, 
+    			                   Message.RecipientType type) throws Exception{
+	        if (adresses.indexOf(',') > 0){
+	            msg.setRecipients(type, InternetAddress.parse(adresses));   
+	        }
+	        else{  
+	            msg.setRecipient(type, new InternetAddress(adresses));   
+	        }
     	}
     }
 	private void addAttachment(String filePath){

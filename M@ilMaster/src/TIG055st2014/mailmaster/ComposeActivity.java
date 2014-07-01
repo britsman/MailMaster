@@ -93,28 +93,28 @@ public class ComposeActivity extends Activity{
 	}	
 	public void onClickSend(View v){
 		String recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+		String cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+		String bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
 		String subject = ((EditText) findViewById(R.id.subject)).getText().toString();
 		String body = ((EditText) findViewById(R.id.body)).getText().toString();
 		
-		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
+		if((!recipients.equals("") || !cc.equals("") || !bcc.equals("")) && !subject.equals("") && !body.equals("")){
 			try {   
-				 final Intent emailIntent = new Intent(
-                         android.content.Intent.ACTION_SEND);
-				if (URI != null) {
-                    emailIntent.putExtra(Intent.EXTRA_STREAM, URI);
-             }
- 
 				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-				mf.sendMail(subject, body, defaultAcc, recipients, attachments);  
+				mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
 			} 
 			catch (Exception e) {   
+	            Toast toast = Toast.makeText(getApplicationContext(),
+	                    "One or more supplied adresses contain illegal characters.", Toast.LENGTH_SHORT);
+	            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+	            toast.show();
 				Log.e("SendMail", e.getMessage(), e);   
 			}
 		}
 		else{
             //Missed fields
             Toast toast = Toast.makeText(getApplicationContext(),
-                    "One or more fields are unfilled.", Toast.LENGTH_SHORT);
+                    "One or more required fields are unfilled.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             toast.show();
 		}

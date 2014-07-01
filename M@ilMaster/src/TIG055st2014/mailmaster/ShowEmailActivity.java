@@ -1,13 +1,12 @@
 package TIG055st2014.mailmaster;
 
-import java.io.IOException;
-
 import javax.mail.MessagingException;
-
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -41,4 +40,20 @@ public class ShowEmailActivity extends Activity {
 			e.printStackTrace();
 		} 
 	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.show_email, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_reply) {
+            //Call reply function
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
