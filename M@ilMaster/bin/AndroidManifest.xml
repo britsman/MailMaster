@@ -68,15 +68,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ReplyActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.ReplyActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

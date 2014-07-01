@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -41,16 +43,14 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
 	                R.id.email_preview, emails));
         }
     }
-    public void onClickCompose(View v) {
+    public void onClickCompose(MenuItem m) {
+    	DisplayEmail d = DisplayEmail.getInstance();
+    	d.setIsReply(false);
     	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
     }
    
-    public void onClickSettings(View v) {
+    public void onClickSettings(MenuItem m) {
     	startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
-    }
-    
-    public void onClickAttach(View v) {
-    	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
     }
     /**
     * We disable the back button while the user is on the add account screen, in order to prevent
@@ -66,4 +66,9 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
 		d.setEmail(emails.get(position));
 		startActivity(new Intent("TIG055st2014.mailmaster.ShowEmailActivity"));
 	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.inbox, menu);
+        return true;
+    }
 }

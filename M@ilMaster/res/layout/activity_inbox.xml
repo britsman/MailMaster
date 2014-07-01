@@ -6,35 +6,6 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp">
 
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:orientation="horizontal" >
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings"
-        android:onClick="onClickSettings"
-        android:id="@+id/settings_button" />
-
-</LinearLayout>
-
-<LinearLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:orientation="horizontal" >
-
-        <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/compose"
-        android:onClick="onClickCompose"
-        android:id="@+id/compose_button" />
-        
-</LinearLayout>
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

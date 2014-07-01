@@ -10,6 +10,7 @@ public class DisplayEmail {
 	private Message reply;
 	private Folder emailFolder;
 	private Store store;
+	private boolean isReply;
 	
 	public void setEmail(Message m){
 		this.email = m;
@@ -34,6 +35,12 @@ public class DisplayEmail {
 	}
 	public Store getStore(){
 		return this.store;
+	}
+	public void setIsReply(boolean b){
+		this.isReply = b;
+	}
+	public boolean getIsReply(){
+		return this.isReply;
 	}
 	public static DisplayEmail getInstance(){
 		if(current == null){

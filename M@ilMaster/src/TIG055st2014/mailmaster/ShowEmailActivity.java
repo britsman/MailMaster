@@ -1,8 +1,8 @@
 package TIG055st2014.mailmaster;
 
 import javax.mail.MessagingException;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,8 +43,6 @@ public class ShowEmailActivity extends Activity {
 	}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.show_email, menu);
         return true;
     }
@@ -56,7 +54,8 @@ public class ShowEmailActivity extends Activity {
             DisplayEmail d = DisplayEmail.getInstance();
             try{
             	d.setReply(mf.getReply(d.getEmail()));
-            	startActivity(new Intent("TIG055st2014.mailmaster.ReplyActivity"));
+            	d.setIsReply(true);
+            	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
             }
             catch(Exception e){
             	e.printStackTrace();

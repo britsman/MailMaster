@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_toAddAccount"
+        android:showAsAction="always"
+        android:title="@string/add_acc" 
+        android:onClick="toAdd"
+        android:icon="@drawable/ic_action_add_person"/>
+    
+    <item
+        android:id="@+id/action_toInbox"
+        android:showAsAction="always"
+        android:title="@string/inbox" 
+        android:onClick="toInbox"
+        android:icon="@drawable/ic_action_collection"/>
+
+</menu>

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 
@@ -19,6 +21,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -42,7 +45,13 @@ public class ComposeActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_compose);
+		DisplayEmail d = DisplayEmail.getInstance();
+		if(d.getIsReply()){
+			setContentView(R.layout.activity_reply);
+		}
+		else{
+			setContentView(R.layout.activity_compose);
+		}
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
@@ -52,8 +61,38 @@ public class ComposeActivity extends Activity{
 	@Override
 	protected void onStart() {
 		super.onStart();
-		TextView sender = (TextView) findViewById(R.id.sendAcc);
-		sender.setText(defaultAcc);
+		DisplayEmail d = DisplayEmail.getInstance();
+		TextView sender; 
+		if(d.getIsReply()){
+			sender = (TextView) findViewById(R.id.sendAccReply);
+			sender.setText(defaultAcc);
+			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
+			TextView subject = (TextView) findViewById(R.id.subjectReply);
+			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
+			cc.setText("");
+			try{	
+				to.setText(d.getEmail().getFrom()[0].toString());
+				Address[] tempcc = d.getEmail().getRecipients(Message.RecipientType.CC);
+				if(tempcc != null){
+					for(int i = 0; i < tempcc.length; i++){
+						if(cc.getText().toString().equals("")){
+							cc.setText(tempcc[i].toString());
+						}
+						else{
+							cc.setText(cc.getText() + "," + tempcc[i].toString());
+						}
+					}
+				}
+				subject.setText(d.getReply().getSubject());
+			}
+			catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		else{
+			sender = (TextView) findViewById(R.id.sendAcc);
+			sender.setText(defaultAcc);
+		}
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -74,7 +113,7 @@ public class ComposeActivity extends Activity{
                }
         }
 	@SuppressLint("SdCardPath")
-	public void onClickAttach(View v) {
+	public void onClickAttach(MenuItem m) {
 		try{		
 			openGallery();
 		 }catch (Exception e) {   
@@ -92,12 +131,22 @@ public class ComposeActivity extends Activity{
                      PICK_FROM_GALLERY);
 	}	
 	public void onClickSend(View v){
-		String recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
-		String cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-		String bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
-		String subject = ((EditText) findViewById(R.id.subject)).getText().toString();
-		String body = ((EditText) findViewById(R.id.body)).getText().toString();
-		
+		String recipients,cc,bcc,subject,body;
+		DisplayEmail d = DisplayEmail.getInstance();
+		if(d.getIsReply()){
+			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
+		}
+		else{
+			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
+			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
+			body = ((EditText) findViewById(R.id.body)).getText().toString();
+		}
 		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 			try {   
 				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
@@ -119,4 +168,9 @@ public class ComposeActivity extends Activity{
             toast.show();
 		}
 	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.compose, menu);
+        return true;
+    }
 }

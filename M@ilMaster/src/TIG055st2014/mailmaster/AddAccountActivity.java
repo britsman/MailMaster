@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -87,7 +89,7 @@ public class AddAccountActivity extends Activity {
     /**
     * User is redirected if the account settings button is pressed.
     */
-    public void pickAcc(View view) {
+    public void toSettings(MenuItem m) {
         startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
     }
 
@@ -98,5 +100,10 @@ public class AddAccountActivity extends Activity {
     @Override
     public void onBackPressed() {
     	//Do nothing.
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_account, menu);
+        return true;
     }
 }

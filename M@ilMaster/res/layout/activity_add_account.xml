@@ -13,21 +13,12 @@
         android:layout_marginTop="55dp">
 
         <EditText
-            android:layout_width="200dp"
+            android:layout_width="240dp"
             android:layout_height="40dp"
             android:id="@+id/email"
             android:hint="@string/email"
             android:singleLine="true"
             />
-
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/pick_account"
-            android:src="@android:drawable/ic_menu_preferences"
-            android:layout_above="@+id/password"
-            android:onClick="pickAcc"
-            android:alpha="0.75"/>
     </LinearLayout>
 
     <EditText

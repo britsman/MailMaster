@@ -121,24 +121,15 @@ android:layout_gravity="center">
         android:hint="Write receiver message here"
         android:singleLine="false" />
 
-    <ImageButton
-        android:id="@+id/attach_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/body"
-        android:layout_below="@+id/body"
-        android:src="@drawable/attach1"
-        android:text="@string/attach" 
-         android:onClick="onClickAttach" android:contentDescription="TODO"/>
-
     <Button
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/attach_button"
-        android:layout_alignLeft="@+id/sendAcc"
-        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/body"
         android:onClick="onClickSend"
         android:text="@string/send" />
+
 </RelativeLayout>
 </ScrollView>
