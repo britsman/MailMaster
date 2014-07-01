@@ -1,0 +1,144 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+android:layout_width="fill_parent" 
+android:layout_height="fill_parent"
+android:layout_gravity="center">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="344dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <TextView
+        android:id="@+id/senderReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/sender"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/sendAccReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/senderReply"
+        android:layout_toRightOf="@+id/senderReply"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/receiverReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/senderReply"
+        android:layout_below="@+id/senderReply"
+        android:layout_marginTop="15dp"
+        android:text="@string/receiver"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/receiveAccsReply"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receiverReply"
+        android:ems="10"
+        android:hint="Write receiver email here"
+        android:singleLine="true" />
+    
+        <TextView
+        android:id="@+id/ccReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/receiveAccsReply"
+        android:layout_below="@+id/receiveAccsReply"
+        android:text="@string/cc"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <EditText
+        android:id="@+id/ccAccsReply"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ccReply"
+        android:ems="10" 
+        android:hint="Write emails to CC here"
+        android:singleLine="true" />
+        
+        <TextView
+        android:id="@+id/bccReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ccAccsReply"
+        android:layout_below="@+id/ccAccsReply"
+        android:text="@string/bcc"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <EditText
+        android:id="@+id/bccAccsReply"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bccReply"
+        android:ems="10" 
+        android:hint="Write emails to BCC here"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/bccAccsReply"
+        android:layout_below="@+id/bccAccsReply"
+        android:text="@string/subject"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/subjectReply"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:ems="10" 
+        android:hint="Write subject here"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/messageReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/subjectReply"
+        android:layout_below="@+id/subjectReply"
+        android:text="@string/message"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/bodyReply"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/messageReply"
+        android:layout_below="@+id/messageReply"
+        android:ems="10"
+        android:hint="Write receiver message here"
+        android:singleLine="false" />
+
+    <ImageButton
+        android:id="@+id/attach_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/bodyReply"
+        android:layout_below="@+id/bodyReply"
+        android:src="@drawable/attach1"
+        android:text="@string/attach" 
+         android:onClick="onClickAttach" android:contentDescription="TODO"/>
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/attach_button"
+        android:layout_alignLeft="@+id/sendAccReply"
+        android:layout_marginBottom="16dp"
+        android:onClick="onClickSend"
+        android:text="@string/send" />
+</RelativeLayout>
+</ScrollView>

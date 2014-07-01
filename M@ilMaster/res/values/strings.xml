@@ -24,5 +24,6 @@
     <string name="compose">Compose Email...</string>
     <string name="attach">Attach File...</string>
     <string name="title_activity_show_email">ShowEmailActivity</string>
+    <string name="title_activity_reply">ReplyActivity</string>
 
 </resources>

@@ -7,6 +7,7 @@ import javax.mail.Store;
 public class DisplayEmail {
 	private static DisplayEmail current;
 	private Message email;
+	private Message reply;
 	private Folder emailFolder;
 	private Store store;
 	
@@ -15,6 +16,12 @@ public class DisplayEmail {
 	}
 	public Message getEmail(){
 		return this.email;
+	}
+	public void setReply(Message m){
+		this.reply = m;
+	}
+	public Message getReply(){
+		return this.reply;
 	}
 	public void setEmailFolder(Folder f){
 		this.emailFolder = f;

@@ -1,12 +1,9 @@
 package TIG055st2014.mailmaster;
 
 import java.util.ArrayList;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Multipart;
-import javax.mail.internet.MimeBodyPart;
+
+import javax.mail.Address;
+import javax.mail.Message;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,14 +17,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ComposeActivity extends Activity{
+public class ReplyActivity extends Activity {
 	
     private SharedPreferences accounts;
     private String defaultAcc;
@@ -37,23 +31,41 @@ public class ComposeActivity extends Activity{
     int columnIndex;
     ArrayList<String> attachments;
     Uri URI = null;
-    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_compose);
-        accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
+		setContentView(R.layout.activity_reply);
+		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
         attachments = new ArrayList<String>();
 	}
-	
 	@Override
 	protected void onStart() {
 		super.onStart();
-		TextView sender = (TextView) findViewById(R.id.sendAcc);
+		DisplayEmail d = DisplayEmail.getInstance();
+		TextView sender = (TextView) findViewById(R.id.sendAccReply);
+		TextView to = (TextView) findViewById(R.id.receiveAccsReply);
+		TextView subject = (TextView) findViewById(R.id.subjectReply);
+		EditText cc = (EditText) findViewById(R.id.ccAccsReply);
+		EditText bcc = (EditText) findViewById(R.id.bccAccsReply);
 		sender.setText(defaultAcc);
+		try{	
+			to.setText(d.getEmail().getFrom()[0].toString());
+			Address[] tempcc = d.getReply().getRecipients(Message.RecipientType.CC);
+			Address[] tempbcc = d.getReply().getRecipients(Message.RecipientType.BCC);
+			if(tempcc != null){
+				cc.setText(tempcc.toString());
+			}
+			if(tempbcc != null){
+				bcc.setText(tempbcc.toString());
+			}
+			subject.setText(d.getReply().getSubject());
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -92,11 +104,11 @@ public class ComposeActivity extends Activity{
                      PICK_FROM_GALLERY);
 	}	
 	public void onClickSend(View v){
-		String recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
-		String cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-		String bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
-		String subject = ((EditText) findViewById(R.id.subject)).getText().toString();
-		String body = ((EditText) findViewById(R.id.body)).getText().toString();
+		String recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+		String cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+		String bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+		String subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+		String body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
 		
 		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 			try {   

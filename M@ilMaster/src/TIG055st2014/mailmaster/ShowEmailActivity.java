@@ -4,6 +4,7 @@ import javax.mail.MessagingException;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,7 +52,16 @@ public class ShowEmailActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_reply) {
-            //Call reply function
+        	MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+            DisplayEmail d = DisplayEmail.getInstance();
+            try{
+            	d.setReply(mf.getReply(d.getEmail()));
+            	startActivity(new Intent("TIG055st2014.mailmaster.ReplyActivity"));
+            }
+            catch(Exception e){
+            	e.printStackTrace();
+            }
+            
             return true;
         }
         return super.onOptionsItemSelected(item);

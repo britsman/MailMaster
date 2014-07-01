@@ -343,4 +343,37 @@ public class MailFunctionality extends Authenticator {
 			}
 		}   	
     }
+    public Message getReply(Message m) {	
+		try {
+    			ReplyTask rt = new ReplyTask(user,password);
+    			rt.executeOnExecutor(rt.THREAD_POOL_EXECUTOR, m);
+    			Log.d("MailFunctionality",  "Getting default fields for reply");
+    			return rt.get();
+			} 
+			catch (Exception e) {
+				return null;
+			}
+    }
+    private class ReplyTask extends AsyncTask<Message, Void, Message>{
+    	
+    	private String user, password;
+    	
+    	private ReplyTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected Message doInBackground(Message... m) {
+    		String contents = "";
+    		DisplayEmail d = DisplayEmail.getInstance();
+			try {
+				return m[0].reply(true);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+		    	return null;
+			}
+		}   	
+    }
 }  
