@@ -1,16 +1,12 @@
 package TIG055st2014.mailmaster;
 
-import javax.mail.MessagingException;
 import android.os.Bundle;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 public class ShowEmailActivity extends Activity {
 	
@@ -61,6 +57,10 @@ public class ShowEmailActivity extends Activity {
             	e.printStackTrace();
             }
             
+            return true;
+        }
+        if (id == R.id.get_attachments) {
+            startActivity(new Intent("TIG055st2014.mailmaster.AttachmentsActivity"));
             return true;
         }
         return super.onOptionsItemSelected(item);

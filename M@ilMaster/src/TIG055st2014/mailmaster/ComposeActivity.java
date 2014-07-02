@@ -71,6 +71,7 @@ public class ComposeActivity extends Activity{
 			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
 			cc.setText("");
 			try{	
+				subject.setText(d.getReply().getSubject());
 				to.setText(d.getEmail().getFrom()[0].toString());
 				Address[] tempcc = d.getEmail().getRecipients(Message.RecipientType.CC);
 				if(tempcc != null){
@@ -83,7 +84,6 @@ public class ComposeActivity extends Activity{
 						}
 					}
 				}
-				subject.setText(d.getReply().getSubject());
 			}
 			catch (Exception e){
 				e.printStackTrace();
