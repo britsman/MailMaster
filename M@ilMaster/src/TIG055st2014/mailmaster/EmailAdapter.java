@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+import javax.mail.Flags.Flag;
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 
@@ -41,6 +42,12 @@ public class EmailAdapter extends ArrayAdapter<Message> {
         	temp.getReceivedDate() + "\nSubject: " + temp.getSubject();
         	TextView tv = (TextView) convertView.findViewById(R.id.email_preview);
         	tv.setText(s);
+        	if(temp.getFlags().contains(Flag.SEEN)){
+        		tv.setTextColor(Color.BLACK);
+        	}
+        	else{
+        		tv.setTextColor(Color.BLUE);
+        	}
     	}
     	catch(Exception e){
     		e.printStackTrace();

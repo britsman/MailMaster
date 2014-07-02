@@ -9,6 +9,8 @@ import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
+import javax.mail.Flags;
+import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;   
 import javax.mail.Multipart;
@@ -257,7 +259,7 @@ public class MailFunctionality extends Authenticator {
 			    }
 			    Folder inbox = store.getFolder("INBOX");
 			    d.setEmailFolder(inbox);
-			    inbox.open(Folder.READ_ONLY);
+			    inbox.open(Folder.READ_WRITE);
 			    int limit = 19;
 			    int count = inbox.getMessageCount();
 			    if(count < 20){
@@ -311,13 +313,18 @@ public class MailFunctionality extends Authenticator {
 					d.getStore().connect(imapHost, user, password);
 				}
 				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
-					d.getEmailFolder().open(Folder.READ_ONLY);
+					d.getEmailFolder().open(Folder.READ_WRITE);
 				}
 			}
 			catch(Exception ex){
 				ex.printStackTrace();
 			}
 			try {
+				if(d.getEmail().getFlags().contains(Flag.SEEN)){
+					//d.getEmailFolder().setFlags(new Message[] {d.getEmail()}, new Flags(Flags.Flag.SEEN), true);
+					//d.getEmail().setFlag(Flag.SEEN, true);
+					//d.getEmail().saveChanges();
+				}
 				if(d.getEmail().isMimeType("text/*")){
 					plainContents = d.getEmail().getContent().toString();
 				}
@@ -378,7 +385,7 @@ public class MailFunctionality extends Authenticator {
 					d.getStore().connect(imapHost, user, password);
 				}
 				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
-					d.getEmailFolder().open(Folder.READ_ONLY);
+					d.getEmailFolder().open(Folder.READ_WRITE);
 				}
 				return m[0].reply(true);
 			}

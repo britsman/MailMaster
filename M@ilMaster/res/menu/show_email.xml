@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <item
-        android:id="@+id/action_reply"
-        android:showAsAction="always"
-        android:title="@string/action_reply" 
-        android:icon="@drawable/ic_action_new_email"/>
-    
+ 
     <item
         android:id="@+id/get_attachments"
         android:showAsAction="always"
         android:title="@string/get_attach" 
         android:icon="@drawable/ic_action_attach"/>
+    
+     <item
+        android:id="@+id/action_reply"
+        android:showAsAction="always"
+        android:title="@string/action_reply" 
+        android:icon="@drawable/ic_action_new_email"/>
 
 </menu>
