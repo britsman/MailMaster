@@ -1,16 +1,12 @@
 package TIG055st2014.mailmaster;
 
-import javax.mail.MessagingException;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 public class ShowEmailActivity extends Activity {
 	
@@ -43,8 +39,6 @@ public class ShowEmailActivity extends Activity {
 	}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.show_email, menu);
         return true;
     }
@@ -56,12 +50,17 @@ public class ShowEmailActivity extends Activity {
             DisplayEmail d = DisplayEmail.getInstance();
             try{
             	d.setReply(mf.getReply(d.getEmail()));
-            	startActivity(new Intent("TIG055st2014.mailmaster.ReplyActivity"));
+            	d.setIsReply(true);
+            	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
             }
             catch(Exception e){
             	e.printStackTrace();
             }
             
+            return true;
+        }
+        if (id == R.id.get_attachments) {
+            startActivity(new Intent("TIG055st2014.mailmaster.AttachmentsActivity"));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -46,7 +46,7 @@ android:layout_gravity="center">
         android:layout_below="@+id/receiverReply"
         android:ems="10"
         android:hint="Write receiver email here"
-        android:singleLine="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
     
         <TextView
         android:id="@+id/ccReply"
@@ -100,7 +100,7 @@ android:layout_gravity="center">
         android:layout_below="@+id/textView1"
         android:ems="10" 
         android:hint="Write subject here"
-        android:singleLine="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
         android:id="@+id/messageReply"
@@ -119,26 +119,44 @@ android:layout_gravity="center">
         android:layout_below="@+id/messageReply"
         android:ems="10"
         android:hint="Write receiver message here"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:singleLine="false" />
 
-    <ImageButton
-        android:id="@+id/attach_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/bodyReply"
-        android:layout_below="@+id/bodyReply"
-        android:src="@drawable/attach1"
-        android:text="@string/attach" 
-         android:onClick="onClickAttach" android:contentDescription="TODO"/>
-
     <Button
-        android:id="@+id/send_button"
+        android:id="@+id/sendreply_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/attach_button"
-        android:layout_alignLeft="@+id/sendAccReply"
-        android:layout_marginBottom="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/bodyReply"
         android:onClick="onClickSend"
         android:text="@string/send" />
+    
+        <TextView
+        android:id="@+id/totalsizeReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/sendreply_button"
+        android:text="Total size:" />
+     
+    <LinearLayout 
+    android:id="@+id/layout2"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@+id/totalsizeReply"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
+    
+        <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/replyattachment_list"
+        android:layout_alignParentStart="true"
+        android:layout_weight="1"
+        android:layout_marginTop="15dp"
+        android:drawSelectorOnTop="false"/>
+    
+    </LinearLayout>
 </RelativeLayout>
 </ScrollView>

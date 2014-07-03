@@ -23,7 +23,9 @@
     <string name="message">Message:</string>
     <string name="compose">Compose Email...</string>
     <string name="attach">Attach File...</string>
+    <string name="get_attach">Get attachments</string>
     <string name="title_activity_show_email">ShowEmailActivity</string>
     <string name="title_activity_reply">ReplyActivity</string>
+    <string name="title_activity_attachments">AttachmentsActivity</string>
 
 </resources>

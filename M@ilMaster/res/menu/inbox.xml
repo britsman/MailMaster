@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_toSettings"
+        android:showAsAction="always"
+        android:title="@string/settings" 
+        android:onClick="onClickSettings"
+        android:icon="@drawable/ic_action_settings"/>
+    
+    <item
+        android:id="@+id/action_toCompose"
+        android:showAsAction="always"
+        android:title="@string/inbox" 
+        android:onClick="onClickCompose"
+        android:icon="@drawable/ic_action_new_email"/>
+
+</menu>

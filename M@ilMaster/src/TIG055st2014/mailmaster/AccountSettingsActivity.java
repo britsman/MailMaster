@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.*;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -56,10 +58,10 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
                     R.id.account_text, columns));
     	}
     }
-    public void add(View v){
+    public void toAdd(MenuItem m){
     	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
     }
-    public void toInbox(View v){
+    public void toInbox(MenuItem m){
     	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
     }
     /**
@@ -69,5 +71,10 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     @Override
     public void onBackPressed() {
     	//Do nothing.
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.account_settings, menu);
+        return true;
     }
 }

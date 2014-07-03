@@ -120,25 +120,13 @@
         android:ems="10"
         android:hint="Write receiver message here"
         android:singleLine="false" />
-
-    <ImageButton
-        android:id="@+id/attach_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/body"
-        android:layout_below="@+id/body"
-        android:contentDescription="TODO"
-        android:onClick="onClickAttach"
-        android:src="@drawable/attach1"
-        android:text="@string/attach" />
-
+    
     <Button
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/message"
-        android:layout_alignTop="@+id/attach_button"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/body"
         android:onClick="onClickSend"
         android:text="@string/send" />
 
@@ -146,11 +134,8 @@
         android:id="@+id/totalsize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/send_button"
-        android:layout_alignBottom="@+id/send_button"
-        
-        android:layout_marginLeft="19dp"
-        android:layout_toRightOf="@+id/send_button"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/send_button"
         android:text="Total size:" />
      
     <LinearLayout 

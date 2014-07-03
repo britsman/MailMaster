@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Address;
 import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 
@@ -21,6 +23,7 @@ import android.database.Cursor;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView.OnItemClickListener;
@@ -51,22 +54,58 @@ public class ComposeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_compose);
-		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defaultAcc = accounts.getString("default", "");
-		 sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
-		 sizeEdit = sizePref.edit();
-	        sizeEdit.putFloat("Total", (float)0.0);
-	        sizeEdit.commit();
-		pw = accounts.getString(defaultAcc, "");
-		attachments = new ArrayList<String>();
+		DisplayEmail d = DisplayEmail.getInstance();
+		if(d.getIsReply()){
+			setContentView(R.layout.activity_reply);
+		}
+		else{
+			setContentView(R.layout.activity_compose);
+		}
+        accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
+        defaultAcc = accounts.getString("default", "");
+        sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
+		sizeEdit = sizePref.edit();
+	    sizeEdit.putFloat("Total", (float)0.0);
+	    sizeEdit.commit();
+        pw = accounts.getString(defaultAcc, "");
+        attachments = new ArrayList<String>();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		TextView sender = (TextView) findViewById(R.id.sendAcc);
-		sender.setText(defaultAcc);
+		DisplayEmail d = DisplayEmail.getInstance();
+		TextView sender; 
+		if(d.getIsReply()){
+			sender = (TextView) findViewById(R.id.sendAccReply);
+			sender.setText(defaultAcc);
+			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
+			TextView subject = (TextView) findViewById(R.id.subjectReply);
+			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
+			cc.setText("");
+			try{	
+				subject.setText(d.getReply().getSubject());
+				to.setText(d.getEmail().getFrom()[0].toString());
+				Address[] tempcc = d.getEmail().getRecipients(Message.RecipientType.CC);
+				if(tempcc != null){
+					for(int i = 0; i < tempcc.length; i++){
+						if(cc.getText().toString().equals("")){
+							cc.setText(tempcc[i].toString());
+						}
+						else{
+							cc.setText(cc.getText() + "," + tempcc[i].toString());
+						}
+					}
+				}
+			}
+			catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		else{
+			sender = (TextView) findViewById(R.id.sendAcc);
+			sender.setText(defaultAcc);
+		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -75,6 +114,7 @@ public class ComposeActivity extends Activity {
 			 * Get Path
 			 */
 			Uri selectedImage = data.getData();
+			DisplayEmail d = DisplayEmail.getInstance();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
 			Cursor cursor = getContentResolver().query(selectedImage,
@@ -84,28 +124,24 @@ public class ComposeActivity extends Activity {
 			file_path = cursor.getString(columnIndex);
 			if(!attachments.contains(file_path)){
 			Log.e("Attachment Path:", file_path);
-			URI = Uri.parse("file://" + file_path);
+		//	URI = Uri.parse("file://" + file_path);
 
 			// calculating the file size
 			DataSource source = new FileDataSource(file_path);
 			
 			byte[] byts= file_path.getBytes();
 			double bytes = 0;
-			
-			
+		
 			try{
 				InputStream stream = source.getInputStream();				
 				while(stream.read() != -1){
 					bytes++;
 				}
 				stream.close();
-				
-			}
+               }
 			catch(Exception e){
 				e.printStackTrace();
 			}
-			
-			
 			kilobytes = bytes/1024 ;
 
 			total = (double)sizePref.getFloat("Total", (float)0.0);
@@ -113,7 +149,13 @@ public class ComposeActivity extends Activity {
 			sizeEdit.putFloat("Total", (float)total);
 			sizeEdit.putFloat(file_path, (float)kilobytes);
 			sizeEdit.commit();
-			TextView result = (TextView) findViewById(R.id.totalsize);
+			TextView result;
+			if(d.getIsReply()){
+				result = (TextView) findViewById(R.id.totalsizeReply);
+			}
+			else{
+				result = (TextView) findViewById(R.id.totalsize);
+			}
 			result.setText("Total size: " +total + " KB");
 			if (total <= 5120) {
 				attachments.add(file_path);
@@ -122,7 +164,12 @@ public class ComposeActivity extends Activity {
 			}
 			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA" + total);
 			//cursor.moveToFirst();
-			listView = (ListView) findViewById(R.id.attachment_list);
+			if(d.getIsReply()){
+				listView = (ListView) findViewById(R.id.replyattachment_list);
+			}
+			else{
+				listView = (ListView) findViewById(R.id.attachment_list);
+			}
 			listView.setClickable(true);
 			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
 					R.layout.attachments_item, R.id.attachments_text,
@@ -130,59 +177,57 @@ public class ComposeActivity extends Activity {
 			}
 			cursor.close();
 		}
-	}
-
-	private void While(boolean b) {
-		// TODO Auto-generated method stub
-
-	}
-
+	}			
 	@SuppressLint("SdCardPath")
-	public void onClickAttach(View v) {
-		try {
+	public void onClickAttach(MenuItem m) {
+		try{		
 			openGallery();
-		} catch (Exception e) {
-			Log.e("FileAttach", e.getMessage(), e);
 		}
+		catch(Exception e){
+			e.printStackTrace();
+		 }
 	}
-
+	
 	public void openGallery() {
-		Intent intent = new Intent();
-		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
-		intent.putExtra("return-data", true);
-		startActivityForResult(
-				Intent.createChooser(intent, "Complete action using"),
-				PICK_FROM_GALLERY);
-	}
-
-	public void onClickSend(View v) {
-		String recipients = ((EditText) findViewById(R.id.receiveAccs))
-				.getText().toString();
-		String cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-		String bcc = ((EditText) findViewById(R.id.bccAccs)).getText()
-				.toString();
-		String subject = ((EditText) findViewById(R.id.subject)).getText()
-				.toString();
-		String body = ((EditText) findViewById(R.id.body)).getText().toString();
-
-		if (!recipients.equals("") && !subject.equals("") && !body.equals("")) {
-			try {
-				MailFunctionality mf = new MailFunctionality(defaultAcc, pw,
-						(defaultAcc.split("@"))[1]);
-				mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc,
-						attachments);
-			} catch (Exception e) {
-				Toast toast = Toast
-						.makeText(
-								getApplicationContext(),
-								"One or more supplied adresses contain illegal characters.",
-								Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-				toast.show();
-				Log.e("SendMail", e.getMessage(), e);
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra("return-data", true);
+        startActivityForResult(
+                     Intent.createChooser(intent, "Complete action using"),
+                     PICK_FROM_GALLERY);
+	}	
+	public void onClickSend(View v){
+		String recipients,cc,bcc,subject,body;
+		DisplayEmail d = DisplayEmail.getInstance();
+		if(d.getIsReply()){
+			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
+		}
+		else{
+			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
+			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
+			body = ((EditText) findViewById(R.id.body)).getText().toString();
+		}
+		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
+			try {   
+				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+				mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
+			} 
+			catch (Exception e) {   
+	            Toast toast = Toast.makeText(getApplicationContext(),
+	                    "One or more supplied adresses contain illegal characters.", Toast.LENGTH_SHORT);
+	            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+	            toast.show();
+				Log.e("SendMail", e.getMessage(), e);   
 			}
-		} else {
+		} 
+		else {
 			// Missed fields
 			Toast toast = Toast.makeText(getApplicationContext(),
 					"One or more required fields are unfilled.",
@@ -192,4 +237,9 @@ public class ComposeActivity extends Activity {
 		}
 	}
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.compose, menu);
+        return true;
+    }
 }

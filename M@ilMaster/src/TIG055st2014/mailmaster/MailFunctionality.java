@@ -9,11 +9,11 @@ import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
+import javax.mail.Flags;
+import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;   
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Part;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Store;
@@ -25,11 +25,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import android.os.AsyncTask;
 import android.util.Log; 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +38,6 @@ public class MailFunctionality extends Authenticator {
     private String imapHost;  
     private Multipart mp;
     private String sendProtocol;
-    private boolean textIsHtml = false;
 
     static {   
         Security.addProvider(new JSSEProvider());   
@@ -117,7 +111,7 @@ public class MailFunctionality extends Authenticator {
         try{
         	Log.d("MailFunctionality", "Send");
         	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments);
-        	task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
+        	task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
         	e.printStackTrace();
@@ -145,9 +139,9 @@ public class MailFunctionality extends Authenticator {
     			mp = new MimeMultipart();
     	        MimeMessage message = new MimeMessage(session); 
     	        message.setFrom(new InternetAddress(sd));
-    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/html"));  
+    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/html;charset=utf-8"));  
     	        message.setDataHandler(handler);
-    	        message.setSubject(sb);   
+    	        message.setSubject(sb, "utf-8");   
     	        BodyPart messageBodyPart = new MimeBodyPart(); 
     	        messageBodyPart.setText(bd); 
     	        mp.addBodyPart(messageBodyPart); 
@@ -199,7 +193,7 @@ public class MailFunctionality extends Authenticator {
     public boolean validate() {	
 		try {
     			ConnectTest c = new ConnectTest(user,password);
-    			c.executeOnExecutor(c.THREAD_POOL_EXECUTOR);
+    			c.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     			return(c.get());
 			} 
 			catch (Exception e) {
@@ -232,7 +226,7 @@ public class MailFunctionality extends Authenticator {
     public ArrayList<Message> getInbox() {	
 		try {
     			ReadTask task = new ReadTask(user,password);
-    			task.executeOnExecutor(task.THREAD_POOL_EXECUTOR);
+    			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     			Log.d("MailFunctionality",  "Reading reached");
     			return task.get();
 			} 
@@ -255,17 +249,17 @@ public class MailFunctionality extends Authenticator {
     		ArrayList<Message> emails = new ArrayList<Message>();
 			try {
 				DisplayEmail d = DisplayEmail.getInstance();
-				if(d.getStore()!=null && !d.getStore().isConnected()){
+				if(d.getStore()!=null && d.getStore().isConnected()){
 					d.getStore().close();
 				}
 			    Store store = session.getStore("imaps");
 			    store.connect(imapHost, user, password);
-			    if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
 			    	d.getEmailFolder().close(false);
 			    }
 			    Folder inbox = store.getFolder("INBOX");
 			    d.setEmailFolder(inbox);
-			    inbox.open(Folder.READ_ONLY);
+			    inbox.open(Folder.READ_WRITE);
 			    int limit = 19;
 			    int count = inbox.getMessageCount();
 			    if(count < 20){
@@ -292,7 +286,7 @@ public class MailFunctionality extends Authenticator {
     public String getContents() {	
 		try {
     			ContentsTask ct = new ContentsTask(user,password);
-    			ct.executeOnExecutor(ct.THREAD_POOL_EXECUTOR);
+    			ct.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     			Log.d("MailFunctionality",  "Getting contents");
     			return ct.get();
 			} 
@@ -311,42 +305,68 @@ public class MailFunctionality extends Authenticator {
     	
     	@Override
     	protected String doInBackground(Void... arg0) {
-    		String contents = "";
-    		DisplayEmail d = DisplayEmail.getInstance();
+    		String plainContents = "";
+    		String htmlContents = "";
+			DisplayEmail d = DisplayEmail.getInstance();
+			try{
+				if(d.getStore()!=null && !d.getStore().isConnected()){
+					d.getStore().connect(imapHost, user, password);
+				}
+				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+					d.getEmailFolder().open(Folder.READ_WRITE);
+				}
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+			}
 			try {
-				Log.d("type message", d.getEmail().getContentType());
+				if(d.getEmail().getFlags().contains(Flag.SEEN)){
+					//d.getEmailFolder().setFlags(new Message[] {d.getEmail()}, new Flags(Flags.Flag.SEEN), true);
+					//d.getEmail().setFlag(Flag.SEEN, true);
+					//d.getEmail().saveChanges();
+				}
 				if(d.getEmail().isMimeType("text/*")){
-					contents = d.getEmail().getContent().toString();
+					plainContents = d.getEmail().getContent().toString();
 				}
 				else{
 					MimeMultipart _mp = (MimeMultipart) d.getEmail().getContent();
 					for(int i = 0; i < _mp.getCount(); i++){
 						BodyPart bp = _mp.getBodyPart(i);
-						Log.d("type bp", bp.getContentType());
 						if(bp.isMimeType("text/html")){
-							contents = bp.getContent().toString();
+							htmlContents = bp.getContent().toString();
 						}
 						else if(bp.isMimeType("text/plain")){
-								contents += bp.getContent().toString() + "\n";
+							plainContents += bp.getContent().toString() + "\n";
 						}
 						else{
-							String [] temp = bp.getDataHandler().getName().split("/");
-							contents += temp[temp.length-1] + "\n";
+							try{
+								String [] temp = bp.getDataHandler().getName().split("/");
+								d.addAttachment(temp[temp.length-1]);
+							}
+							catch(Exception exe){
+								exe.printStackTrace();
+						    	return plainContents;
+							}
 						}
 					}
 				}
-				return contents;
+				if(htmlContents.equals("")){
+					return plainContents;
+				}
+				else{
+					return htmlContents;
+				}
 			}
 			catch(Exception e){
 				e.printStackTrace();
-		    	return contents;
+		    	return plainContents;
 			}
 		}   	
     }
     public Message getReply(Message m) {	
 		try {
     			ReplyTask rt = new ReplyTask(user,password);
-    			rt.executeOnExecutor(rt.THREAD_POOL_EXECUTOR, m);
+    			rt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, m);
     			Log.d("MailFunctionality",  "Getting default fields for reply");
     			return rt.get();
 			} 
@@ -365,9 +385,14 @@ public class MailFunctionality extends Authenticator {
     	
     	@Override
     	protected Message doInBackground(Message... m) {
-    		String contents = "";
-    		DisplayEmail d = DisplayEmail.getInstance();
 			try {
+				DisplayEmail d = DisplayEmail.getInstance();
+				if(d.getStore()!=null && !d.getStore().isConnected()){
+					d.getStore().connect(imapHost, user, password);
+				}
+				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+					d.getEmailFolder().open(Folder.READ_WRITE);
+				}
 				return m[0].reply(true);
 			}
 			catch(Exception e){
