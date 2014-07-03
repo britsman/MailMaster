@@ -69,10 +69,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ReplyActivity"
+            android:name=".AttachmentsActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.ReplyActivity" />
+                <action android:name="TIG055st2014.mailmaster.AttachmentsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
