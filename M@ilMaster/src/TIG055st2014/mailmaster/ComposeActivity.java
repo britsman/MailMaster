@@ -1,5 +1,6 @@
 package TIG055st2014.mailmaster;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -41,16 +42,22 @@ public class ComposeActivity extends Activity {
 	int columnIndex;
 	public double kilobytes;
 	private double total;
-	private ListView listView;
+	public ListView listView;
 	ArrayList<String> attachments;
 	Uri URI = null;
-
+	 private SharedPreferences sizePref;
+	 private SharedPreferences.Editor sizeEdit;
+	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_compose);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		defaultAcc = accounts.getString("default", "");
+		 sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
+		 sizeEdit = sizePref.edit();
+	        sizeEdit.putFloat("Total", (float)0.0);
+	        sizeEdit.commit();
 		pw = accounts.getString(defaultAcc, "");
 		attachments = new ArrayList<String>();
 	}
@@ -75,32 +82,52 @@ public class ComposeActivity extends Activity {
 			cursor.moveToFirst();
 			columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			file_path = cursor.getString(columnIndex);
+			if(!attachments.contains(file_path)){
 			Log.e("Attachment Path:", file_path);
 			URI = Uri.parse("file://" + file_path);
 
 			// calculating the file size
+			DataSource source = new FileDataSource(file_path);
 			
 			byte[] byts= file_path.getBytes();
-			String file= new String (byts);
-			double bytes = file.length();
-			kilobytes = (bytes);
-			kilobytes = (kilobytes / 1024);
+			double bytes = 0;
+			
+			
+			try{
+				InputStream stream = source.getInputStream();				
+				while(stream.read() != -1){
+					bytes++;
+				}
+				stream.close();
+				
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			
+			
+			kilobytes = bytes/1024 ;
 
-			total = total + kilobytes;
+			total = (double)sizePref.getFloat("Total", (float)0.0);
+			total += kilobytes;
+			sizeEdit.putFloat("Total", (float)total);
+			sizeEdit.putFloat(file_path, (float)kilobytes);
+			sizeEdit.commit();
 			TextView result = (TextView) findViewById(R.id.totalsize);
-			result.setText(Double.toString(total) + "KB");
-			if (total <= 0.1) {
+			result.setText("Total size: " +total + " KB");
+			if (total <= 5120) {
 				attachments.add(file_path);
 			} else {
 				System.out.println("Sorry files are too big to attach...");
 			}
 			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA" + total);
-			cursor.moveToFirst();
+			//cursor.moveToFirst();
 			listView = (ListView) findViewById(R.id.attachment_list);
 			listView.setClickable(true);
 			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
 					R.layout.attachments_item, R.id.attachments_text,
-					attachments, total));
+					attachments, result));
+			}
 			cursor.close();
 		}
 	}
