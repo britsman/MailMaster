@@ -48,19 +48,25 @@ public class ComposeActivity extends Activity {
 	private double total;
 	public ListView listView;
 	ArrayList<String> attachments;
-	 private SharedPreferences sizePref;
-	 private SharedPreferences.Editor sizeEdit;
+	private SharedPreferences sizePref;
+	private SharedPreferences.Editor sizeEdit;
 	 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DisplayEmail d = DisplayEmail.getInstance();
 		if(d.getIsReply()){
-			setContentView(R.layout.activity_reply);
+			setContentView(R.layout.listview_attachments);
+			listView = (ListView) findViewById(R.id.attachment_list);
+			listView.addHeaderView(getLayoutInflater().inflate(R.layout.activity_reply, null));
 		}
 		else{
-			setContentView(R.layout.activity_compose);
+			setContentView(R.layout.listview_attachments);
+			listView = (ListView) findViewById(R.id.attachment_list);
+			listView.addHeaderView(getLayoutInflater().inflate(R.layout.activity_compose, null));
+			
 		}
+		listView.setClickable(true);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
@@ -76,7 +82,10 @@ public class ComposeActivity extends Activity {
 		super.onStart();
 		DisplayEmail d = DisplayEmail.getInstance();
 		TextView sender; 
+		TextView result;
+
 		if(d.getIsReply()){
+			result = (TextView) findViewById(R.id.totalsizeReply);
 			sender = (TextView) findViewById(R.id.sendAccReply);
 			sender.setText(defaultAcc);
 			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
@@ -103,8 +112,14 @@ public class ComposeActivity extends Activity {
 			}
 		}
 		else{
+			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
 			sender.setText(defaultAcc);
+		}
+		if(listView.getAdapter() == null){
+			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
+					R.layout.attachments_item, R.id.attachments_text,
+					attachments, result));
 		}
 	}
 
@@ -124,7 +139,8 @@ public class ComposeActivity extends Activity {
 			file_path = cursor.getString(columnIndex);
 			if(!attachments.contains(file_path)){
 			Log.d("Attachment Path:", file_path);
-
+			attachments.add(file_path);
+			
 			// calculating the file size
 			File file = new File(file_path);
 			double bytes = file.length();
@@ -143,20 +159,6 @@ public class ComposeActivity extends Activity {
 				result = (TextView) findViewById(R.id.totalsize);
 			}
 			result.setText("Total size: " +total + " KB");
-			if (total <= 5120) {
-				attachments.add(file_path);
-			} else {
-				System.out.println("Sorry files are too big to attach...");
-			}
-			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA" + total);
-			//cursor.moveToFirst();
-			if(d.getIsReply()){
-				listView = (ListView) findViewById(R.id.replyattachment_list);
-			}
-			else{
-				listView = (ListView) findViewById(R.id.attachment_list);
-			}
-			listView.setClickable(true);
 			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
 					R.layout.attachments_item, R.id.attachments_text,
 					attachments, result));
@@ -175,51 +177,59 @@ public class ComposeActivity extends Activity {
 	}
 	
 	public void openGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.putExtra("return-data", true);
-        startActivityForResult(
-                     Intent.createChooser(intent, "Complete action using"),
-                     PICK_FROM_GALLERY);
-	}	
-	public void onClickSend(View v){
-		String recipients,cc,bcc,subject,body;
-		DisplayEmail d = DisplayEmail.getInstance();
-		if(d.getIsReply()){
-			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
-			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
-			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
-			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
-			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
-		}
-		else{
-			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
-			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
-			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
-			body = ((EditText) findViewById(R.id.body)).getText().toString();
-		}
-		if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
-			try {   
-				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-				mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
-			} 
-			catch (Exception e) {   
-	            Toast toast = Toast.makeText(getApplicationContext(),
-	                    "One or more supplied adresses contain illegal characters.", Toast.LENGTH_SHORT);
-	            toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-	            toast.show();
-				Log.e("SendMail", e.getMessage(), e);   
+        	Intent intent = new Intent();
+        	intent.setType("image/*");
+        	intent.setAction(Intent.ACTION_GET_CONTENT);
+        	intent.putExtra("return-data", true);
+        	startActivityForResult(
+        			Intent.createChooser(intent, "Complete action using"),
+                     	PICK_FROM_GALLERY);
+		}	
+		public void onClickSend(View v){
+			if (total > 5120) {
+            	Toast toast = Toast.makeText(getApplicationContext(),
+            			"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
 			}
-		} 
-		else {
-			// Missed fields
-			Toast toast = Toast.makeText(getApplicationContext(),
-					"One or more required fields are unfilled.",
-					Toast.LENGTH_SHORT);
-			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-			toast.show();
+			else{
+			String recipients,cc,bcc,subject,body;
+			DisplayEmail d = DisplayEmail.getInstance();
+			if(d.getIsReply()){
+				recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+				cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+				bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+				subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+				body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
+			}
+			else{
+				recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+				cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+				bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
+				subject = ((EditText) findViewById(R.id.subject)).getText().toString();
+				body = ((EditText) findViewById(R.id.body)).getText().toString();
+			}
+			if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
+				try {   
+					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
+				} 
+				catch (Exception e) {   
+					Toast toast = Toast.makeText(getApplicationContext(),
+	            			"One or more supplied adresses contain illegal characters.", Toast.LENGTH_SHORT);
+	            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+	            	toast.show();
+	            	Log.e("SendMail", e.getMessage(), e);   
+				}
+			} 
+			else {
+				// Missed fields
+				Toast toast = Toast.makeText(getApplicationContext(),
+						"One or more required fields are unfilled.",
+						Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+				toast.show();
+			}
 		}
 	}
 

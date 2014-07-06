@@ -1,11 +1,7 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
-android:layout_width="fill_parent" 
-android:layout_height="fill_parent"
-android:layout_gravity="center">
-
 <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="344dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -138,25 +134,4 @@ android:layout_gravity="center">
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/sendreply_button"
         android:text="Total size:" />
-     
-    <LinearLayout 
-    android:id="@+id/layout2"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignTop="@+id/totalsizeReply"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
-    
-        <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/replyattachment_list"
-        android:layout_alignParentStart="true"
-        android:layout_weight="1"
-        android:layout_marginTop="15dp"
-        android:drawSelectorOnTop="false"/>
-    
-    </LinearLayout>
 </RelativeLayout>
-</ScrollView>
