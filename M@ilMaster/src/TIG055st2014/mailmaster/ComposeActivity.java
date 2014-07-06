@@ -1,5 +1,6 @@
 package TIG055st2014.mailmaster;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.activation.DataHandler;
@@ -47,7 +48,6 @@ public class ComposeActivity extends Activity {
 	private double total;
 	public ListView listView;
 	ArrayList<String> attachments;
-	Uri URI = null;
 	 private SharedPreferences sizePref;
 	 private SharedPreferences.Editor sizeEdit;
 	 
@@ -123,25 +123,11 @@ public class ComposeActivity extends Activity {
 			columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			file_path = cursor.getString(columnIndex);
 			if(!attachments.contains(file_path)){
-			Log.e("Attachment Path:", file_path);
-		//	URI = Uri.parse("file://" + file_path);
+			Log.d("Attachment Path:", file_path);
 
 			// calculating the file size
-			DataSource source = new FileDataSource(file_path);
-			
-			byte[] byts= file_path.getBytes();
-			double bytes = 0;
-		
-			try{
-				InputStream stream = source.getInputStream();				
-				while(stream.read() != -1){
-					bytes++;
-				}
-				stream.close();
-               }
-			catch(Exception e){
-				e.printStackTrace();
-			}
+			File file = new File(file_path);
+			double bytes = file.length();
 			kilobytes = bytes/1024 ;
 
 			total = (double)sizePref.getFloat("Total", (float)0.0);
