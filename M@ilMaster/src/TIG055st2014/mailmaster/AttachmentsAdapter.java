@@ -46,13 +46,13 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		}
 		ComposeActivity com = new ComposeActivity();
 		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
-        
-		// double result = Double(res.getText());
 
-		if (Total >= 5120) {
+		if (Total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
 			convertView.setBackgroundColor(Color.RED);
+			text.setTextColor(Color.RED);
 		} else {
 			convertView.setBackgroundColor(Color.GREEN);
+			text.setTextColor(Color.BLACK);
 		}
 		TextView tv = (TextView) convertView
 				.findViewById(R.id.attachments_text);

@@ -186,7 +186,7 @@ public class ComposeActivity extends Activity {
                      	PICK_FROM_GALLERY);
 		}	
 		public void onClickSend(View v){
-			if (total > 5120) {
+			if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
             	Toast toast = Toast.makeText(getApplicationContext(),
             			"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
