@@ -28,9 +28,9 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		super(applicationContext, attachmentsItem, attachmentsText, attachments);
 		this.attach = attachments;
 		this.context = applicationContext;
+        text=t;
 		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
         sizeEdit = sizePref.edit();
-        text=t;
         Total= sizePref.getFloat("Total", (float) 0.0);
         
 		
@@ -70,7 +70,13 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				attach.remove(position);
 				sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
 		        sizeEdit = sizePref.edit();
-		        Total -= (double)sizePref.getFloat(a, (float)0.0);
+		        Total = (double)sizePref.getFloat("Total", (float)0.0) - (double)sizePref.getFloat(a, (float)0.0);
+				if (Total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
+					text.setTextColor(Color.RED);
+				} 
+				else {
+					text.setTextColor(Color.BLACK);
+				}
 		        text.setText("Total size: " +Total + " KB");
 		        sizeEdit.putFloat("Total", (float) Total);
 		        sizeEdit.remove(a);

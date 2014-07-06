@@ -186,6 +186,7 @@ public class ComposeActivity extends Activity {
                      	PICK_FROM_GALLERY);
 		}	
 		public void onClickSend(View v){
+			total = (double)sizePref.getFloat("Total", (float)0.0);
 			if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
             	Toast toast = Toast.makeText(getApplicationContext(),
             			"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);
@@ -213,6 +214,7 @@ public class ComposeActivity extends Activity {
 				try {   
 					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
+					startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
 				} 
 				catch (Exception e) {   
 					Toast toast = Toast.makeText(getApplicationContext(),
