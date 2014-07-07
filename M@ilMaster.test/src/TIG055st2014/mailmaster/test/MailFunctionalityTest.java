@@ -11,20 +11,20 @@ public class MailFunctionalityTest extends TestCase {
 	
 	@Override
 	public void setUp(){
-		mf = new MailFunctionality("gusbriter@student.gu.se", "wav2!VEX", "student.gu.se");
+		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
 	}
 	public void testValidate(){
 		assertTrue(mf.validate());
 	}
 	public void testValidateFailure(){
-		mf = new MailFunctionality("gusbriter@student.gu.se", "WrongPassword", "student.gu.se");
+		mf = new MailFunctionality("mailmastertesting@gmail.com", "WrongPassword", "gmail.com");
 		assertFalse(mf.validate());
 	}
 	public void testGetInbox(){		
 		assertTrue(mf.getInbox().size() > 0);
 	}
 	public void testGetInboxFailure(){
-		mf = new MailFunctionality("gusbriter@student.gu.se", "WrongPassword", "student.gu.se");
+		mf = new MailFunctionality("mailmastertesting@gmail.com", "WrongPassword", "gmail.com");
 		assertFalse(mf.getInbox().size() > 0);
 	}
 }
