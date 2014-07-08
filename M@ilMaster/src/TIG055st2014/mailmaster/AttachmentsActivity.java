@@ -13,7 +13,7 @@ import android.widget.ListView;
 public class AttachmentsActivity extends Activity implements AdapterView.OnItemClickListener{
 	
     private ListView listView;
-    private ArrayList<String> fileNames;
+    public ArrayList<String> fileNames;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

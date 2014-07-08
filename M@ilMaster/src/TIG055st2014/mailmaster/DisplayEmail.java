@@ -15,6 +15,10 @@ public class DisplayEmail {
 	private boolean isReply;
 	private ArrayList<String> attachments;
 	
+	private DisplayEmail(){
+		attachments = new ArrayList<String>();
+	}
+	
 	public void setEmail(Message m){
 		attachments = new ArrayList<String>();
 		this.email = m;
