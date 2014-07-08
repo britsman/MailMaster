@@ -17,7 +17,7 @@ import android.widget.ListView;
 
 public class InboxActivity extends Activity implements AdapterView.OnItemClickListener{
 	
-    private SharedPreferences accounts;
+    public SharedPreferences accounts;
     private String defaultAcc;
     private String pw;
     private ListView listView;
