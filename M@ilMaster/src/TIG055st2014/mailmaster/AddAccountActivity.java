@@ -18,8 +18,8 @@ import android.widget.Toast;
 */
 public class AddAccountActivity extends Activity {
 
-    private SharedPreferences accounts;
-    private SharedPreferences.Editor accEdit;
+    public SharedPreferences accounts;
+    public SharedPreferences.Editor accEdit;
 
 
     @Override

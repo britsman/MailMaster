@@ -22,10 +22,10 @@ import java.util.Set;
 */
 public class AccountSettingsActivity extends Activity implements AdapterView.OnItemClickListener {
 
-    private SharedPreferences accounts;
+    public SharedPreferences accounts;
     private SharedPreferences.Editor accEdit;
     private ListView listView;
-    private ArrayList<String> columns;
+    public ArrayList<String> columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
