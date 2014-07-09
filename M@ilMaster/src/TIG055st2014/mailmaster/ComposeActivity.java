@@ -11,6 +11,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage.RecipientType;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,7 +51,7 @@ public class ComposeActivity extends Activity {
 	ArrayList<String> attachments;
 	private SharedPreferences sizePref;
 	private SharedPreferences.Editor sizeEdit;
-	 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,17 +65,17 @@ public class ComposeActivity extends Activity {
 			setContentView(R.layout.listview_attachments);
 			listView = (ListView) findViewById(R.id.attachment_list);
 			listView.addHeaderView(getLayoutInflater().inflate(R.layout.activity_compose, null));
-			
+
 		}
 		listView.setClickable(true);
-        accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-        defaultAcc = accounts.getString("default", "");
-        sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
+		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
+		defaultAcc = accounts.getString("default", "");
+		sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
 		sizeEdit = sizePref.edit();
-	    sizeEdit.putFloat("Total", (float)0.0);
-	    sizeEdit.commit();
-        pw = accounts.getString(defaultAcc, "");
-        attachments = new ArrayList<String>();
+		sizeEdit.putFloat("Total", (float)0.0);
+		sizeEdit.commit();
+		pw = accounts.getString(defaultAcc, "");
+		attachments = new ArrayList<String>();
 	}
 
 	@Override
@@ -94,18 +95,23 @@ public class ComposeActivity extends Activity {
 			cc.setText("");
 			try{	
 				subject.setText(d.getReply().getSubject());
-				to.setText(d.getEmail().getFrom()[0].toString());
-				Address[] tempcc = d.getEmail().getRecipients(Message.RecipientType.CC);
-				if(tempcc != null){
-					for(int i = 0; i < tempcc.length; i++){
-						if(cc.getText().toString().equals("")){
-							cc.setText(tempcc[i].toString());
-						}
-						else{
-							cc.setText(cc.getText() + "," + tempcc[i].toString());
+				if(d.getFolderName().contains("Sent")){
+					Address [] tempTo = d.getEmail().getRecipients(RecipientType.TO);
+					if(tempTo != null){
+						for(Address a : tempTo){
+							if(to.getText().toString().equals("")){
+								to.setText(a.toString());
+							}
+							else{
+								to.setText(to.getText() + "," + a.toString());
+							}
 						}
 					}
 				}
+				else{
+					to.setText(d.getEmail().getFrom()[0].toString());
+				}
+				this.addAddresses(d.getEmail().getRecipients(Message.RecipientType.CC), cc);
 			}
 			catch (Exception e){
 				e.printStackTrace();
@@ -114,8 +120,26 @@ public class ComposeActivity extends Activity {
 		else{
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
-			
 			sender.setText(defaultAcc);
+			if(d.getFolderName().contains("Drafts")){
+				try{
+				MailFunctionality mf = new MailFunctionality(defaultAcc, accounts.getString(defaultAcc, ""), 
+															 (defaultAcc.split("@"))[1]);
+				EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
+				EditText cc = ((EditText) findViewById(R.id.ccAccs));
+				EditText bcc = ((EditText) findViewById(R.id.bccAccs));
+				EditText subject = ((EditText) findViewById(R.id.subject));
+				EditText body = ((EditText) findViewById(R.id.body));
+				subject.setText(d.getEmail().getSubject().toString());
+				body.setText(mf.getContents());
+				addAddresses(d.getEmail().getRecipients(Message.RecipientType.TO), recipients);
+				addAddresses(d.getEmail().getRecipients(Message.RecipientType.CC), cc);
+				addAddresses(d.getEmail().getRecipients(Message.RecipientType.BCC), bcc);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+			}
 		}
 		if(listView.getAdapter() == null){
 			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
@@ -123,7 +147,18 @@ public class ComposeActivity extends Activity {
 					attachments, result));
 		}
 	}
-
+	private void addAddresses(Address[] addresses, EditText et){
+		if(addresses != null){
+			for(Address a : addresses){
+				if(et.getText().toString().equals("")){
+					et.setText(a.toString());
+				}
+				else{
+					et.setText(et.getText() + "," + a.toString());
+				}
+			}
+		}
+	}
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == PICK_FROM_GALLERY && resultCode == RESULT_OK) {
 			/**
@@ -139,30 +174,30 @@ public class ComposeActivity extends Activity {
 			columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			file_path = cursor.getString(columnIndex);
 			if(!attachments.contains(file_path)){
-			Log.d("Attachment Path:", file_path);
-			attachments.add(file_path);
-			
-			// calculating the file size
-			File file = new File(file_path);
-			double bytes = file.length();
-			kilobytes = bytes/1024 ;
+				Log.d("Attachment Path:", file_path);
+				attachments.add(file_path);
 
-			total = (double)sizePref.getFloat("Total", (float)0.0);
-			total += kilobytes;
-			sizeEdit.putFloat("Total", (float)total);
-			sizeEdit.putFloat(file_path, (float)kilobytes);
-			sizeEdit.commit();
-			TextView result;
-			if(d.getIsReply()){
-				result = (TextView) findViewById(R.id.totalsizeReply);
-			}
-			else{
-				result = (TextView) findViewById(R.id.totalsize);
-			}
-			result.setText("Total size: " +total + " KB");
-			listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
-					R.layout.attachments_item, R.id.attachments_text,
-					attachments, result));
+				// calculating the file size
+				File file = new File(file_path);
+				double bytes = file.length();
+				kilobytes = bytes/1024 ;
+
+				total = (double)sizePref.getFloat("Total", (float)0.0);
+				total += kilobytes;
+				sizeEdit.putFloat("Total", (float)total);
+				sizeEdit.putFloat(file_path, (float)kilobytes);
+				sizeEdit.commit();
+				TextView result;
+				if(d.getIsReply()){
+					result = (TextView) findViewById(R.id.totalsizeReply);
+				}
+				else{
+					result = (TextView) findViewById(R.id.totalsize);
+				}
+				result.setText("Total size: " +total + " KB");
+				listView.setAdapter(new AttachmentsAdapter(getApplicationContext(),
+						R.layout.attachments_item, R.id.attachments_text,
+						attachments, result));
 			}
 			cursor.close();
 		}
@@ -174,27 +209,27 @@ public class ComposeActivity extends Activity {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-		 }
+		}
 	}
-	
+
 	public void openGallery() {
-        	Intent intent = new Intent();
-        	intent.setType("image/*");
-        	intent.setAction(Intent.ACTION_GET_CONTENT);
-        	intent.putExtra("return-data", true);
-        	startActivityForResult(
-        			Intent.createChooser(intent, "Complete action using"),
-                     	PICK_FROM_GALLERY);
-		}	
-		public void onClickSend(View v){
-			total = (double)sizePref.getFloat("Total", (float)0.0);
-			if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
-            	Toast toast = Toast.makeText(getApplicationContext(),
-            			"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);
-            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            	toast.show();
-			}
-			else{
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		intent.putExtra("return-data", true);
+		startActivityForResult(
+				Intent.createChooser(intent, "Complete action using"),
+				PICK_FROM_GALLERY);
+	}	
+	public void onClickSend(View v){
+		total = (double)sizePref.getFloat("Total", (float)0.0);
+		if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
+			Toast toast = Toast.makeText(getApplicationContext(),
+					"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+			toast.show();
+		}
+		else{
 			String recipients,cc,bcc,subject,body;
 			DisplayEmail d = DisplayEmail.getInstance();
 			if(d.getIsReply()){
@@ -215,10 +250,10 @@ public class ComposeActivity extends Activity {
 				try {   
 					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext());  
-	    			startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
+					startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
 				} 
 				catch (Exception e) {    
-	            	e.printStackTrace();
+					e.printStackTrace();
 				}
 			} 
 			else {
@@ -232,9 +267,9 @@ public class ComposeActivity extends Activity {
 		}
 	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.compose, menu);
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.compose, menu);
+		return true;
+	}
 }

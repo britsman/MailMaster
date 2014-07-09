@@ -34,6 +34,10 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
         }
         else{
+        	DisplayEmail d = DisplayEmail.getInstance();
+        	if(d.getFolderName() == null){//Default to inbox if no other folder has been selected.
+        		d.setFolderName("INBOX");
+        	}
 			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 			emails = mf.getInbox(); 
 	        listView = (ListView) findViewById(R.id.inbox_list);
@@ -64,7 +68,13 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
 	public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
 		DisplayEmail d = DisplayEmail.getInstance();
 		d.setEmail(emails.get(position));
-		startActivity(new Intent("TIG055st2014.mailmaster.ShowEmailActivity"));
+		if(d.getFolderName().contains("Drafts")){
+			d.setIsReply(false);
+			startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
+		}
+		else{
+			startActivity(new Intent("TIG055st2014.mailmaster.ShowEmailActivity"));
+		}
 	}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

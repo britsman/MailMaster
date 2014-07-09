@@ -53,6 +53,7 @@ public class MailFunctionality extends Authenticator {
         this.user = user;   
         this.password = password;  
         Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
+        DisplayEmail d = DisplayEmail.getInstance();
         try{
         Properties props = new Properties();   
           
@@ -72,6 +73,12 @@ public class MailFunctionality extends Authenticator {
         	else{
         		props.setProperty("mail.host", "smtp.live.com");
         		imapHost = "imap-mail.outlook.com";
+        		if(d.getFolderName().equalsIgnoreCase("[Gmail]/Sent Mail")){
+        			d.setFolderName("Sent");
+        		}
+        		else if(d.getFolderName().equalsIgnoreCase("[Gmail]/Drafts")){
+        			d.setFolderName("Drafts");
+        		}
         	}
         	sendProtocol = "smtp";
         	props.setProperty("mail.transport.protocol", sendProtocol);
@@ -285,7 +292,7 @@ public class MailFunctionality extends Authenticator {
 			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
 			    	d.getEmailFolder().close(false);
 			    }
-			    Folder inbox = store.getFolder("INBOX");
+			    Folder inbox = store.getFolder(d.getFolderName());
 			    d.setEmailFolder(inbox);
 			    inbox.open(Folder.READ_WRITE);
 			    int limit = 19;

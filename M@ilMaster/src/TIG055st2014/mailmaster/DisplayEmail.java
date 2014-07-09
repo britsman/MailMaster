@@ -14,6 +14,7 @@ public class DisplayEmail {
 	private Store store;
 	private boolean isReply;
 	private ArrayList<String> attachments;
+	private String folderName;
 	
 	private DisplayEmail(){
 		attachments = new ArrayList<String>();
@@ -49,6 +50,12 @@ public class DisplayEmail {
 	}
 	public boolean getIsReply(){
 		return this.isReply;
+	}
+	public void setFolderName(String name){
+		this.folderName = name;
+	}
+	public String getFolderName(){
+		return this.folderName;
 	}
 	public void addAttachment(String name){
 		this.attachments.add(name);
