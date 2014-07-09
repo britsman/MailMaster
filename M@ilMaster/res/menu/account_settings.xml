@@ -8,7 +8,6 @@
         android:icon="@drawable/ic_action_add_person"/>
     
     <item
-        android:id="@+id/action_toInbox2"
         android:showAsAction="always"
         android:title="@string/folders" 
         android:icon="@drawable/ic_action_collection">

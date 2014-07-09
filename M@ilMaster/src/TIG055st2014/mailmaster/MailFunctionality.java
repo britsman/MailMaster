@@ -63,6 +63,8 @@ public class MailFunctionality extends Authenticator {
         props.setProperty("mail.imaps.auth.gssapi.disable", "true");
         props.setProperty("mail.imaps.ssl.enable", "true");  
         props.setProperty("mail.imaps.starttls.enable", "true");
+        props.setProperty("mail.imaps.connectionpoolsize", "10");
+    	props.setProperty("mail.imaps.partialfetch", "false");
         
         if(!type.equalsIgnoreCase("gmail.com")){ //Use TLS security and port 587
         	if(type.equalsIgnoreCase("student.gu.se")){
@@ -96,7 +98,7 @@ public class MailFunctionality extends Authenticator {
             props.setProperty("mail.smtps.auth", "true");   
             props.setProperty("mail.smtps.port", port); 
         }
-        
+        props.setProperty("mail.imaps.ssl.trust", imapHost);
         // There is something wrong with MailCap, javamail can not find a handler for the multipart/mixed part, 
         //so this bit needs to be added. 
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
@@ -355,11 +357,6 @@ public class MailFunctionality extends Authenticator {
 				ex.printStackTrace();
 			}
 			try {
-				if(d.getEmail().getFlags().contains(Flag.SEEN)){
-					//d.getEmailFolder().setFlags(new Message[] {d.getEmail()}, new Flags(Flags.Flag.SEEN), true);
-					//d.getEmail().setFlag(Flag.SEEN, true);
-					//d.getEmail().saveChanges();
-				}
 				if(d.getEmail().isMimeType("text/*")){
 					plainContents = d.getEmail().getContent().toString();
 				}

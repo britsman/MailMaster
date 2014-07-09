@@ -81,4 +81,21 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         getMenuInflater().inflate(R.menu.inbox, menu);
         return true;
     }
+    public void changeFolder(MenuItem m){
+        int id = m.getItemId();
+        DisplayEmail d = DisplayEmail.getInstance();
+        if (id == R.id.action_inbox) {
+        	d.setFolderName("INBOX");
+        }
+        else if (id == R.id.action_sent) {
+        	d.setFolderName("[Gmail]/Sent Mail");
+        }
+        else{
+        	d.setFolderName("[Gmail]/Drafts");
+        }
+		MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+		emails = mf.getInbox(); 
+        listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
+                R.id.email_preview, emails));
+    }
 }
