@@ -114,6 +114,7 @@ public class ComposeActivity extends Activity {
 		else{
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
+			
 			sender.setText(defaultAcc);
 		}
 		if(listView.getAdapter() == null){
