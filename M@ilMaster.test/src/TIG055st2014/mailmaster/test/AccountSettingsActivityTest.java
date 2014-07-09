@@ -24,9 +24,6 @@ public class AccountSettingsActivityTest extends ActivityUnitTestCase<AccountSet
 		startActivity(intent, null, null);
 		activity = getActivity();
 	}
-	/*@Override
-	protected void tearDown(){
-	}**/
 
 	public void testChangeDefault() {
 		  activity.runOnUiThread(new Runnable() {
