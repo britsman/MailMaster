@@ -23,8 +23,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log; 
+import android.view.Gravity;
+import android.widget.Toast;
+
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,10 +113,10 @@ public class MailFunctionality extends Authenticator {
     }   
 
     public void sendMail(String subject, String body, String sender, String recipients, 
-    		             String cc, String bcc, ArrayList<String> attachments) {   
+    		             String cc, String bcc, ArrayList<String> attachments, Context context) {   
         try{
         	Log.d("MailFunctionality", "Send");
-        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments);
+        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments, context);
         	task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
@@ -121,9 +127,11 @@ public class MailFunctionality extends Authenticator {
     	
     	private String sb, bd, sd , rcp, cc, bcc;
     	private ArrayList<String> atch;
+    	private boolean sent;
+    	private Context c;
     	
     	private SendTask(String subject, String body, String sender, String recipients, 
-    					 String _cc, String _bcc,ArrayList<String> attachments){
+    					 String _cc, String _bcc,ArrayList<String> attachments, Context context){
     		sb = subject;
     		bd = body;
     		sd = sender;
@@ -131,6 +139,8 @@ public class MailFunctionality extends Authenticator {
     		cc = _cc;
     	    bcc = _bcc;
     		atch = attachments;
+    		c = context;
+    		sent = false;
     	}
     	
     	@Override
@@ -162,6 +172,7 @@ public class MailFunctionality extends Authenticator {
 	    		t.connect(user, password);
 	    		t.sendMessage(message, message.getAllRecipients());
 	    		t.close();
+	    		sent = true;
     		}
     		catch(Exception e){
     			e.printStackTrace();
@@ -176,6 +187,23 @@ public class MailFunctionality extends Authenticator {
 	        else{  
 	            msg.setRecipient(type, new InternetAddress(adresses));   
 	        }
+    	}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(sent){
+				Toast toast = Toast.makeText(c,
+            			"Send successful! (if email was close to max size, this may appear " +
+            			"minutes after pressing send).", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    		else{//Need to save draft.
+				Toast toast = Toast.makeText(c,
+            			"Send failed, one or more supplied adresses contain illegal characters " +
+            			"(email has been saved as draft).", Toast.LENGTH_LONG);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
     	}
     }
 	private void addAttachment(String filePath){

@@ -214,15 +214,11 @@ public class ComposeActivity extends Activity {
 			if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 				try {   
 					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments);  
-					startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
+					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext());  
+	    			startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
 				} 
-				catch (Exception e) {   
-					Toast toast = Toast.makeText(getApplicationContext(),
-	            			"One or more supplied adresses contain illegal characters.", Toast.LENGTH_SHORT);
-	            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-	            	toast.show();
-	            	Log.e("SendMail", e.getMessage(), e);   
+				catch (Exception e) {    
+	            	e.printStackTrace();
 				}
 			} 
 			else {
