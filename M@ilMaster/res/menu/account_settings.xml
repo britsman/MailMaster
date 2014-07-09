@@ -8,10 +8,29 @@
         android:icon="@drawable/ic_action_add_person"/>
     
     <item
-        android:id="@+id/action_toInbox"
+        android:id="@+id/action_toInbox2"
         android:showAsAction="always"
-        android:title="@string/inbox" 
-        android:onClick="toInbox"
-        android:icon="@drawable/ic_action_collection"/>
-
+        android:title="@string/folders" 
+        android:icon="@drawable/ic_action_collection">
+        <menu>
+            <item
+        	android:id="@+id/action_toInbox"
+        	android:showAsAction="withText"
+        	android:title="@string/inbox" 
+        	android:onClick="toInbox">
+        	</item>
+        	<item
+        	android:id="@+id/action_toSent"
+        	android:showAsAction="withText"
+        	android:title="@string/sent" 
+        	android:onClick="toInbox">
+        	</item>
+        	<item
+        	android:id="@+id/action_toDrafts"
+        	android:showAsAction="withText"
+        	android:title="@string/drafts" 
+        	android:onClick="toInbox">
+        	</item>
+         </menu>
+	</item>
 </menu>
