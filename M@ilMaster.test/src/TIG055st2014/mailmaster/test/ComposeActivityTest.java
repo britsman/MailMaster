@@ -30,6 +30,7 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 		super(ComposeActivity.class);
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
 		d = DisplayEmail.getInstance();
+		d.setFolderName("INBOX");
 		Message m = mf.getInbox().get(0);
 		d.setEmail(m);
 		d.setReply(mf.getReply(m));
