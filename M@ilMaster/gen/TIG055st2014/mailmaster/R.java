@@ -35,15 +35,20 @@ public final class R {
     public static final class id {
         public static final int account_list=0x7f080002;
         public static final int account_text=0x7f080001;
-        public static final int action_attach_file=0x7f08002a;
-        public static final int action_reply=0x7f08002e;
-        public static final int action_settings=0x7f080029;
-        public static final int action_toAddAccount=0x7f080027;
-        public static final int action_toCompose=0x7f08002c;
-        public static final int action_toInbox=0x7f080028;
-        public static final int action_toSettings=0x7f08002b;
+        public static final int action_attach_file=0x7f08002d;
+        public static final int action_drafts=0x7f080031;
+        public static final int action_inbox=0x7f08002f;
+        public static final int action_reply=0x7f080034;
+        public static final int action_sent=0x7f080030;
+        public static final int action_settings=0x7f08002c;
+        public static final int action_toAddAccount=0x7f080028;
+        public static final int action_toCompose=0x7f080032;
+        public static final int action_toDrafts=0x7f08002b;
+        public static final int action_toInbox=0x7f080029;
+        public static final int action_toSent=0x7f08002a;
+        public static final int action_toSettings=0x7f08002e;
         public static final int attachment_list=0x7f080006;
-        public static final int attachments_text=0x7f080025;
+        public static final int attachments_text=0x7f080026;
         public static final int bcc=0x7f08000d;
         public static final int bccAccs=0x7f08000e;
         public static final int bccAccsReply=0x7f08001d;
@@ -56,11 +61,12 @@ public final class R {
         public static final int ccAccsReply=0x7f08001b;
         public static final int ccReply=0x7f08001a;
         public static final int delete_button=0x7f080000;
-        public static final int deleteattachment_button=0x7f080024;
+        public static final int deleteattachment_button=0x7f080025;
         public static final int display=0x7f080023;
         public static final int email=0x7f080003;
-        public static final int email_preview=0x7f080026;
-        public static final int get_attachments=0x7f08002d;
+        public static final int email_preview=0x7f080027;
+        public static final int get_attachments=0x7f080033;
+        public static final int imageView1=0x7f080024;
         public static final int inbox_list=0x7f080015;
         public static final int message=0x7f080011;
         public static final int messageReply=0x7f08001f;
@@ -90,9 +96,10 @@ public final class R {
         public static final int activity_inbox=0x7f030005;
         public static final int activity_reply=0x7f030006;
         public static final int activity_show_email=0x7f030007;
-        public static final int attachments_item=0x7f030008;
-        public static final int email_item=0x7f030009;
-        public static final int listview_attachments=0x7f03000a;
+        public static final int activity_showimage=0x7f030008;
+        public static final int attachments_item=0x7f030009;
+        public static final int email_item=0x7f03000a;
+        public static final int listview_attachments=0x7f03000b;
     }
     public static final class menu {
         public static final int account_settings=0x7f070000;
@@ -107,28 +114,31 @@ public final class R {
         public static final int action_settings=0x7f050002;
         public static final int add_acc=0x7f050007;
         public static final int app_name=0x7f050000;
-        public static final int attach=0x7f050015;
-        public static final int bcc=0x7f050011;
-        public static final int cc=0x7f050010;
-        public static final int compose=0x7f050014;
+        public static final int attach=0x7f050017;
+        public static final int bcc=0x7f050013;
+        public static final int cc=0x7f050012;
+        public static final int compose=0x7f050016;
+        public static final int drafts=0x7f05000c;
         public static final int email=0x7f050008;
-        public static final int get_attach=0x7f050016;
+        public static final int folders=0x7f05001c;
+        public static final int get_attach=0x7f050018;
         public static final int hello_world=0x7f050004;
         public static final int inbox=0x7f05000a;
-        public static final int message=0x7f050013;
+        public static final int message=0x7f050015;
         public static final int password=0x7f050009;
-        public static final int receiver=0x7f05000f;
-        public static final int send=0x7f05000b;
-        public static final int sender=0x7f05000e;
-        public static final int settings=0x7f05000c;
-        public static final int subject=0x7f050012;
+        public static final int receiver=0x7f050011;
+        public static final int send=0x7f05000d;
+        public static final int sender=0x7f050010;
+        public static final int sent=0x7f05000b;
+        public static final int settings=0x7f05000e;
+        public static final int subject=0x7f050014;
         public static final int title_activity_account_picker=0x7f050006;
-        public static final int title_activity_attachments=0x7f050019;
-        public static final int title_activity_compose=0x7f05000d;
+        public static final int title_activity_attachments=0x7f05001b;
+        public static final int title_activity_compose=0x7f05000f;
         public static final int title_activity_login=0x7f050005;
         public static final int title_activity_mail_sender=0x7f050001;
-        public static final int title_activity_reply=0x7f050018;
-        public static final int title_activity_show_email=0x7f050017;
+        public static final int title_activity_reply=0x7f05001a;
+        public static final int title_activity_show_email=0x7f050019;
     }
     public static final class style {
         /** 

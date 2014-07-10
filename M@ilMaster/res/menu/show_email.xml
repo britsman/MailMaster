@@ -4,12 +4,14 @@
         android:id="@+id/get_attachments"
         android:showAsAction="always"
         android:title="@string/get_attach" 
+        android:onClick="onOptionsItemSelected"
         android:icon="@drawable/ic_action_attach"/>
     
      <item
         android:id="@+id/action_reply"
         android:showAsAction="always"
         android:title="@string/action_reply"
+          android:onClick="onOptionsItemSelected"
         android:icon="@drawable/ic_action_new_email"/>
 
 </menu>
