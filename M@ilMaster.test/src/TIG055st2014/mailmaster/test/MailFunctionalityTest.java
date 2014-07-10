@@ -53,4 +53,6 @@ public class MailFunctionalityTest extends TestCase {
 			assertTrue(false); //This should never be reached if code is working.
 		}
 	}
+	
+	
 }
