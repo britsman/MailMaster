@@ -23,8 +23,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log; 
+import android.view.Gravity;
+import android.widget.Toast;
+
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +53,7 @@ public class MailFunctionality extends Authenticator {
         this.user = user;   
         this.password = password;  
         Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
+        DisplayEmail d = DisplayEmail.getInstance();
         try{
         Properties props = new Properties();   
           
@@ -56,6 +63,8 @@ public class MailFunctionality extends Authenticator {
         props.setProperty("mail.imaps.auth.gssapi.disable", "true");
         props.setProperty("mail.imaps.ssl.enable", "true");  
         props.setProperty("mail.imaps.starttls.enable", "true");
+        props.setProperty("mail.imaps.connectionpoolsize", "10");
+    	props.setProperty("mail.imaps.partialfetch", "false");
         
         if(!type.equalsIgnoreCase("gmail.com")){ //Use TLS security and port 587
         	if(type.equalsIgnoreCase("student.gu.se")){
@@ -66,6 +75,12 @@ public class MailFunctionality extends Authenticator {
         	else{
         		props.setProperty("mail.host", "smtp.live.com");
         		imapHost = "imap-mail.outlook.com";
+        		if(d.getFolderName().equalsIgnoreCase("[Gmail]/Sent Mail")){
+        			d.setFolderName("Sent");
+        		}
+        		else if(d.getFolderName().equalsIgnoreCase("[Gmail]/Drafts")){
+        			d.setFolderName("Drafts");
+        		}
         	}
         	sendProtocol = "smtp";
         	props.setProperty("mail.transport.protocol", sendProtocol);
@@ -83,7 +98,7 @@ public class MailFunctionality extends Authenticator {
             props.setProperty("mail.smtps.auth", "true");   
             props.setProperty("mail.smtps.port", port); 
         }
-        
+        props.setProperty("mail.imaps.ssl.trust", imapHost);
         // There is something wrong with MailCap, javamail can not find a handler for the multipart/mixed part, 
         //so this bit needs to be added. 
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
@@ -107,10 +122,10 @@ public class MailFunctionality extends Authenticator {
     }   
 
     public void sendMail(String subject, String body, String sender, String recipients, 
-    		             String cc, String bcc, ArrayList<String> attachments) {   
+    		             String cc, String bcc, ArrayList<String> attachments, Context context) {   
         try{
         	Log.d("MailFunctionality", "Send");
-        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments);
+        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments, context);
         	task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
@@ -121,9 +136,11 @@ public class MailFunctionality extends Authenticator {
     	
     	private String sb, bd, sd , rcp, cc, bcc;
     	private ArrayList<String> atch;
+    	private boolean sent;
+    	private Context c;
     	
     	private SendTask(String subject, String body, String sender, String recipients, 
-    					 String _cc, String _bcc,ArrayList<String> attachments){
+    					 String _cc, String _bcc,ArrayList<String> attachments, Context context){
     		sb = subject;
     		bd = body;
     		sd = sender;
@@ -131,6 +148,8 @@ public class MailFunctionality extends Authenticator {
     		cc = _cc;
     	    bcc = _bcc;
     		atch = attachments;
+    		c = context;
+    		sent = false;
     	}
     	
     	@Override
@@ -162,6 +181,7 @@ public class MailFunctionality extends Authenticator {
 	    		t.connect(user, password);
 	    		t.sendMessage(message, message.getAllRecipients());
 	    		t.close();
+	    		sent = true;
     		}
     		catch(Exception e){
     			e.printStackTrace();
@@ -176,6 +196,23 @@ public class MailFunctionality extends Authenticator {
 	        else{  
 	            msg.setRecipient(type, new InternetAddress(adresses));   
 	        }
+    	}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(sent){
+				Toast toast = Toast.makeText(c,
+            			"Send successful! (if email was close to max size, this may appear " +
+            			"minutes after pressing send).", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    		else{//Need to save draft.
+				Toast toast = Toast.makeText(c,
+            			"Send failed, one or more supplied adresses contain illegal characters " +
+            			"(email has been saved as draft).", Toast.LENGTH_LONG);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
     	}
     }
 	private void addAttachment(String filePath){
@@ -257,7 +294,7 @@ public class MailFunctionality extends Authenticator {
 			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
 			    	d.getEmailFolder().close(false);
 			    }
-			    Folder inbox = store.getFolder("INBOX");
+			    Folder inbox = store.getFolder(d.getFolderName());
 			    d.setEmailFolder(inbox);
 			    inbox.open(Folder.READ_WRITE);
 			    int limit = 19;
@@ -320,11 +357,6 @@ public class MailFunctionality extends Authenticator {
 				ex.printStackTrace();
 			}
 			try {
-				if(d.getEmail().getFlags().contains(Flag.SEEN)){
-					//d.getEmailFolder().setFlags(new Message[] {d.getEmail()}, new Flags(Flags.Flag.SEEN), true);
-					//d.getEmail().setFlag(Flag.SEEN, true);
-					//d.getEmail().saveChanges();
-				}
 				if(d.getEmail().isMimeType("text/*")){
 					plainContents = d.getEmail().getContent().toString();
 				}

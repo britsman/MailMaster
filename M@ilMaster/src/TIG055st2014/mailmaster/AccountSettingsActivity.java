@@ -62,6 +62,17 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
     }
     public void toInbox(MenuItem m){
+        int id = m.getItemId();
+        DisplayEmail d = DisplayEmail.getInstance();
+        if (id == R.id.action_toInbox) {
+        	d.setFolderName("INBOX");
+        }
+        else if (id == R.id.action_toSent) {
+        	d.setFolderName("[Gmail]/Sent Mail");
+        }
+        else{
+        	d.setFolderName("[Gmail]/Drafts");
+        }
     	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
     }
     /**

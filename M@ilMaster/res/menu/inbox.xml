@@ -7,6 +7,32 @@
         android:onClick="onClickSettings"
         android:icon="@drawable/ic_action_settings"/>
     
+        <item
+        android:showAsAction="always"
+        android:title="@string/folders" 
+        android:icon="@drawable/ic_action_collection">
+        <menu>
+            <item
+        	android:id="@+id/action_inbox"
+        	android:showAsAction="withText"
+        	android:title="@string/inbox" 
+        	android:onClick="changeFolder">
+        	</item>
+        	<item
+        	android:id="@+id/action_sent"
+        	android:showAsAction="withText"
+        	android:title="@string/sent" 
+        	android:onClick="changeFolder">
+        	</item>
+        	<item
+        	android:id="@+id/action_drafts"
+        	android:showAsAction="withText"
+        	android:title="@string/drafts" 
+        	android:onClick="changeFolder">
+        	</item>
+         </menu>
+	</item>
+    
     <item
         android:id="@+id/action_toCompose"
         android:showAsAction="always"

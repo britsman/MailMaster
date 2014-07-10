@@ -11,7 +11,9 @@
     <string name="add_acc">Add Account</string>
     <string name="email">Email...</string>
     <string name="password">Password...</string>
-    <string name="inbox">Inbox...</string>
+    <string name="inbox">Inbox</string>
+    <string name="sent">Sent</string>
+    <string name="drafts">Drafts</string>
     <string name="send">Send</string>
     <string name="settings">Account Settings</string>
     <string name="title_activity_compose">ComposeActivity</string>
@@ -27,5 +29,6 @@
     <string name="title_activity_show_email">ShowEmailActivity</string>
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_attachments">AttachmentsActivity</string>
+    <string name="folders">Choose Folder...</string>
 
 </resources>
