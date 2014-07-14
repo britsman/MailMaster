@@ -1,5 +1,6 @@
 package TIG055st2014.mailmaster;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,13 +22,15 @@ public class AccountAdapter extends ArrayAdapter<String> {
     private SharedPreferences accounts;
     private SharedPreferences.Editor accEdit;
     private ArrayList<String> names;
+    private Activity act;
 
-    public AccountAdapter(Context c, int r, int tv, ArrayList<String> l) {
+    public AccountAdapter(Context c, int r, int tv, ArrayList<String> l, Activity a) {
         super(c,r,tv,l);
         this.context = c;
         this.names = l;
         accounts = c.getSharedPreferences("StoredAccounts", c.MODE_PRIVATE);
         accEdit = accounts.edit();
+        act = a;
     }
 
     @Override
@@ -63,6 +66,7 @@ public class AccountAdapter extends ArrayAdapter<String> {
                 	}
                 	else{
                 		accEdit.remove("default");
+                		act.invalidateOptionsMenu();
                 	}
                 }
                 accEdit.commit();

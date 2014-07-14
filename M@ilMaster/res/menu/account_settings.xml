@@ -8,6 +8,7 @@
         android:icon="@drawable/ic_action_add_person"/>
     
     <item
+        android:id="@+id/action_folder"
         android:showAsAction="always"
         android:title="@string/folders" 
         android:icon="@drawable/ic_action_collection">

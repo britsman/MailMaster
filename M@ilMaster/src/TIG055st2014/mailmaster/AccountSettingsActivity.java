@@ -43,10 +43,10 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
         listView.setClickable(true);
         listView.setOnItemClickListener(this);
         listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
-                R.id.account_text, columns));
+                R.id.account_text, columns, this));
     }
     /**
-* Overriden method used to change the default sending account.
+* Overridden method used to change the default sending account.
 */
     @Override
     public void onItemClick(AdapterView<?> parent, View newDef, int position, long id) {
@@ -55,7 +55,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     		accEdit.putString("default", columns.get(position));
     		accEdit.commit();
     		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
-                    R.id.account_text, columns));
+                    R.id.account_text, columns, this));
     	}
     }
     public void toAdd(MenuItem m){
@@ -86,6 +86,15 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.account_settings, menu);
+        MenuItem folder = menu.findItem(R.id.action_folder);
+		if(columns.size() == 0){
+            folder.setEnabled(false);
+            folder.setVisible(false);
+		}
+		else{
+            folder.setEnabled(true);
+            folder.setVisible(true);
+		}
         return true;
     }
 }
