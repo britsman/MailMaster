@@ -47,8 +47,8 @@ public class ComposeActivity extends FragmentActivity {
 	private static final int PICK_FROM_GALLERY = 101;
 	String file_path;
 	int columnIndex;
-	public double kilobytes;
-	private double total;
+	public float kilobytes;
+	private float total;
 	public ListView listView;
 	ArrayList<String> attachments;
 	private SharedPreferences sizePref;
@@ -186,13 +186,13 @@ public class ComposeActivity extends FragmentActivity {
 
 				// calculating the file size
 				File file = new File(file_path);
-				double bytes = file.length();
+				float bytes = file.length();
 				kilobytes = bytes/1024 ;
 
-				total = (double)sizePref.getFloat("Total", (float)0.0);
+				total = sizePref.getFloat("Total", (float)0.0);
 				total += kilobytes;
-				sizeEdit.putFloat("Total", (float)total);
-				sizeEdit.putFloat(file_path, (float)kilobytes);
+				sizeEdit.putFloat("Total", total);
+				sizeEdit.putFloat(file_path, kilobytes);
 				sizeEdit.commit();
 				TextView result;
 				if(d.getIsReply()){
@@ -229,7 +229,7 @@ public class ComposeActivity extends FragmentActivity {
 				PICK_FROM_GALLERY);
 	}	
 	public void onClickSend(View v){
-		total = (double)sizePref.getFloat("Total", (float)0.0);
+		total = sizePref.getFloat("Total", (float)0.0);
 		if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
 			Toast toast = Toast.makeText(getApplicationContext(),
 					"Could not send, files are too big to attach!", Toast.LENGTH_SHORT);

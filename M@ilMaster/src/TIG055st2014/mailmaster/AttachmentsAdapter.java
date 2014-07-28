@@ -18,10 +18,10 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 
 	private ArrayList<String> attach;
 	private Context context;
-	private double Total;
-	 private SharedPreferences sizePref;
-	 private SharedPreferences.Editor sizeEdit;
-	 private TextView text; 
+	private float total;
+	private SharedPreferences sizePref;
+	private SharedPreferences.Editor sizeEdit;
+	private TextView text; 
 
 	public AttachmentsAdapter(Context applicationContext, int attachmentsItem,
 			int attachmentsText, ArrayList<String> attachments, TextView t) {
@@ -31,7 +31,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
         text=t;
 		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
         sizeEdit = sizePref.edit();
-        Total= sizePref.getFloat("Total", (float) 0.0);
+        total= sizePref.getFloat("Total", (float) 0.0);
         
 		
 	}
@@ -47,7 +47,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		ComposeActivity com = new ComposeActivity();
 		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
 
-		if (Total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
+		if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
 			convertView.setBackgroundColor(Color.RED);
 			text.setTextColor(Color.RED);
 		} else {
@@ -70,15 +70,18 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				attach.remove(position);
 				sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
 		        sizeEdit = sizePref.edit();
-		        Total = (double)sizePref.getFloat("Total", (float)0.0) - (double)sizePref.getFloat(a, (float)0.0);
-				if (Total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
+		        total = sizePref.getFloat("Total", (float)0.0) - sizePref.getFloat(a, (float)0.0);
+				if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
 					text.setTextColor(Color.RED);
 				} 
 				else {
 					text.setTextColor(Color.BLACK);
 				}
-		        text.setText("Total size: " +Total + " KB");
-		        sizeEdit.putFloat("Total", (float) Total);
+				if(total < 1){//Solves a bug where sometimes total goes below zero after all attachments are deleted.
+					total = (float) 0.0;
+				}
+		        text.setText("Total size: " +total + " KB");
+		        sizeEdit.putFloat("Total", total);
 		        sizeEdit.remove(a);
 		        sizeEdit.commit();
 				remove(a);
@@ -86,10 +89,5 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 
 		});
 		return (convertView);
-	}
-
-	private double Double(CharSequence text) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }
