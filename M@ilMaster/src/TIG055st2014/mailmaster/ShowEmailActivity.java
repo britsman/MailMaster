@@ -19,6 +19,7 @@ public class ShowEmailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_email);
+		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");

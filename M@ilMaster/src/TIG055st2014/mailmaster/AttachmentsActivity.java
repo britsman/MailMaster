@@ -19,6 +19,7 @@ public class AttachmentsActivity extends Activity implements AdapterView.OnItemC
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attachments);
+		getActionBar().setDisplayShowHomeEnabled(false);
 		DisplayEmail d = DisplayEmail.getInstance(); 
 		fileNames = d.getAttachments();
 		if(fileNames.size() == 0){

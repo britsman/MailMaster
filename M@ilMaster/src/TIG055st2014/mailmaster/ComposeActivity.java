@@ -59,6 +59,7 @@ public class ComposeActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DisplayEmail d = DisplayEmail.getInstance();
+		getActionBar().setDisplayShowHomeEnabled(false);
 		save = false;
 		if(d.getIsReply()){
 			setContentView(R.layout.listview_attachments);
@@ -90,6 +91,7 @@ public class ComposeActivity extends FragmentActivity {
 		TextView result;
 
 		if(d.getIsReply()){
+			getActionBar().setTitle(R.string.composing_rp);
 			result = (TextView) findViewById(R.id.totalsizeReply);
 			sender = (TextView) findViewById(R.id.sendAccReply);
 			sender.setText(defaultAcc);
@@ -122,6 +124,7 @@ public class ComposeActivity extends FragmentActivity {
 			}
 		}
 		else{
+			getActionBar().setTitle(R.string.composing);
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
 			sender.setText(defaultAcc);

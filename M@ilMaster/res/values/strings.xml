@@ -9,6 +9,7 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_account_picker">AccountPickerActivity</string>
     <string name="add_acc">Add Account</string>
+    <string name="add_email">Add an email adress...</string>
     <string name="email">Email...</string>
     <string name="password">Password...</string>
     <string name="inbox">Inbox</string>
@@ -24,7 +25,10 @@
     <string name="subject">Subject:</string>
     <string name="message">Message:</string>
     <string name="compose">Compose Email...</string>
+    <string name="composing">Composing email...</string>
+    <string name="composing_rp">Composing reply...</string>
     <string name="attach">Attach File...</string>
+    <string name="attached">Attached files...</string>
     <string name="get_attach">Get attachments</string>
     <string name="title_activity_show_email">ShowEmailActivity</string>
     <string name="title_activity_reply">ReplyActivity</string>
@@ -34,5 +38,6 @@
     <string name="msSent">Sent</string>
     <string name="gmailDrafts">[Gmail]/Drafts</string>
     <string name="gmailSent">[Gmail]/Sent Mail</string>
+    <string name="choose_acc">Select account...</string>
 
 </resources>

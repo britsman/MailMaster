@@ -26,6 +26,7 @@ public class AddAccountActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_account);
+        getActionBar().setDisplayShowHomeEnabled(false);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         accEdit = accounts.edit();
     }

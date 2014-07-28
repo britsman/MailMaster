@@ -27,6 +27,7 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
+    	getActionBar().setDisplayShowHomeEnabled(false);
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
@@ -46,6 +47,20 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
 	        listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
 	                R.id.email_preview, emails));
         }
+    }
+    @Override
+    public void onStart(){
+    	super.onStart();
+    	DisplayEmail d = DisplayEmail.getInstance();
+    	if(d.getFolderName().contains("Drafts")){
+    		getActionBar().setTitle(R.string.drafts);
+    	}
+    	else if(d.getFolderName().contains("Sent")){
+    		getActionBar().setTitle(R.string.sent);
+    	}
+    	else{
+    		getActionBar().setTitle(R.string.inbox);
+    	}
     }
     public void onClickCompose(MenuItem m) {
     	DisplayEmail d = DisplayEmail.getInstance();
@@ -86,12 +101,15 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         DisplayEmail d = DisplayEmail.getInstance();
         if (id == R.id.action_inbox) {
         	d.setFolderName("INBOX");
+        	getActionBar().setTitle(R.string.inbox);       	
         }
         else if (id == R.id.action_sent) {
         	d.setFolderName("[Gmail]/Sent Mail");
+        	getActionBar().setTitle(R.string.sent);
         }
         else{
         	d.setFolderName("[Gmail]/Drafts");
+        	getActionBar().setTitle(R.string.drafts);
         }
 		MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 		emails = mf.getInbox(); 

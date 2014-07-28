@@ -31,6 +31,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
+        getActionBar().setDisplayShowHomeEnabled(false);
         columns = new ArrayList<String>();
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         accEdit = accounts.edit();
