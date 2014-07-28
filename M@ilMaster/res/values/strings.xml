@@ -30,5 +30,9 @@
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_attachments">AttachmentsActivity</string>
     <string name="folders">Choose Folder...</string>
+    <string name="msDrafts">Drafts</string>
+    <string name="msSent">Sent</string>
+    <string name="gmailDrafts">[Gmail]/Drafts</string>
+    <string name="gmailSent">[Gmail]/Sent Mail</string>
 
 </resources>

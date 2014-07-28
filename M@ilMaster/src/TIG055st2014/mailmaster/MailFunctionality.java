@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log; 
 import android.view.Gravity;
+import android.webkit.WebView.FindListener;
 import android.widget.Toast;
 
 import java.security.Security;   
@@ -39,6 +40,7 @@ import java.util.Properties;
 public class MailFunctionality extends Authenticator {
     private String user;   
     private String password;   
+    private String type; 
     private Session session;   
     private String port; 
     private String imapHost;  
@@ -52,6 +54,7 @@ public class MailFunctionality extends Authenticator {
     public MailFunctionality(String user, String password, String type) {   
         this.user = user;   
         this.password = password;  
+        this.type = type;
         Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
         DisplayEmail d = DisplayEmail.getInstance();
         try{
@@ -198,12 +201,13 @@ public class MailFunctionality extends Authenticator {
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             	toast.show();
     		}
-    		else{//Need to save draft.
+    		else{//Need to save draft since send failed.
+    			saveDraft(sb, bd, sd, rcp, cc, bcc, c);
 				Toast toast = Toast.makeText(c,
             			"Send failed, one or more supplied adresses contain illegal characters " +
             			"(email has been saved as draft).", Toast.LENGTH_LONG);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            	toast.show();
+            	toast.show();      
     		}
     	}
     }
@@ -292,6 +296,7 @@ public class MailFunctionality extends Authenticator {
 				}
 			    Store store = session.getStore("imaps");
 			    store.connect(imapHost, user, password);
+			    d.setStore(store);
 			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
 			    	d.getEmailFolder().close(false);
 			    }
@@ -435,9 +440,9 @@ public class MailFunctionality extends Authenticator {
 		}   	
     }
     public void saveDraft(String subject, String body, String sender, String recipients, 
-            String cc, String bcc, ArrayList<String> attachments, Context context) {   
+            String cc, String bcc, Context context) {   
     	try{
-    		DraftTask task = new DraftTask(user, password, subject,body,sender,recipients, cc, bcc, attachments, context);
+    		DraftTask task = new DraftTask(user, password, subject,body,sender,recipients, cc, bcc, context);
     		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     	}
 			catch (Exception e) {
@@ -452,7 +457,7 @@ public class MailFunctionality extends Authenticator {
     	private Context c;
     	
     	private DraftTask(String u, String p, String subject, String body, String sender, String recipients, 
-		 String _cc, String _bcc,ArrayList<String> attachments, Context context){
+		 String _cc, String _bcc, Context context){
     		sb = subject;
     		bd = body;
     		sd = sender;
@@ -468,17 +473,15 @@ public class MailFunctionality extends Authenticator {
     	@Override
     	protected Void doInBackground(Void... arg0) {
 			try {
-				DisplayEmail d = DisplayEmail.getInstance();
-				if(d.getStore()!=null && d.getStore().isConnected()){
-					d.getStore().close();
-				}
+				Folder drafts;
 			    Store store = session.getStore("imaps");
 			    store.connect(imapHost, user, password);
-			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
-			    	d.getEmailFolder().close(false);
-			    }
-			    Folder drafts = store.getFolder(d.getFolderName());
-			    d.setEmailFolder(drafts);
+    			if(!type.equalsIgnoreCase("gmail.com") && !type.equalsIgnoreCase("student.gu.se")){
+    				drafts = store.getFolder(c.getResources().getString(R.string.msDrafts));
+    			}
+    			else{
+    				drafts = store.getFolder(c.getResources().getString(R.string.gmailDrafts));
+    			}
 			    drafts.open(Folder.READ_WRITE);
     	        MimeMessage message = new MimeMessage(session); 
     	        message.setFrom(new InternetAddress(sd));
@@ -512,7 +515,7 @@ public class MailFunctionality extends Authenticator {
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             	toast.show();
     		}
-    		else{//Need to save draft.
+    		else{
 				Toast toast = Toast.makeText(c,
             			"Failed to save draft.", Toast.LENGTH_SHORT);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);

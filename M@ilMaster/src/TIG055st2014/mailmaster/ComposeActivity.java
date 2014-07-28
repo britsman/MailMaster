@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,7 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ComposeActivity extends Activity {
+public class ComposeActivity extends FragmentActivity {
 
 	private SharedPreferences accounts;
 	private String defaultAcc;
@@ -52,11 +53,13 @@ public class ComposeActivity extends Activity {
 	ArrayList<String> attachments;
 	private SharedPreferences sizePref;
 	private SharedPreferences.Editor sizeEdit;
+	protected boolean save;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DisplayEmail d = DisplayEmail.getInstance();
+		save = false;
 		if(d.getIsReply()){
 			setContentView(R.layout.listview_attachments);
 			listView = (ListView) findViewById(R.id.attachment_list);
@@ -275,33 +278,36 @@ public class ComposeActivity extends Activity {
 	}
     @Override
     public void onBackPressed() {
-
-		String recipients,cc,bcc,subject,body;
-		DisplayEmail d = DisplayEmail.getInstance();
-		d.setFolderName("[Gmail]/Drafts");
-		if(d.getIsReply()){
-			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
-			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
-			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
-			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
-			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
-		}
-		else{
-			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
-			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
-			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
-			body = ((EditText) findViewById(R.id.body)).getText().toString();
-		}
-		if(!recipients.equals("") || !subject.equals("") || !body.equals("") || !cc.equals("") || !bcc.equals("")){
-			try {   
-				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-				mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext());  
-				startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
-			} 
-			catch (Exception e) {    
-				e.printStackTrace();
-			}
-		} 
+    	new SaveDraftFragment().show(getSupportFragmentManager(), "SaveDraft");
+    }
+    public void dialogResult(){
+    	if(save){
+    		String recipients,cc,bcc,subject,body;
+    		DisplayEmail d = DisplayEmail.getInstance();
+    		if(d.getIsReply()){
+    			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+    			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+    			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+    			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+    			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
+    		}
+    		else{
+    			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+    			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+    			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
+    			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
+    			body = ((EditText) findViewById(R.id.body)).getText().toString();
+    		}
+    		if(!recipients.equals("") || !subject.equals("") || !body.equals("") || !cc.equals("") || !bcc.equals("")){
+    			try {   
+    				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+    				mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, getApplicationContext());  
+    			} 
+    			catch (Exception e) {    
+    				e.printStackTrace();
+    			}
+    		} 
+    	}
+    	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
     }
 }
