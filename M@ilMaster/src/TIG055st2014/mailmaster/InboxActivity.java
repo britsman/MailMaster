@@ -20,8 +20,8 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     public SharedPreferences accounts;
     private String defaultAcc;
     private String pw;
-    private ListView listView;
-    private ArrayList<Message> emails;
+    protected ListView listView;
+    protected ArrayList<Message> emails;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,12 +40,10 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         		d.setFolderName("INBOX");
         	}
 			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-			emails = mf.getInbox(); 
 	        listView = (ListView) findViewById(R.id.inbox_list);
 	        listView.setClickable(true);
 	        listView.setOnItemClickListener(this);
-	        listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
-	                R.id.email_preview, emails));
+	        mf.getInbox(this);
         }
     }
     @Override
@@ -112,8 +110,6 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         	getActionBar().setTitle(R.string.drafts);
         }
 		MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-		emails = mf.getInbox(); 
-        listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
-                R.id.email_preview, emails));
+		mf.getInbox(this);
     }
 }

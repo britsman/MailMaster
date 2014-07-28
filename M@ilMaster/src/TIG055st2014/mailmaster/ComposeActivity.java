@@ -136,9 +136,8 @@ public class ComposeActivity extends FragmentActivity {
 				EditText cc = ((EditText) findViewById(R.id.ccAccs));
 				EditText bcc = ((EditText) findViewById(R.id.bccAccs));
 				EditText subject = ((EditText) findViewById(R.id.subject));
-				EditText body = ((EditText) findViewById(R.id.body));
 				subject.setText(d.getEmail().getSubject().toString());
-				body.setText(mf.getContents());
+				mf.getContents(this);
 				addAddresses(d.getEmail().getRecipients(Message.RecipientType.TO), recipients);
 				addAddresses(d.getEmail().getRecipients(Message.RecipientType.CC), cc);
 				addAddresses(d.getEmail().getRecipients(Message.RecipientType.BCC), bcc);
@@ -256,7 +255,7 @@ public class ComposeActivity extends FragmentActivity {
 			if(!recipients.equals("") && !subject.equals("") && !body.equals("")){
 				try {   
 					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext());  
+					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext(), this);  
 					startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
 				} 
 				catch (Exception e) {    
@@ -304,7 +303,7 @@ public class ComposeActivity extends FragmentActivity {
     		if(!recipients.equals("") || !subject.equals("") || !body.equals("") || !cc.equals("") || !bcc.equals("")){
     			try {   
     				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-    				mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, getApplicationContext());  
+    				mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, getApplicationContext(), this);  
     			} 
     			catch (Exception e) {    
     				e.printStackTrace();

@@ -56,20 +56,7 @@ public class AddAccountActivity extends Activity {
             	pieces[1].equalsIgnoreCase("student.gu.se"))) {
             	
             		MailFunctionality mf = new MailFunctionality(email, pw, pieces[1]);
-            		if(mf.validate()){
-            			//Account remembered even if app is force stopped.
-            			accEdit.putString(email, pw);
-            			accEdit.putString("default", email);
-            			accEdit.commit();
-            			startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
-            		}
-            		else{
-            			//Invalid email account (will also trigger if no internet connection).
-            			Toast toast = Toast.makeText(getApplicationContext(),
-            					"Wrong password or inexistant account.", Toast.LENGTH_SHORT);
-            			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            			toast.show();
-            		}
+            		mf.validate(this);
             }
             else{
                 //Unsupported Email.

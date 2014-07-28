@@ -24,12 +24,14 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log; 
 import android.view.Gravity;
 import android.webkit.WebView.FindListener;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.security.Security;   
@@ -125,10 +127,10 @@ public class MailFunctionality extends Authenticator {
     }   
 
     public void sendMail(String subject, String body, String sender, String recipients, 
-    		             String cc, String bcc, ArrayList<String> attachments, Context context) {   
+    		             String cc, String bcc, ArrayList<String> attachments, Context context, ComposeActivity a) {   
         try{
         	Log.d("MailFunctionality", "Send");
-        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments, context);
+        	SendTask task = new SendTask(subject,body,sender,recipients, cc, bcc, attachments, context, a);
         	task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         catch(Exception e){
@@ -141,9 +143,10 @@ public class MailFunctionality extends Authenticator {
     	private ArrayList<String> atch;
     	private boolean sent;
     	private Context c;
+    	private ProgressDialog dialog;
     	
     	private SendTask(String subject, String body, String sender, String recipients, 
-    					 String _cc, String _bcc,ArrayList<String> attachments, Context context){
+    					 String _cc, String _bcc,ArrayList<String> attachments, Context context, ComposeActivity a){
     		sb = subject;
     		bd = body;
     		sd = sender;
@@ -153,8 +156,13 @@ public class MailFunctionality extends Authenticator {
     		atch = attachments;
     		c = context;
     		sent = false;
+    		dialog = new ProgressDialog(a);
     	}
-    	
+    	@Override
+        protected void onPreExecute() {
+            dialog.setMessage("Sending Email...");
+            dialog.show();
+        }
     	@Override
     	protected Void doInBackground(Void... arg0) {
     		try{
@@ -194,6 +202,9 @@ public class MailFunctionality extends Authenticator {
 
     	@Override
     	protected void onPostExecute(Void v){
+    		if (dialog.isShowing()) {
+                dialog.dismiss();
+    		}
     		if(sent){
 				Toast toast = Toast.makeText(c,
             			"Send successful! (if email was close to max size, this may appear " +
@@ -232,63 +243,112 @@ public class MailFunctionality extends Authenticator {
 			e.printStackTrace();
 		}
 	}
-    public boolean validate() {	
+    public void validate(AddAccountActivity a) {	
 		try {
-    			ConnectTest c = new ConnectTest(user,password);
+    			ConnectTest c = new ConnectTest(user,password, a);
     			c.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    			return(c.get());
 			} 
 			catch (Exception e) {
-				return false;
 			}
     }
-    private class ConnectTest extends AsyncTask<Void, Void, Boolean>{
+    private class ConnectTest extends AsyncTask<Void, Void, Void>{
     	
     	private String user, password;
+    	private ProgressDialog dialog;
+    	private AddAccountActivity activity;
+    	private boolean sucess;
     	
-    	private ConnectTest(String u, String p){
+    	private ConnectTest(String u, String p, AddAccountActivity a){
     		user = u;
     		password = p; 
+    		activity = a;
+    		dialog = new ProgressDialog(a);
     	}
-    	
     	@Override
-    	protected Boolean doInBackground(Void... arg0) {
+        protected void onPreExecute() {
+            dialog.setMessage("Validating Account...");
+            dialog.show();
+        }
+    	@Override
+    	protected Void doInBackground(Void... arg0) {
 			try {
 				Transport t = session.getTransport(sendProtocol);
 	    		t.connect(user, password);
 	    		t.close();
-	    		return true;
+	    		sucess = true;
 			} 
 			catch (Exception e) {
 				e.printStackTrace();
-				return false;
+				sucess = false;
 			}
+			return null;
+    	}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(sucess){
+    			//Account remembered even if app is force stopped.
+    			activity.accEdit.putString(user, password);
+    			activity.accEdit.putString("default", user);
+    			activity.accEdit.commit();
+    			Intent i = new Intent("TIG055st2014.mailmaster.AccountSettingsActivity");
+    			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    			activity.getApplicationContext().startActivity(i);
+    		}
+    		else{
+    			//Invalid email account (will also trigger if no internet connection).
+    			Toast toast = Toast.makeText(activity.getApplicationContext(),
+    					"Wrong password or inexistant account.", Toast.LENGTH_SHORT);
+    			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+    			toast.show();
+    		}
+    		if (dialog.isShowing()) {
+    			dialog.dismiss();
+    		}
     	}
     }
-    public ArrayList<Message> getInbox() {	
+    public void getInbox(InboxActivity a) {	
 		try {
-    			ReadTask task = new ReadTask(user,password);
+    			ReadTask task = new ReadTask(user,password, a);
     			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     			Log.d("MailFunctionality",  "Reading reached");
-    			return task.get();
 			} 
 			catch (Exception e) {
-				return new ArrayList<Message>();
+				e.printStackTrace();
 			}
     }
     //Partly based on http://www.compiletimeerror.com/2013/06/reading-email-using-javamail-api-example.html
-    private class ReadTask extends AsyncTask<Void, Void, ArrayList<Message>>{
+    private class ReadTask extends AsyncTask<Void, Void, Void>{
     	
     	private String user, password;
+    	private ProgressDialog dialog;
+    	private ArrayList<Message> emails;
+    	InboxActivity activity;
     	
-    	private ReadTask(String u, String p){
+    	private ReadTask(String u, String p, InboxActivity a){
     		user = u;
     		password = p; 
+    		activity = a;
+    		emails = new ArrayList<Message>();
+    		dialog = new ProgressDialog(a);
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
     	}
-    	
     	@Override
-    	protected ArrayList<Message> doInBackground(Void... arg0) {
-    		ArrayList<Message> emails = new ArrayList<Message>();
+        protected void onPreExecute() {
+    		DisplayEmail d = DisplayEmail.getInstance();
+    		if(d.getFolderName().contains("Drafts")){
+    			dialog.setMessage("Fetching Drafts...");
+    		}
+    		else if(d.getFolderName().contains("Sent")){
+    			dialog.setMessage("Fetching Sent Emails...");
+    		}
+    		else{
+    			dialog.setMessage("Fetching Inbox...");
+    		}
+            dialog.show();
+        }
+    	@Override
+    	protected Void doInBackground(Void... arg0) {
 			try {
 				DisplayEmail d = DisplayEmail.getInstance();
 				if(d.getStore()!=null && d.getStore().isConnected()){
@@ -318,39 +378,71 @@ public class MailFunctionality extends Authenticator {
 			    inbox.fetch(temp, profile);
 			    Collections.addAll(emails, temp);
 			    Collections.reverse(emails);
-    			return emails;
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				return emails;
 			}
+			return null;
+    	}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		activity.emails = emails;
+    		activity.listView.setAdapter(new EmailAdapter(activity.getApplicationContext(),R.layout.email_item,
+	                R.id.email_preview, emails));
+    		if (dialog.isShowing()) {
+    			dialog.dismiss();
+    		}
     	}
     }
-    public String getContents() {	
+    public void getContents(ShowEmailActivity a) {	
 		try {
-    			ContentsTask ct = new ContentsTask(user,password);
+    			ContentsTask ct = new ContentsTask(user,password, a);
     			ct.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     			Log.d("MailFunctionality",  "Getting contents");
-    			return ct.get();
 			} 
 			catch (Exception e) {
-				return "";
+				e.printStackTrace();
 			}
     }
-    private class ContentsTask extends AsyncTask<Void, Void, String>{
+    public void getContents(ComposeActivity a) {	
+		try {
+    			ContentsTask ct = new ContentsTask(user,password, a);
+    			ct.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    			Log.d("MailFunctionality",  "Getting contents");
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+    }
+    private class ContentsTask extends AsyncTask<Void, Void, Void>{
     	
-    	private String user, password;
+    	private String user, password, plainContents, htmlContents;
+    	private ProgressDialog dialog;
+    	private ShowEmailActivity seAct;
+    	private ComposeActivity cmAct;
     	
-    	private ContentsTask(String u, String p){
+    	private ContentsTask(String u, String p, ShowEmailActivity a){
     		user = u;
     		password = p; 
+    		dialog = new ProgressDialog(a);
+    		seAct = a;
     	}
-    	
+    	private ContentsTask(String u, String p, ComposeActivity a){
+    		user = u;
+    		password = p; 
+    		dialog = new ProgressDialog(a);
+    		cmAct = a;
+    	}
     	@Override
-    	protected String doInBackground(Void... arg0) {
-    		String plainContents = "";
-    		String htmlContents = "";
+        protected void onPreExecute() {
+    		dialog.setMessage("Reading Email Contents...");    		
+            dialog.show();
+        }
+    	@Override
+    	protected Void doInBackground(Void... arg0) {
 			DisplayEmail d = DisplayEmail.getInstance();
+    		plainContents = "";
+    		htmlContents = "";
 			try{
 				if(d.getStore()!=null && !d.getStore().isConnected()){
 					d.getStore().connect(imapHost, user, password);
@@ -383,46 +475,69 @@ public class MailFunctionality extends Authenticator {
 							}
 							catch(Exception exe){
 								exe.printStackTrace();
-						    	return plainContents;
 							}
 						}
 					}
 				}
-				if(htmlContents.equals("")){
-					return plainContents;
-				}
-				else{
-					return htmlContents;
-				}
 			}
 			catch(Exception e){
 				e.printStackTrace();
-		    	return plainContents;
 			}
+			return null;
 		}   	
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(seAct != null){
+    			if(htmlContents.equals("")){
+    				seAct.load(plainContents);
+    			}
+    			else{
+    				seAct.load(htmlContents);
+    			}
+    		}
+    		else{
+				EditText body = ((EditText) cmAct.findViewById(R.id.body));
+    			if(htmlContents.equals("")){
+    				body.setText(plainContents);
+    			}
+    			else{
+    				body.setText(htmlContents);
+    			}
+    		}
+    		if (dialog.isShowing()) {
+    			dialog.dismiss();
+    		}
+    	}
     }
-    public Message getReply(Message m) {	
+    public void getReply(Message m, ShowEmailActivity a) {	
 		try {
-    			ReplyTask rt = new ReplyTask(user,password);
+    			ReplyTask rt = new ReplyTask(user,password, a);
     			rt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, m);
     			Log.d("MailFunctionality",  "Getting default fields for reply");
-    			return rt.get();
 			} 
 			catch (Exception e) {
-				return null;
+				e.printStackTrace();
 			}
     }
-    private class ReplyTask extends AsyncTask<Message, Void, Message>{
+    private class ReplyTask extends AsyncTask<Message, Void, Void>{
     	
     	private String user, password;
+    	private ProgressDialog dialog;
+    	private ShowEmailActivity activity;
     	
-    	private ReplyTask(String u, String p){
+    	private ReplyTask(String u, String p, ShowEmailActivity a){
     		user = u;
     		password = p; 
+    		dialog = new ProgressDialog(a);
+    		activity = a;
     	}
-    	
     	@Override
-    	protected Message doInBackground(Message... m) {
+        protected void onPreExecute() {
+    		dialog.setMessage("Constructing Reply...");    		
+            dialog.show();
+        }
+    	@Override
+    	protected Void doInBackground(Message... m) {
 			try {
 				DisplayEmail d = DisplayEmail.getInstance();
 				if(d.getStore()!=null && !d.getStore().isConnected()){
@@ -431,13 +546,33 @@ public class MailFunctionality extends Authenticator {
 				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
 					d.getEmailFolder().open(Folder.READ_WRITE);
 				}
-				return m[0].reply(true);
+				d.setReply(m[0].reply(true));
+	        	d.setIsReply(true);
 			}
 			catch(Exception e){
 				e.printStackTrace();
-		    	return null;
 			}
-		}   	
+	    	return null;
+		}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		Intent i = new Intent("TIG055st2014.mailmaster.ComposeActivity");
+    		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        	activity.startActivity(i);
+    		if (dialog.isShowing()) {
+    			dialog.dismiss();
+    		}
+    	}
+    }
+    public void saveDraft(String subject, String body, String sender, String recipients, 
+            String cc, String bcc, Context context, ComposeActivity a) {   
+    	try{
+    		DraftTask task = new DraftTask(user, password, subject,body,sender,recipients, cc, bcc, context, a);
+    		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    	}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
     }
     public void saveDraft(String subject, String body, String sender, String recipients, 
             String cc, String bcc, Context context) {   
@@ -455,7 +590,22 @@ public class MailFunctionality extends Authenticator {
     	private String sb, bd, sd , rcp, cc, bcc;
     	private boolean saved;
     	private Context c;
+    	private ProgressDialog dialog;
     	
+    	private DraftTask(String u, String p, String subject, String body, String sender, String recipients, 
+		 String _cc, String _bcc, Context context, ComposeActivity a){
+    		sb = subject;
+    		bd = body;
+    		sd = sender;
+    		rcp = recipients;
+    		cc = _cc;
+    		bcc = _bcc;
+    		c = context;
+    		saved = false;
+    		user = u;
+    		password = p; 
+    		dialog = new ProgressDialog(a);
+    	}
     	private DraftTask(String u, String p, String subject, String body, String sender, String recipients, 
 		 String _cc, String _bcc, Context context){
     		sb = subject;
@@ -469,7 +619,13 @@ public class MailFunctionality extends Authenticator {
     		user = u;
     		password = p; 
     	}
-    	
+    	@Override
+    	protected void onPreExecute() {
+    		if(dialog != null){
+    			dialog.setMessage("Saving Draft...");    		
+    			dialog.show();
+    		}
+    	}
     	@Override
     	protected Void doInBackground(Void... arg0) {
 			try {
@@ -509,6 +665,9 @@ public class MailFunctionality extends Authenticator {
     	}
     	@Override
     	protected void onPostExecute(Void v){
+    		if (dialog != null && dialog.isShowing()) {
+    			dialog.dismiss();
+    		}
     		if(saved){
 				Toast toast = Toast.makeText(c,
             			"Draft Saved.", Toast.LENGTH_SHORT);

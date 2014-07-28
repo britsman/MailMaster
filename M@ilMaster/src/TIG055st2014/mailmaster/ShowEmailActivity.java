@@ -14,6 +14,7 @@ public class ShowEmailActivity extends Activity {
 	private SharedPreferences accounts;
 	private String defaultAcc;
 	private String pw;
+	private WebView wv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +28,20 @@ public class ShowEmailActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		WebView wv = (WebView) findViewById(R.id.display);
+		wv = (WebView) findViewById(R.id.display);
 		wv.getSettings().setBuiltInZoomControls(true);
 		wv.getSettings().setDisplayZoomControls(false);
 		wv.getSettings().setUseWideViewPort(true);
 		try {
 			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-			wv.loadData(mf.getContents(), "text/html", null);
+			mf.getContents(this);
 		} 
 		catch (Exception e) {
 			e.printStackTrace();
 		} 
+	}
+	protected void load(String contents){	
+		wv.loadData(contents, "text/html", null);
 	}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,9 +55,7 @@ public class ShowEmailActivity extends Activity {
         	MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
             DisplayEmail d = DisplayEmail.getInstance();
             try{
-            	d.setReply(mf.getReply(d.getEmail()));
-            	d.setIsReply(true);
-            	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
+            	mf.getReply(d.getEmail(), this);
             }
             catch(Exception e){
             	e.printStackTrace();
