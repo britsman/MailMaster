@@ -43,10 +43,9 @@ public class InboxActivityTest extends ActivityUnitTestCase<InboxActivity> {
 
 			public void run() {
 				String target = "TIG055st2014.mailmaster.ComposeActivity";
-				String adress = "mailmastertesting@gmail.com";
-				MenuItem replyIcon = (MenuItem) activity
+				MenuItem composeIcon = (MenuItem) activity
 						.findViewById(R.id.action_toCompose);
-				activity.onClickCompose(replyIcon);
+				activity.onClickCompose(composeIcon);
 				assertTrue(getStartedActivityIntent().getAction()
 						.equals(target));
 			}
@@ -58,7 +57,6 @@ public class InboxActivityTest extends ActivityUnitTestCase<InboxActivity> {
 
 			public void run() {
 				String target = "TIG055st2014.mailmaster.AccountSettingsActivity";
-				String adress = "mailmastertesting@gmail.com";
 				MenuItem settingIcon = (MenuItem) activity
 						.findViewById(R.id.action_toSettings);
 				activity.onClickSettings(settingIcon);

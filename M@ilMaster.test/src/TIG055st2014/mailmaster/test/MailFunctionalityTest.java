@@ -15,6 +15,8 @@ public class MailFunctionalityTest extends TestCase {
 	@Override
 	public void setUp(){
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
+		DisplayEmail d = DisplayEmail.getInstance();
+		d.setFolderName("INBOX");
 	}
 	public void testValidate(){
 		assertTrue(mf.validate());

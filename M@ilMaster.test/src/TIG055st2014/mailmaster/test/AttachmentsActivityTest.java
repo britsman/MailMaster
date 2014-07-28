@@ -25,6 +25,7 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 	protected void setUp() throws Exception{
 		super.setUp();
 		d = DisplayEmail.getInstance();
+		d.setFolderName("INBOX");
 		activity = getActivity();
 	}
 

@@ -80,7 +80,6 @@ public class AddAccountActivityTest extends ActivityUnitTestCase<AddAccountActiv
 		            pw.setText("mailmaster123");
 		            activity.accEdit.remove(adress);
 		            activity.accEdit.commit();
-		            int prevSize = activity.accounts.getAll().keySet().size();
 		        	add.performClick();
 		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
 		       }
@@ -91,7 +90,6 @@ public class AddAccountActivityTest extends ActivityUnitTestCase<AddAccountActiv
 
 		        public void run() {
 		        	String target = "TIG055st2014.mailmaster.AccountSettingsActivity";
-		        	String adress = "mailmastertesting@gmail.com";
 		        	MenuItem settingsIcon = (MenuItem) activity.findViewById(R.id.action_settings);
 		        	activity.toSettings(settingsIcon);
 		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
