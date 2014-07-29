@@ -206,9 +206,8 @@ public class ComposeActivity extends FragmentActivity {
 	}
 
 	public void openGallery() {
-		Intent intent = new Intent();
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 		intent.setType("image/*");
-		intent.setAction(Intent.ACTION_GET_CONTENT);
 		intent.putExtra("return-data", true);
 		startActivityForResult(
 				Intent.createChooser(intent, "Complete action using"),

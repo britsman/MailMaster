@@ -11,10 +11,12 @@ import javax.activation.FileDataSource;
 import javax.mail.Folder;
 import javax.mail.Message;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -94,6 +96,14 @@ public class AttachmentsActivity extends Activity implements
 				}	
 				fos.close();
 				is.close();
+				//based on http://stackoverflow.com/questions/21258221/how-to-create-an-app-image-folder-to-show-in-android-gallery
+				//needed to get file to appear in gallery app.
+			    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
+			    String mCurrentPhotoPath = "file:" + target.getAbsolutePath(); 
+			    File file = new File(mCurrentPhotoPath);
+			    Uri contentUri = Uri.fromFile(file);
+			    mediaScanIntent.setData(contentUri);
+			    sendBroadcast(mediaScanIntent);
 			}
 			catch(Exception e){
 				e.printStackTrace();

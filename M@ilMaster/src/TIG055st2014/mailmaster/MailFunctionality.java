@@ -460,36 +460,7 @@ public class MailFunctionality extends Authenticator {
 					plainContents = d.getEmail().getContent().toString();
 				}
 				else{
-					MimeMultipart _mp = (MimeMultipart) d.getEmail().getContent();
-					for(int i = 0; i < _mp.getCount(); i++){
-						BodyPart bp = _mp.getBodyPart(i);
-						if(bp.isMimeType("text/html")){
-							htmlContents = bp.getContent().toString();
-						
-						}
-						else if(bp.isMimeType("text/*")){
-							plainContents += bp.getContent().toString() + "\n";
-						
-						}
-						else if(bp.isMimeType("multipart/*")){
-							MimeMultipart _mp1 = (MimeMultipart)bp.getContent();
-							plainContents +=_mp1.getBodyPart(0).getContent().toString()+ "\n";
-						
-						}
-						else{
-							try{
-								Log.d("type", bp.getContentType() );
-								//String [] temp = bp.getDataHandler().getName().split("/");
-								DataSource file = bp.getDataHandler().getDataSource();
-								d.addFile(file);
-								d.addAttachment(bp.getDataHandler().getName());
-								
-							}
-							catch(Exception exe){
-								exe.printStackTrace();
-							}
-						}
-					}
+					parse((MimeMultipart) d.getEmail().getContent());
 				}
 			}
 			catch(Exception e){
@@ -497,6 +468,41 @@ public class MailFunctionality extends Authenticator {
 			}
 			return null;
 		}   	
+    	private void parse(MimeMultipart _mp){
+    		DisplayEmail d = DisplayEmail.getInstance();
+    		try {
+    			for(int i = 0; i < _mp.getCount(); i++){
+    				BodyPart bp = _mp.getBodyPart(i);
+    				if(bp.isMimeType("text/html")){
+    					htmlContents = bp.getContent().toString();
+
+    				}
+    				else if(bp.isMimeType("text/*")){
+    					plainContents += bp.getContent().toString() + "\n";
+
+    				}
+    				else if(bp.isMimeType("multipart/*")){
+    					parse((MimeMultipart)bp.getContent());
+
+    				}
+    				else{
+    					try{
+    						Log.d("type", bp.getContentType() );
+    						DataSource file = bp.getDataHandler().getDataSource();
+    						d.addFile(file);
+    						d.addAttachment(bp.getDataHandler().getName());
+
+    					}
+    					catch(Exception exe){
+    						exe.printStackTrace();
+    					}
+    				}
+    			}
+    		}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+    	}
     	@Override
     	protected void onPostExecute(Void v){
     		if(seAct != null){
