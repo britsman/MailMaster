@@ -1,7 +1,9 @@
 package TIG055st2014.mailmaster;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import javax.activation.DataSource;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Store;
@@ -14,15 +16,22 @@ public class DisplayEmail {
 	private Store store;
 	private boolean isReply;
 	private ArrayList<String> attachments;
+	private ArrayList<DataSource> files; 
 	private String folderName;
 	
 	private DisplayEmail(){
 		attachments = new ArrayList<String>();
+		files = new ArrayList<DataSource>();
+		
 	}
 	
 	public void setEmail(Message m){
-		attachments = new ArrayList<String>();
 		this.email = m;
+		
+	}
+	public void resetLists(){
+		attachments = new ArrayList<String>();
+		files = new ArrayList<DataSource>();
 	}
 	public Message getEmail(){
 		return this.email;
@@ -59,6 +68,13 @@ public class DisplayEmail {
 	}
 	public void addAttachment(String name){
 		this.attachments.add(name);
+	}
+	
+	public void addFile(DataSource file){
+		this.files.add(file);
+	}
+	public ArrayList<DataSource> getFiles(){
+		return this.files;
 	}
 	public ArrayList<String> getAttachments(){
 		return this.attachments;

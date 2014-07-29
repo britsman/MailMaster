@@ -133,6 +133,5 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/send_button"
         android:text="Total size:" />
-     
-
+      
 </RelativeLayout>

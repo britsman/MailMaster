@@ -39,5 +39,6 @@
     <string name="gmailDrafts">[Gmail]/Drafts</string>
     <string name="gmailSent">[Gmail]/Sent Mail</string>
     <string name="choose_acc">Select account...</string>
+    <string name="download">DownloadItem</string>
 
 </resources>

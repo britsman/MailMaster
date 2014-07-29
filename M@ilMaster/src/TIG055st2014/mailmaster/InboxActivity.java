@@ -31,14 +31,14 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
         defaultAcc = accounts.getString("default", "");
         pw = accounts.getString(defaultAcc, "");
+    	DisplayEmail d = DisplayEmail.getInstance();
+    	if(d.getFolderName() == null){//Default to inbox if no other folder has been selected.
+    		d.setFolderName("INBOX");
+    	}
         if(defaultAcc.equals("")){
         	startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
         }
         else{
-        	DisplayEmail d = DisplayEmail.getInstance();
-        	if(d.getFolderName() == null){//Default to inbox if no other folder has been selected.
-        		d.setFolderName("INBOX");
-        	}
 			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 	        listView = (ListView) findViewById(R.id.inbox_list);
 	        listView.setClickable(true);

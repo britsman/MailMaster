@@ -441,6 +441,7 @@ public class MailFunctionality extends Authenticator {
     	@Override
     	protected Void doInBackground(Void... arg0) {
 			DisplayEmail d = DisplayEmail.getInstance();
+			d.resetLists();
     		plainContents = "";
     		htmlContents = "";
 			try{
@@ -464,14 +465,25 @@ public class MailFunctionality extends Authenticator {
 						BodyPart bp = _mp.getBodyPart(i);
 						if(bp.isMimeType("text/html")){
 							htmlContents = bp.getContent().toString();
+						
 						}
-						else if(bp.isMimeType("text/plain")){
+						else if(bp.isMimeType("text/*")){
 							plainContents += bp.getContent().toString() + "\n";
+						
+						}
+						else if(bp.isMimeType("multipart/*")){
+							MimeMultipart _mp1 = (MimeMultipart)bp.getContent();
+							plainContents +=_mp1.getBodyPart(0).getContent().toString()+ "\n";
+						
 						}
 						else{
 							try{
-								String [] temp = bp.getDataHandler().getName().split("/");
-								d.addAttachment(temp[temp.length-1]);
+								Log.d("type", bp.getContentType() );
+								//String [] temp = bp.getDataHandler().getName().split("/");
+								DataSource file = bp.getDataHandler().getDataSource();
+								d.addFile(file);
+								d.addAttachment(bp.getDataHandler().getName());
+								
 							}
 							catch(Exception exe){
 								exe.printStackTrace();
@@ -682,4 +694,4 @@ public class MailFunctionality extends Authenticator {
     		}
     	}
     }
-}  
+}
