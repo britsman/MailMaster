@@ -75,10 +75,10 @@ public class MailFunctionality extends Authenticator {
         	else{
         		props.setProperty("mail.host", "smtp.live.com");
         		imapHost = "imap-mail.outlook.com";
-        		if(d.getFolderName().equalsIgnoreCase("[Gmail]/Sent Mail")){
+        		if(d.getFolderName() != null && d.getFolderName().equalsIgnoreCase("[Gmail]/Sent Mail")){
         			d.setFolderName("Sent");
         		}
-        		else if(d.getFolderName().equalsIgnoreCase("[Gmail]/Drafts")){
+        		else if(d.getFolderName() != null && d.getFolderName().equalsIgnoreCase("[Gmail]/Drafts")){
         			d.setFolderName("Drafts");
         		}
         	}
@@ -188,15 +188,7 @@ public class MailFunctionality extends Authenticator {
     		}
     		return null;
     	}
-    	private void addRecipients(Message msg, String adresses, 
-    			                   Message.RecipientType type) throws Exception{
-	        if (adresses.indexOf(',') > 0){
-	            msg.setRecipients(type, InternetAddress.parse(adresses));   
-	        }
-	        else{  
-	            msg.setRecipient(type, new InternetAddress(adresses));   
-	        }
-    	}
+
     	@Override
     	protected void onPostExecute(Void v){
     		if(sent){
@@ -215,7 +207,16 @@ public class MailFunctionality extends Authenticator {
     		}
     	}
     }
-	private void addAttachment(String filePath){
+	private void addRecipients(Message msg, String adresses, 
+            Message.RecipientType type) throws Exception{
+		if (adresses.indexOf(',') > 0){
+			msg.setRecipients(type, InternetAddress.parse(adresses));   
+		}
+		else{  
+			msg.setRecipient(type, new InternetAddress(adresses));   
+		}
+	}
+	public void addAttachment(String filePath){
 		try{
 			BodyPart messageBodyPart = new MimeBodyPart(); 
 			DataSource source = new FileDataSource(filePath); 
@@ -366,18 +367,29 @@ public class MailFunctionality extends Authenticator {
 						BodyPart bp = _mp.getBodyPart(i);
 						if(bp.isMimeType("text/html")){
 							htmlContents = bp.getContent().toString();
+						
 						}
-						else if(bp.isMimeType("text/plain")){
+						else if(bp.isMimeType("text/*")){
 							plainContents += bp.getContent().toString() + "\n";
+						
+						}
+						else if(bp.isMimeType("multipart/*")){
+							MimeMultipart _mp1 = (MimeMultipart)bp.getContent();
+							plainContents +=_mp1.getBodyPart(0).getContent().toString()+ "\n";
+						
 						}
 						else{
 							try{
-								String [] temp = bp.getDataHandler().getName().split("/");
-								d.addAttachment(temp[temp.length-1]);
+								Log.d("type", bp.getContentType() );
+								//String [] temp = bp.getDataHandler().getName().split("/");
+								DataSource file = bp.getDataHandler().getDataSource();
+								d.addFile(file);
+								d.addAttachment(bp.getDataHandler().getName());
+								
 							}
 							catch(Exception exe){
 								exe.printStackTrace();
-						    	return plainContents;
+						    	//return plainContents;
 							}
 						}
 					}
@@ -386,7 +398,7 @@ public class MailFunctionality extends Authenticator {
 					return plainContents;
 				}
 				else{
-					return htmlContents;
+					return htmlContents + "\n"+ plainContents;
 				}
 			}
 			catch(Exception e){
@@ -433,4 +445,90 @@ public class MailFunctionality extends Authenticator {
 			}
 		}   	
     }
-}  
+    public void saveDraft(String subject, String body, String sender, String recipients, 
+            String cc, String bcc, ArrayList<String> attachments, Context context) {   
+    	try{
+    		DraftTask task = new DraftTask(user, password, subject,body,sender,recipients, cc, bcc, attachments, context);
+    		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    	}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+    }
+    private class DraftTask extends AsyncTask<Void, Void, Void>{
+    	
+    	private String user, password;
+    	private String sb, bd, sd , rcp, cc, bcc;
+    	private boolean saved;
+    	private Context c;
+    	
+    	private DraftTask(String u, String p, String subject, String body, String sender, String recipients, 
+		 String _cc, String _bcc,ArrayList<String> attachments, Context context){
+    		sb = subject;
+    		bd = body;
+    		sd = sender;
+    		rcp = recipients;
+    		cc = _cc;
+    		bcc = _bcc;
+    		c = context;
+    		saved = false;
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected Void doInBackground(Void... arg0) {
+			try {
+				DisplayEmail d = DisplayEmail.getInstance();
+				if(d.getStore()!=null && d.getStore().isConnected()){
+					d.getStore().close();
+				}
+			    Store store = session.getStore("imaps");
+			    store.connect(imapHost, user, password);
+			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
+			    	d.getEmailFolder().close(false);
+			    }
+			    Folder drafts = store.getFolder(d.getFolderName());
+			    d.setEmailFolder(drafts);
+			    drafts.open(Folder.READ_WRITE);
+    	        MimeMessage message = new MimeMessage(session); 
+    	        message.setFrom(new InternetAddress(sd));
+    	        DataHandler handler = new DataHandler(new ByteArrayDataSource(bd.getBytes(), "text/plain;charset=utf-8"));  
+    	        message.setDataHandler(handler);
+    	        message.setSubject(sb, "utf-8");   
+    	        if(!rcp.equals("")){
+    	        	addRecipients(message, rcp, Message.RecipientType.TO);
+    	        }
+    	        if(!cc.equals("")){
+    	        	addRecipients(message, cc, Message.RecipientType.CC);
+    	        }
+    	        if(!bcc.equals("")){
+    	        	addRecipients(message, bcc, Message.RecipientType.BCC);
+    	        };
+    	        message.setContent(bd, "text/plain");
+    	        message.setFlag(Flag.DRAFT, true);
+			    drafts.appendMessages(new Message[]{message});
+			    saved = true;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+    	}
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(saved){
+				Toast toast = Toast.makeText(c,
+            			"Draft Saved.", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    		else{//Need to save draft.
+				Toast toast = Toast.makeText(c,
+            			"Failed to save draft.", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    	}
+    }
+}
