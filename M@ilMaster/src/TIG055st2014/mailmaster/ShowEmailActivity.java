@@ -23,7 +23,9 @@ public class ShowEmailActivity extends Activity {
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		defaultAcc = accounts.getString("default", "");
-        pw = accounts.getString(defaultAcc, "");
+		String key = "Some Key";
+		Encryption encryption = new Encryption();
+		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
 	}
 	@Override
 	protected void onStart() {

@@ -44,12 +44,7 @@ public class ComposeActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DisplayEmail d = DisplayEmail.getInstance();
-		try{//Nullpointer if running tests.
 		getActionBar().setDisplayShowHomeEnabled(false);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
 		save = false;
 		if(d.getIsReply()){
 			setContentView(R.layout.listview_attachments);
@@ -70,7 +65,9 @@ public class ComposeActivity extends FragmentActivity {
 		sizeEdit = sizePref.edit();
 		sizeEdit.putFloat("Total", (float) 0.0);
 		sizeEdit.commit();
-		pw = accounts.getString(defaultAcc, "");
+		String key = "Some Key";
+		Encryption encryption = new Encryption();
+		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
 		attachments = new ArrayList<String>();
 
         

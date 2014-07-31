@@ -12,5 +12,11 @@
         android:id="@+id/attachment_list"
         android:layout_weight="1"
         android:drawSelectorOnTop="false"/>
+    
+    <ImageView
+        android:id="@+id/my_image"
+        android:layout_width="match_parent"
+        android:layout_height="206dp"
+        android:layout_weight="3.30" />
 
 </LinearLayout>

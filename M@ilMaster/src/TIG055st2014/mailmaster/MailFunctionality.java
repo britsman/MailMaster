@@ -55,7 +55,11 @@ public class MailFunctionality extends Authenticator {
 
     public MailFunctionality(String user, String password, String type) {   
         this.user = user;   
-        this.password = password;  
+        Encryption encryption = new Encryption();
+        String key = "Some Key";
+        this.password = password;
+        String encrypted = encryption.encrypt(key, password);
+        Log.d("MailFunctionality", this.user + " " + encrypted + " " + type); 
         this.type = type;
         Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
         DisplayEmail d = DisplayEmail.getInstance();
@@ -297,7 +301,10 @@ public class MailFunctionality extends Authenticator {
     	protected void onPostExecute(Void v){
     		if(sucess){
     			//Account remembered even if app is force stopped.
-    			activity.accEdit.putString(user, password);
+    	        Encryption encryption = new Encryption();
+    	        String key = "Some Key";
+    	        String encrypted = encryption.encrypt(key, password);
+    			activity.accEdit.putString(user, encrypted);
     			activity.accEdit.putString("default", user);
     			activity.accEdit.commit();
     			Intent i = new Intent("TIG055st2014.mailmaster.AccountSettingsActivity");

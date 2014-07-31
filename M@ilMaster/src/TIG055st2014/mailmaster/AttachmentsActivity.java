@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -125,6 +127,10 @@ public class AttachmentsActivity extends Activity implements
             			"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             	toast.show();
+            	String imagePath = Environment.getExternalStorageDirectory()
+            			.toString() + "/" + name;
+            			ImageView my_image = (ImageView) findViewById(R.id.my_image);
+            			my_image.setImageDrawable(Drawable.createFromPath(imagePath));
     		}
     		else{
 				Toast toast = Toast.makeText(context,
