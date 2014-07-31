@@ -79,6 +79,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <service android:name=".EmailNotificationService" />
+        
+                <activity
+            android:name=".EmailForwarder"
+            android:label="" >
+            <intent-filter>
+                <action android:name="TIG055st2014.mailmaster.EmailForwarder" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

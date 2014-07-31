@@ -22,7 +22,7 @@ public class DisplayEmail {
 	private DisplayEmail(){
 		attachments = new ArrayList<String>();
 		files = new ArrayList<DataSource>();
-		
+		folderName = "INBOX";	
 	}
 	
 	public void setEmail(Message m){

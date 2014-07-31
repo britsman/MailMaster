@@ -16,14 +16,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class AttachmentsActivity extends Activity implements
 		AdapterView.OnItemClickListener {
@@ -60,7 +63,7 @@ public class AttachmentsActivity extends Activity implements
 		// Download/open clicked on item?
 		if(hasAttachments){
 			try {
-				DownloadTask dt = new DownloadTask(fileNames.get(position), files.get(position));
+				DownloadTask dt = new DownloadTask(fileNames.get(position), files.get(position), getApplicationContext());
 				dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -71,15 +74,19 @@ public class AttachmentsActivity extends Activity implements
     	
     	private String name;
     	private DataSource source;
+    	private Context context;
+    	private boolean downloaded;
     	
-    	private DownloadTask(String n, DataSource d){
+    	private DownloadTask(String n, DataSource d, Context c){
     		name = n;
     		source = d; 
+    		context = c;
     	}
     	
     	@Override
     	protected Void doInBackground(Void... v) {
 			try {
+				downloaded = false;
 				File SDCardRoot = Environment.getExternalStorageDirectory();
 				File target = new File(SDCardRoot, name);
 				target.canWrite();
@@ -97,18 +104,34 @@ public class AttachmentsActivity extends Activity implements
 				fos.close();
 				is.close();
 				//based on http://stackoverflow.com/questions/21258221/how-to-create-an-app-image-folder-to-show-in-android-gallery
-				//needed to get file to appear in gallery app.
+				//this code is needed to get file to appear in gallery app.
 			    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
 			    String mCurrentPhotoPath = "file:" + target.getAbsolutePath(); 
 			    File file = new File(mCurrentPhotoPath);
 			    Uri contentUri = Uri.fromFile(file);
 			    mediaScanIntent.setData(contentUri);
 			    sendBroadcast(mediaScanIntent);
+			    downloaded = true;
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 			return null;
 		}   	
+    	@Override
+    	protected void onPostExecute(Void v){
+    		if(downloaded){
+				Toast toast = Toast.makeText(context,
+            			"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    		else{
+				Toast toast = Toast.makeText(context,
+            			"Failed to download " + name + "!", Toast.LENGTH_SHORT);
+            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+            	toast.show();
+    		}
+    	}
     }
 }

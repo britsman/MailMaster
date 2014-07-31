@@ -69,4 +69,7 @@ public class ShowEmailActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public void onBackPressed() {//Force update of email list when back is pressed.
+    	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
+    }
 }
