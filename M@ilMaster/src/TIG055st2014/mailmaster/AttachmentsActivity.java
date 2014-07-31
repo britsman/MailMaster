@@ -33,7 +33,8 @@ public class AttachmentsActivity extends Activity implements
 
 	private ListView listView;
 	public ArrayList<String> fileNames;
-	public ArrayList<DataSource> files;
+	public ArrayList<DataSource> files; 
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
