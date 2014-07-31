@@ -45,9 +45,9 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     		listView.setClickable(true);
     		listView.setOnItemClickListener(this);
     		mf.getInbox(this);
-        	if(d.getFolderName().equals("INBOX") && !isServiceRunning()){
-        		startService(new Intent(this, EmailNotificationService.class));
-        	}
+//        	if(d.getFolderName().equals("INBOX") && !isServiceRunning()){
+//        		startService(new Intent(this, EmailNotificationService.class));
+//        	}
         }
     }
     @Override
@@ -65,20 +65,20 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     	}
     }
     public void onClickCompose(MenuItem m) {
-        if(isServiceRunning()){
-        	stopService(new Intent(getApplicationContext(),
-        			EmailNotificationService.class));
-        }
+//        if(isServiceRunning()){
+//        	stopService(new Intent(getApplicationContext(),
+//        			EmailNotificationService.class));
+//        }
     	DisplayEmail d = DisplayEmail.getInstance();
     	d.setIsReply(false);
     	startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
     }
    
     public void onClickSettings(MenuItem m) {
-        if(isServiceRunning()){
-        	stopService(new Intent(getApplicationContext(),
-        			EmailNotificationService.class));
-        }
+//        if(isServiceRunning()){
+//        	stopService(new Intent(getApplicationContext(),
+//        			EmailNotificationService.class));
+//        }
     	startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
     }
     /**
@@ -91,10 +91,10 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     }
 	@Override
 	public void onItemClick(AdapterView<?> parent, View item, int position, long id) {
-        if(isServiceRunning()){
-        	stopService(new Intent(getApplicationContext(),
-        			EmailNotificationService.class));
-        }
+//        if(isServiceRunning()){
+//        	stopService(new Intent(getApplicationContext(),
+//        			EmailNotificationService.class));
+//        }
 		DisplayEmail d = DisplayEmail.getInstance();
 		d.setEmail(emails.get(position));
 		if(d.getFolderName().contains("Drafts")){
@@ -116,36 +116,36 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         if (id == R.id.action_inbox) {
         	d.setFolderName("INBOX");
         	getActionBar().setTitle(R.string.inbox);   
-        	if(!isServiceRunning()){
-        		startService(new Intent(this, EmailNotificationService.class));
-        	}
+//        	if(!isServiceRunning()){
+//        		startService(new Intent(this, EmailNotificationService.class));
+//        	}
         }
         else if (id == R.id.action_sent) {
-            if(isServiceRunning()){
-            	stopService(new Intent(getApplicationContext(),
-            			EmailNotificationService.class));
-            }
+//            if(isServiceRunning()){
+//            	stopService(new Intent(getApplicationContext(),
+//            			EmailNotificationService.class));
+//            }
         	d.setFolderName("[Gmail]/Sent Mail");
         	getActionBar().setTitle(R.string.sent);
         }
         else{
-            if(isServiceRunning()){
-            	stopService(new Intent(getApplicationContext(),
-            			EmailNotificationService.class));
-            }
+//            if(isServiceRunning()){
+//            	stopService(new Intent(getApplicationContext(),
+//            			EmailNotificationService.class));
+//            }
         	d.setFolderName("[Gmail]/Drafts");
         	getActionBar().setTitle(R.string.drafts);
         }
 		MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 		mf.getInbox(this);
     }
-    private boolean isServiceRunning() {
-        ActivityManager manager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (EmailNotificationService.class.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    private boolean isServiceRunning() {
+//        ActivityManager manager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (EmailNotificationService.class.getName().equals(service.service.getClassName())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
