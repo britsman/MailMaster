@@ -86,7 +86,9 @@ public class ComposeActivity extends Activity {
 		sizeEdit = sizePref.edit();
 		sizeEdit.putFloat("Total", (float) 0.0);
 		sizeEdit.commit();
-		pw = accounts.getString(defaultAcc, "");
+		String key = "Some Key";
+		Encryption encryption = new Encryption();
+		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
 		attachments = new ArrayList<String>();
 
         

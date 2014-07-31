@@ -65,8 +65,9 @@ public class DisplayEmail {
 		return this.folderName;
 	}
 	public void addAttachment(String name){
+		if (!attachments.contains(name)) {
 		this.attachments.add(name);
-	}
+	}}
 	
 	public void addFile(DataSource file){
 		this.files.add(file);

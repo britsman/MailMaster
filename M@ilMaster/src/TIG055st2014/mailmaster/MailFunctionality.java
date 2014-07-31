@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log; 
 import android.view.Gravity;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.security.Security;   
@@ -44,6 +45,7 @@ public class MailFunctionality extends Authenticator {
     private String imapHost;  
     private Multipart mp;
     private String sendProtocol;
+    
 
     static {   
         Security.addProvider(new JSSEProvider());   
@@ -51,8 +53,13 @@ public class MailFunctionality extends Authenticator {
 
     public MailFunctionality(String user, String password, String type) {   
         this.user = user;   
-        this.password = password;  
-        Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
+        
+        Encryption encryption = new Encryption();
+        String key = "Some Key";
+        this.password = password; 
+        String encrypted = encryption.encrypt(key, password);
+        
+        Log.d("MailFunctionality",  this.user + "   " + encrypted + "    " + type);
         DisplayEmail d = DisplayEmail.getInstance();
         try{
         Properties props = new Properties();   

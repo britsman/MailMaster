@@ -35,7 +35,12 @@ public class AddAccountActivity extends Activity {
 */
     public void add(View view) {
         final String email = ((EditText)findViewById(R.id.email)).getText().toString().trim().toLowerCase();
+        
+        Encryption encryption = new Encryption();
+        String key = "Some Key";
         final String pw = ((EditText)findViewById(R.id.password)).getText().toString().trim();
+        String encrypted = encryption.encrypt(key, pw);
+        String decrypted = encryption.decrypt(key, encrypted);
         final String value = accounts.getString(email, "");
         final String[] pieces = email.split("@");
 
@@ -57,7 +62,7 @@ public class AddAccountActivity extends Activity {
             		MailFunctionality mf = new MailFunctionality(email, pw, pieces[1]);
             		if(mf.validate()){
             			//Account remembered even if app is force stopped.
-            			accEdit.putString(email, pw);
+            			accEdit.putString(email, encrypted);
             			accEdit.putString("default", email);
             			accEdit.commit();
             			startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
