@@ -251,6 +251,16 @@ public class MailFunctionality extends Authenticator {
 			catch (Exception e) {
 			}
     }
+    public boolean validateTest() {	
+		try {
+    			TestConnectTest c = new TestConnectTest(user,password);
+    			c.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    			return(c.get());
+			} 
+			catch (Exception e) {
+				return false;
+			}
+    }
     private class ConnectTest extends AsyncTask<Void, Void, Void>{
     	
     	private String user, password;
@@ -306,6 +316,29 @@ public class MailFunctionality extends Authenticator {
     		}
     	}
     }
+ private class TestConnectTest extends AsyncTask<Void, Void, Boolean>{
+    	
+    	private String user, password;
+    	
+    	private TestConnectTest(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected Boolean doInBackground(Void... arg0) {
+			try {
+				Transport t = session.getTransport(sendProtocol);
+	    		t.connect(user, password);
+	    		t.close();
+	    		return true;
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+    	}
+    }
     public void getInbox(InboxActivity a) {	
 		try {
     			ReadTask task = new ReadTask(user,password, a);
@@ -314,6 +347,17 @@ public class MailFunctionality extends Authenticator {
 			} 
 			catch (Exception e) {
 				e.printStackTrace();
+			}
+    }
+    public ArrayList<Message> getTestInbox() {	
+		try {
+    			TestReadTask task = new TestReadTask(user,password);
+    			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    			Log.d("MailFunctionality",  "Reading reached");
+    			return task.get();
+			} 
+			catch (Exception e) {
+				return new ArrayList<Message>();
 			}
     }
     //Partly based on http://www.compiletimeerror.com/2013/06/reading-email-using-javamail-api-example.html
@@ -394,6 +438,56 @@ public class MailFunctionality extends Authenticator {
     		}
     	}
     }
+  //Partly based on http://www.compiletimeerror.com/2013/06/reading-email-using-javamail-api-example.html
+    private class TestReadTask extends AsyncTask<Void, Void, ArrayList<Message>>{
+    	
+    	private String user, password;
+    	
+    	private TestReadTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected ArrayList<Message> doInBackground(Void... arg0) {
+    		ArrayList<Message> emails = new ArrayList<Message>();
+			try {
+				DisplayEmail d = DisplayEmail.getInstance();
+				if(d.getStore()!=null && d.getStore().isConnected()){
+					d.getStore().close();
+				}
+			    Store store = session.getStore("imaps");
+			    store.connect(imapHost, user, password);
+			    d.setStore(store);
+			    if(d.getEmailFolder()!=null && d.getEmailFolder().isOpen()){
+			    	d.getEmailFolder().close(false);
+			    }
+			    Folder inbox = store.getFolder(d.getFolderName());
+			    d.setEmailFolder(inbox);
+			    inbox.open(Folder.READ_WRITE);
+			    int limit = 19;
+			    int count = inbox.getMessageCount();
+			    if(count < 20){
+			    	limit = count-1;
+			    } 
+			    Message[] temp = inbox.getMessages(count-limit, count);
+			    //Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
+			    //Noticeable improvement compared to looping through each message.
+			    FetchProfile profile = new FetchProfile();
+			    profile.add(FetchProfile.Item.CONTENT_INFO);
+			    profile.add(FetchProfile.Item.ENVELOPE);
+			    profile.add(FetchProfile.Item.FLAGS);
+			    inbox.fetch(temp, profile);
+			    Collections.addAll(emails, temp);
+			    Collections.reverse(emails);
+    			return emails;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				return emails;
+			}
+    	}
+    }
     public void getContents(ShowEmailActivity a) {	
 		try {
     			ContentsTask ct = new ContentsTask(user,password, a);
@@ -412,6 +506,17 @@ public class MailFunctionality extends Authenticator {
 			} 
 			catch (Exception e) {
 				e.printStackTrace();
+			}
+    }
+    public String getTestContents() {	
+		try {
+    			TestContentsTask ct = new TestContentsTask(user,password);
+    			ct.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    			Log.d("MailFunctionality",  "Getting contents");
+    			return ct.get();
+			} 
+			catch (Exception e) {
+				return "";
 			}
     }
     private class ContentsTask extends AsyncTask<Void, Void, Void>{
@@ -527,6 +632,88 @@ public class MailFunctionality extends Authenticator {
     		}
     	}
     }
+private class TestContentsTask extends AsyncTask<Void, Void, String>{
+    	
+    	private String user, password;
+		String plainContents;
+		String htmlContents;
+    	
+    	private TestContentsTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	
+    	@Override
+    	protected String doInBackground(Void... arg0) {
+    		plainContents = "";
+    		htmlContents = "";
+			DisplayEmail d = DisplayEmail.getInstance();
+			try{
+				if(d.getStore()!=null && !d.getStore().isConnected()){
+					d.getStore().connect(imapHost, user, password);
+				}
+				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+					d.getEmailFolder().open(Folder.READ_WRITE);
+				}
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+				return plainContents;
+			}
+			try {
+				if(d.getEmail().isMimeType("text/*")){
+					plainContents = d.getEmail().getContent().toString();
+				}
+				else{
+					parse((MimeMultipart) d.getEmail().getContent());
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+				if(htmlContents.equals("")){
+					return plainContents;
+				}
+				else{
+					return htmlContents;
+				}
+			}
+    	private void parse(MimeMultipart _mp){
+    		DisplayEmail d = DisplayEmail.getInstance();
+    		try {
+    			for(int i = 0; i < _mp.getCount(); i++){
+    				BodyPart bp = _mp.getBodyPart(i);
+    				if(bp.isMimeType("text/html")){
+    					htmlContents = bp.getContent().toString();
+
+    				}
+    				else if(bp.isMimeType("text/*")){
+    					plainContents += bp.getContent().toString() + "\n";
+
+    				}
+    				else if(bp.isMimeType("multipart/*")){
+    					parse((MimeMultipart)bp.getContent());
+
+    				}
+    				else{
+    					try{
+    						Log.d("type", bp.getContentType() );
+    						DataSource file = bp.getDataHandler().getDataSource();
+    						d.addFile(file);
+    						d.addAttachment(bp.getDataHandler().getName());
+
+    					}
+    					catch(Exception exe){
+    						exe.printStackTrace();
+    					}
+    				}
+    			}
+    		}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+    	}
+    }
     public void getReply(Message m, ShowEmailActivity a) {	
 		try {
     			ReplyTask rt = new ReplyTask(user,password, a);
@@ -535,6 +722,17 @@ public class MailFunctionality extends Authenticator {
 			} 
 			catch (Exception e) {
 				e.printStackTrace();
+			}
+    }
+    public Message getTestReply(Message m) {	
+		try {
+    			TestReplyTask rt = new TestReplyTask(user,password);
+    			rt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, m);
+    			Log.d("MailFunctionality",  "Getting default fields for reply");
+    			return rt.get();
+			} 
+			catch (Exception e) {
+				return null;
 			}
     }
     private class ReplyTask extends AsyncTask<Message, Void, Void>{
@@ -581,6 +779,32 @@ public class MailFunctionality extends Authenticator {
     			dialog.dismiss();
     		}
     	}
+    }
+    private class TestReplyTask extends AsyncTask<Message, Void, Message>{
+    	
+    	private String user, password;
+    	
+    	private TestReplyTask(String u, String p){
+    		user = u;
+    		password = p; 
+    	}
+    	@Override
+    	protected Message doInBackground(Message... m) {
+			try {
+				DisplayEmail d = DisplayEmail.getInstance();
+				if(d.getStore()!=null && !d.getStore().isConnected()){
+					d.getStore().connect(imapHost, user, password);
+				}
+				if(d.getEmailFolder()!=null && !d.getEmailFolder().isOpen()){
+					d.getEmailFolder().open(Folder.READ_WRITE);
+				}
+				return m[0].reply(true);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+		    	return null;
+			}
+		}   	
     }
     public void saveDraft(String subject, String body, String sender, String recipients, 
             String cc, String bcc, Context context, ComposeActivity a) {   
