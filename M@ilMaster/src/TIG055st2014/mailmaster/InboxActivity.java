@@ -4,11 +4,17 @@ import java.util.ArrayList;
 
 import javax.mail.Message;
 
+import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationBinder;
+import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationServiceClient;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +22,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class InboxActivity extends Activity implements AdapterView.OnItemClickListener{
-	
+public class InboxActivity extends Activity implements AdapterView.OnItemClickListener, EmailNotificationServiceClient{
+	//partially based on http://stackoverflow.com/questions/11390018/how-to-cal-the-activity-method-from-the-service
     public SharedPreferences accounts;
     private String defaultAcc;
     private String pw;
     protected ListView listView;
     protected ArrayList<Message> emails;
+    private EmailNotificationServiceConnection mServiceConnection = new EmailNotificationServiceConnection();
+    private EmailNotificationService mService = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +56,9 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
     		listView.setOnItemClickListener(this);
     		mf.getInbox(this);
         	if(d.getFolderName().equals("INBOX") && !isServiceRunning()){
-        		startService(new Intent(this, EmailNotificationService.class));
+        		Intent i = new Intent(this, EmailNotificationService.class);
+        		startService(i);
+        		bindService(i, mServiceConnection, 0);
         	}
         }
     }
@@ -70,6 +80,7 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         if(isServiceRunning()){
         	stopService(new Intent(getApplicationContext(),
         			EmailNotificationService.class));
+        	unbindService(mServiceConnection);
         }
     	DisplayEmail d = DisplayEmail.getInstance();
     	d.setIsReply(false);
@@ -80,6 +91,7 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         if(isServiceRunning()){
         	stopService(new Intent(getApplicationContext(),
         			EmailNotificationService.class));
+        	unbindService(mServiceConnection);
         }
     	startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
     }
@@ -96,6 +108,7 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         if(isServiceRunning()){
         	stopService(new Intent(getApplicationContext(),
         			EmailNotificationService.class));
+        	unbindService(mServiceConnection);
         }
 		DisplayEmail d = DisplayEmail.getInstance();
 		d.setEmail(emails.get(position));
@@ -119,13 +132,16 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
         	d.setFolderName("INBOX");
         	getActionBar().setTitle(R.string.inbox);   
         	if(!isServiceRunning()){
-        		startService(new Intent(this, EmailNotificationService.class));
+        		Intent i = new Intent(this, EmailNotificationService.class);
+        		startService(i);
+        		bindService(i, mServiceConnection, 0);
         	}
         }
         else if (id == R.id.action_sent) {
             if(isServiceRunning()){
             	stopService(new Intent(getApplicationContext(),
             			EmailNotificationService.class));
+            	unbindService(mServiceConnection);
             }
         	d.setFolderName("[Gmail]/Sent Mail");
         	getActionBar().setTitle(R.string.sent);
@@ -134,6 +150,7 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
             if(isServiceRunning()){
             	stopService(new Intent(getApplicationContext(),
             			EmailNotificationService.class));
+            	unbindService(mServiceConnection);
             }
         	d.setFolderName("[Gmail]/Drafts");
         	getActionBar().setTitle(R.string.drafts);
@@ -149,5 +166,39 @@ public class InboxActivity extends Activity implements AdapterView.OnItemClickLi
             }
         }
         return false;
+    }
+	@Override
+	public void autoUpdate(final ArrayList<Message> m) {
+		
+		runOnUiThread(new Runnable() {
+
+			public void run() {
+				Log.d("autoupdate", "in activity");
+				emails = m;
+				listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
+						R.id.email_preview, emails));
+			}
+		});
+	}
+    class EmailNotificationServiceConnection implements ServiceConnection {
+
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ((EmailNotificationBinder)service).getService();
+
+            mService.setServiceClient(InboxActivity.this);
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            mService.setServiceClient(null);
+            mService = null;
+
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    	stopService(new Intent(getApplicationContext(),
+    			EmailNotificationService.class));
+        unbindService(mServiceConnection);
     }
 }
