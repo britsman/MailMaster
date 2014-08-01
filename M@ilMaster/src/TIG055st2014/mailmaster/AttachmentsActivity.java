@@ -62,6 +62,16 @@ AdapterView.OnItemClickListener {
 		listView.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
 				android.R.layout.simple_list_item_1, fileNames));
 	}
+	@Override
+	protected void onStart() {
+		super.onStart();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
+		//In case app has been left on attachments screen untouched for about 30 min
+		//Basically if OS destroys the AppVariablesSingleton instance.
+		if(apv.getEmail() == null){
+			startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
+		}
+	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View newDef, int position,
