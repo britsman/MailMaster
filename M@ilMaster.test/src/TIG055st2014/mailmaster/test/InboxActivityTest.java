@@ -13,7 +13,7 @@ import android.test.ActivityUnitTestCase;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
-import TIG055st2014.mailmaster.InboxActivity;
+import TIG055st2014.mailmaster.MailFolderActivity;
 import TIG055st2014.mailmaster.R;
 import android.content.Intent;
 import android.test.ActivityUnitTestCase;
@@ -22,18 +22,18 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class InboxActivityTest extends ActivityUnitTestCase<InboxActivity> {
-	private InboxActivity activity;
+public class InboxActivityTest extends ActivityUnitTestCase<MailFolderActivity> {
+	private MailFolderActivity activity;
 
 	public InboxActivityTest() {
-		super(InboxActivity.class);
+		super(MailFolderActivity.class);
 		// TODO Auto-generated constructor stub
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		Intent intent = new Intent(getInstrumentation().getTargetContext(),
-				InboxActivity.class);
+				MailFolderActivity.class);
 		startActivity(intent, null, null);
 		activity = getActivity();
 	}

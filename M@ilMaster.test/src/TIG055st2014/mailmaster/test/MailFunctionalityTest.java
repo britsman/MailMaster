@@ -4,7 +4,7 @@ import javax.mail.Message;
 
 import org.junit.Test;
 
-import TIG055st2014.mailmaster.DisplayEmail;
+import TIG055st2014.mailmaster.AppVariablesSingleton;
 import TIG055st2014.mailmaster.MailFunctionality;
 import junit.framework.TestCase;
 
@@ -15,28 +15,28 @@ public class MailFunctionalityTest extends TestCase {
 	@Override
 	public void setUp(){
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
-		DisplayEmail d = DisplayEmail.getInstance();
+		AppVariablesSingleton d = AppVariablesSingleton.getInstance();
 		d.setFolderName("INBOX");
 	}
 	public void testValidate(){
-		assertTrue(mf.validate());
+		assertTrue(mf.validateTest());
 	}
 	public void testValidateFailure(){
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "WrongPassword", "gmail.com");
-		assertFalse(mf.validate());
+		assertFalse(mf.validateTest());
 	}
 	public void testGetInbox(){		
-		assertTrue(mf.getInbox().size() > 0);
+		assertTrue(mf.getFolderTest().size() > 0);
 	}
 	public void testGetInboxFailure(){
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "WrongPassword", "gmail.com");
-		assertFalse(mf.getInbox().size() > 0);
+		assertFalse(mf.getFolderTest().size() > 0);
 	}
 	public void testGetContents(){
 		try{
-			DisplayEmail d = DisplayEmail.getInstance();
-			d.setEmail(mf.getInbox().get(0));
-			assertFalse(mf.getContents().equalsIgnoreCase(""));
+			AppVariablesSingleton d = AppVariablesSingleton.getInstance();
+			d.setEmail(mf.getFolderTest().get(0));
+			assertFalse(mf.getTestContents().equalsIgnoreCase(""));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -45,8 +45,8 @@ public class MailFunctionalityTest extends TestCase {
 	}
 	public void testGetReply(){
 		try{
-			Message temp1 = mf.getInbox().get(0);
-			Message temp2 = mf.getReply(temp1);
+			Message temp1 = mf.getFolderTest().get(0);
+			Message temp2 = mf.getTestReply(temp1);
 			assertTrue(temp2.getSubject().equalsIgnoreCase("RE: " + temp1.getSubject())
 					   || temp2.getSubject().equalsIgnoreCase(temp1.getSubject()));
 		}

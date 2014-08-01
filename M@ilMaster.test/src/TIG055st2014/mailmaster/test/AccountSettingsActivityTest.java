@@ -51,9 +51,9 @@ public class AccountSettingsActivityTest extends ActivityUnitTestCase<AccountSet
 		  activity.runOnUiThread(new Runnable() {
 
 		        public void run() {
-		        	String target = "TIG055st2014.mailmaster.InboxActivity";
+		        	String target = "TIG055st2014.mailmaster.MailFolderActivity";
 		        	MenuItem inboxIcon = (MenuItem)activity.findViewById(R.id.action_toInbox);
-		        	activity.toInbox(inboxIcon);
+		        	activity.toFolder(inboxIcon);
 		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
 		       }
 		    });
