@@ -9,11 +9,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 
+/**
+ * Activity used to display the contents of a selected email's body.
+ */
 public class ShowEmailActivity extends Activity {
 	
 	private SharedPreferences accounts;
 	private String defaultAcc;
 	private String pw;
+	/**
+	 * A WebView is used in order to easily display HTML contents.
+	 */
 	private WebView wv;
 
 	@Override
@@ -31,8 +37,10 @@ public class ShowEmailActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		wv = (WebView) findViewById(R.id.display);
+		//Enables zoom.
 		wv.getSettings().setBuiltInZoomControls(true);
 		wv.getSettings().setDisplayZoomControls(false);
+		//Increases max zoomout level.
 		wv.getSettings().setUseWideViewPort(true);
 		try {
 			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
@@ -42,6 +50,9 @@ public class ShowEmailActivity extends Activity {
 			e.printStackTrace();
 		} 
 	}
+	/**
+	 * Called from onPostExecute in AsyncTask after content has been parsed in the background.
+	 */
 	protected void load(String contents){	
 		wv.loadData(contents, "text/html", null);
 	}
@@ -55,9 +66,9 @@ public class ShowEmailActivity extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_reply) {
         	MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-            DisplayEmail d = DisplayEmail.getInstance();
+            AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
             try{
-            	mf.getReply(d.getEmail(), this);
+            	mf.getReply(apv.getEmail(), this);
             }
             catch(Exception e){
             	e.printStackTrace();
@@ -71,7 +82,8 @@ public class ShowEmailActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public void onBackPressed() {//Force update of email list when back is pressed.
-    	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
+    public void onBackPressed() {
+    	//Force update of email list when back is pressed.
+    	startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
     }
 }

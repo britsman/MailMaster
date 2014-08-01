@@ -1,13 +1,15 @@
 package TIG055st2014.mailmaster;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.DialogFragment;
 
+/**
+ * Fragment used to provide dialog for querying user if they wish to save the email
+ * they are composing as a draft.
+ */
 public class SaveDraftFragment extends DialogFragment implements DialogInterface.OnClickListener {
  
     @Override

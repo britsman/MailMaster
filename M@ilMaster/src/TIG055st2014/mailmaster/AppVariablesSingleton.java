@@ -8,27 +8,44 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.Store;
 
-public class DisplayEmail {
-	private static DisplayEmail current;
+/**
+ * Singleton class used to store and retrieve data throughout the application.
+ * Simpler but less persistent than a database solution, probably causes more
+ * overhead but also avoids expensive database operations.
+ */
+public class AppVariablesSingleton {
+	private static AppVariablesSingleton current;
 	private Message email;
 	private Message reply;
+	/**
+	 * Used to check if folder has to be reopened, or if old folder exists
+	 * that should be closed.
+	 */
 	private Folder emailFolder;
+	/**
+	 * Used to check if store session has to be reopened, or if old session exists
+	 * that should be closed.
+	 */
 	private Store store;
 	private boolean isReply;
 	private ArrayList<String> attachments;
 	private ArrayList<DataSource> files; 
 	private String folderName;
-	
-	private DisplayEmail(){
+
+	private AppVariablesSingleton(){
 		attachments = new ArrayList<String>();
 		files = new ArrayList<DataSource>();
 		folderName = "INBOX";	
 	}
-	
+
 	public void setEmail(Message m){
 		this.email = m;
-		
+
 	}
+	/**
+	 * Used to reset lists when going back and forth between message/attachment
+	 * view on the same email message.
+	 */
 	public void resetLists(){
 		attachments = new ArrayList<String>();
 		files = new ArrayList<DataSource>();
@@ -69,7 +86,6 @@ public class DisplayEmail {
 	public void addAttachment(String name){
 		this.attachments.add(name);
 	}
-	
 	public void addFile(DataSource file){
 		this.files.add(file);
 	}
@@ -79,9 +95,13 @@ public class DisplayEmail {
 	public ArrayList<String> getAttachments(){
 		return this.attachments;
 	}
-	public static DisplayEmail getInstance(){
+	/**
+	 * Makes sure the same instance of AppVariables is used throughout
+	 * the app.
+	 */
+	public static AppVariablesSingleton getInstance(){
 		if(current == null){
-			current = new DisplayEmail();
+			current = new AppVariablesSingleton();
 		}
 		return current;
 	}

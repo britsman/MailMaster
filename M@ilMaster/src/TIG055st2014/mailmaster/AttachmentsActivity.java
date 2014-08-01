@@ -30,23 +30,27 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+/**
+ * Activity containing the list of the currently selected email's attachments
+ * (if any).
+ */
 public class AttachmentsActivity extends Activity implements
-		AdapterView.OnItemClickListener {
+AdapterView.OnItemClickListener {
 
 	private ListView listView;
 	public ArrayList<String> fileNames;
 	public ArrayList<DataSource> files;
 	private boolean hasAttachments;
-	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attachments);
 		getActionBar().setDisplayShowHomeEnabled(false);
-		DisplayEmail d = DisplayEmail.getInstance(); 
-		fileNames = d.getAttachments();
-		files = d.getFiles();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
+		fileNames = apv.getAttachments();
+		files = apv.getFiles();
 		hasAttachments = true;
 		if (fileNames.size() == 0) {
 			hasAttachments = false;
@@ -62,7 +66,7 @@ public class AttachmentsActivity extends Activity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View newDef, int position,
 			long id) {
-		// Download/open clicked on item?
+		// Download/open clicked on item
 		if(hasAttachments){
 			try {
 				DownloadTask dt = new DownloadTask(fileNames.get(position), files.get(position), getApplicationContext());
@@ -72,21 +76,25 @@ public class AttachmentsActivity extends Activity implements
 			}
 		}
 	}
-    private class DownloadTask extends AsyncTask<Void, Void, Void>{
-    	
-    	private String name;
-    	private DataSource source;
-    	private Context context;
-    	private boolean downloaded;
-    	
-    	private DownloadTask(String n, DataSource d, Context c){
-    		name = n;
-    		source = d; 
-    		context = c;
-    	}
-    	
-    	@Override
-    	protected Void doInBackground(Void... v) {
+	/**
+	 * AsyncTask used to download attachments and mark them as media (so they can be found by the gallery app).
+	 * This also allows the user to use the downloaded file as an attachment when composing/replying.
+	 */
+	private class DownloadTask extends AsyncTask<Void, Void, Void>{
+
+		private String name;
+		private DataSource source;
+		private Context context;
+		private boolean downloaded;
+
+		private DownloadTask(String n, DataSource d, Context c){
+			name = n;
+			source = d; 
+			context = c;
+		}
+
+		@Override
+		protected Void doInBackground(Void... v) {
 			try {
 				downloaded = false;
 				File SDCardRoot = Environment.getExternalStorageDirectory();
@@ -96,7 +104,7 @@ public class AttachmentsActivity extends Activity implements
 				Log.d("Filepath", target.getPath());
 				FileOutputStream fos = new FileOutputStream(target);
 				InputStream is = source.getInputStream();
-				
+
 				byte[] buffer = new byte[1024];
 				int len1 = 0;
 				while ((len1 = is.read(buffer)) != -1) {
@@ -107,37 +115,40 @@ public class AttachmentsActivity extends Activity implements
 				is.close();
 				//based on http://stackoverflow.com/questions/21258221/how-to-create-an-app-image-folder-to-show-in-android-gallery
 				//this code is needed to get file to appear in gallery app.
-			    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
-			    String mCurrentPhotoPath = "file:" + target.getAbsolutePath(); 
-			    File file = new File(mCurrentPhotoPath);
-			    Uri contentUri = Uri.fromFile(file);
-			    mediaScanIntent.setData(contentUri);
-			    sendBroadcast(mediaScanIntent);
-			    downloaded = true;
+				Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
+				String mCurrentPhotoPath = "file:" + target.getAbsolutePath(); 
+				File file = new File(mCurrentPhotoPath);
+				Uri contentUri = Uri.fromFile(file);
+				mediaScanIntent.setData(contentUri);
+				sendBroadcast(mediaScanIntent);
+				downloaded = true;
 			}
 			catch(Exception e){
 				e.printStackTrace();
 			}
 			return null;
 		}   	
-    	@Override
-    	protected void onPostExecute(Void v){
-    		if(downloaded){
+		/**
+		 * Tries to display file if download was successful.
+		 */
+		@Override
+		protected void onPostExecute(Void v){
+			if(downloaded){
 				Toast toast = Toast.makeText(context,
-            			"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
-            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            	toast.show();
-            	String imagePath = Environment.getExternalStorageDirectory()
-            			.toString() + "/" + name;
-            			ImageView my_image = (ImageView) findViewById(R.id.my_image);
-            			my_image.setImageDrawable(Drawable.createFromPath(imagePath));
-    		}
-    		else{
+						"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+				toast.show();
+				String imagePath = Environment.getExternalStorageDirectory()
+						.toString() + "/" + name;
+				ImageView my_image = (ImageView) findViewById(R.id.my_image);
+				my_image.setImageDrawable(Drawable.createFromPath(imagePath));
+			}
+			else{
 				Toast toast = Toast.makeText(context,
-            			"Failed to download " + name + "!", Toast.LENGTH_SHORT);
-            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            	toast.show();
-    		}
-    	}
-    }
+						"Failed to download " + name + "!", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+				toast.show();
+			}
+		}
+	}
 }
