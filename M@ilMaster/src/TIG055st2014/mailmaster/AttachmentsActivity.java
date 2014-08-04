@@ -13,6 +13,7 @@ import javax.mail.Message;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
@@ -124,12 +125,22 @@ AdapterView.OnItemClickListener {
 				}	
 				fos.close();
 				is.close();
-				//based on http://viralpatel.net/blogs/android-trigger-media-scanner-api/
+				//based on http://stackoverflow.com/questions/5250515/how-to-update-the-android-media-database
 				//this code is needed to get file to appear in gallery app.
-				sendBroadcast (
-						new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-							Uri.parse("file://" + Environment.getExternalStorageDirectory()))
-					);
+				if((Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)){
+					Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+					String mCurrentPhotoPath = "file://" + target.getPath(); 
+					File file = new File(mCurrentPhotoPath);
+					Uri contentUri = Uri.fromFile(file);
+					mediaScanIntent.setData(contentUri);
+					sendBroadcast(mediaScanIntent);
+				}
+				else{
+					sendBroadcast (
+							new Intent(Intent.ACTION_MEDIA_MOUNTED, 
+									Uri.parse("file://" + Environment.getExternalStorageDirectory()))
+							);
+				}
 				downloaded = true;
 			}
 			catch(Exception e){
