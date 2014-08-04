@@ -79,7 +79,8 @@ AdapterView.OnItemClickListener {
 		// Download/open clicked on item
 		if(hasAttachments){
 			try {
-				DownloadTask dt = new DownloadTask(fileNames.get(position), files.get(position), getApplicationContext());
+				String temp[] = fileNames.get(position).split("/");
+				DownloadTask dt = new DownloadTask(temp[temp.length-1], files.get(position), getApplicationContext());
 				dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -123,14 +124,12 @@ AdapterView.OnItemClickListener {
 				}	
 				fos.close();
 				is.close();
-				//based on http://stackoverflow.com/questions/21258221/how-to-create-an-app-image-folder-to-show-in-android-gallery
+				//based on http://viralpatel.net/blogs/android-trigger-media-scanner-api/
 				//this code is needed to get file to appear in gallery app.
-				Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_MOUNTED);
-				String mCurrentPhotoPath = "file:" + target.getAbsolutePath(); 
-				File file = new File(mCurrentPhotoPath);
-				Uri contentUri = Uri.fromFile(file);
-				mediaScanIntent.setData(contentUri);
-				sendBroadcast(mediaScanIntent);
+				sendBroadcast (
+						new Intent(Intent.ACTION_MEDIA_MOUNTED, 
+							Uri.parse("file://" + Environment.getExternalStorageDirectory()))
+					);
 				downloaded = true;
 			}
 			catch(Exception e){
