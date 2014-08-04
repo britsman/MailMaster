@@ -187,6 +187,8 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			dialog.setMessage("Sending Email...");
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
 			dialog.show();
 		}
 		@Override
@@ -219,6 +221,11 @@ public class MailFunctionality extends Authenticator {
 				t.sendMessage(message, message.getAllRecipients());
 				t.close();
 				sent = true;
+				if(type.equals("student.gu.se")){
+					SaveAsSentTask sst = new SaveAsSentTask(message, context);
+					sst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					
+				}
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -321,6 +328,8 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			dialog.setMessage("Validating Account...");
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
 			dialog.show();
 		}
 		@Override
@@ -448,6 +457,8 @@ public class MailFunctionality extends Authenticator {
 			else{
 				dialog.setMessage("Fetching Inbox...");
 			}
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
 			dialog.show();
 		}
 		@Override
@@ -592,7 +603,9 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			contents = "";
-			dialog.setMessage("Reading Email Contents...");    		
+			dialog.setMessage("Reading Email Contents...");    	
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
 			dialog.show();
 		}
 		@Override
@@ -755,7 +768,9 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			dialog.setMessage("Constructing Reply...");    		
+			dialog.setMessage("Constructing Reply...");    	
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
 			dialog.show();
 		}
 		@Override
@@ -881,7 +896,9 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			if(dialog != null){
-				dialog.setMessage("Saving Draft...");    		
+				dialog.setMessage("Saving Draft...");    	
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
 				dialog.show();
 			}
 		}
@@ -916,6 +933,8 @@ public class MailFunctionality extends Authenticator {
 				message.setFlag(Flag.DRAFT, true);
 				drafts.appendMessages(new Message[]{message});
 				saved = true;
+				drafts.close(false);
+				store.close();
 			}
 			catch (Exception e) {
 				e.printStackTrace();
@@ -939,6 +958,33 @@ public class MailFunctionality extends Authenticator {
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
+		}
+	}
+	private class SaveAsSentTask extends AsyncTask<Void, Void, Void>{
+
+		private Message message;
+		private Context context;
+
+		private SaveAsSentTask(Message m, Context c){
+			message = m;
+			context = c;
+		}
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			try {
+				
+				Store store = session.getStore("imaps");
+				store.connect(imapHost, user, password);
+				Folder sent = store.getFolder(context.getResources().getString(R.string.gmailSent));
+				sent.open(Folder.READ_WRITE);
+				sent.appendMessages(new Message[]{message});
+				sent.close(false);
+				store.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
 		}
 	}
 }
