@@ -136,10 +136,8 @@ AdapterView.OnItemClickListener {
 					sendBroadcast(mediaScanIntent);
 				}
 				else{
-					sendBroadcast (
-							new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-									Uri.parse("file://" + Environment.getExternalStorageDirectory()))
-							);
+					sendBroadcast (new Intent(Intent.ACTION_MEDIA_MOUNTED, 
+								   Uri.parse("file://" + Environment.getExternalStorageDirectory())));
 				}
 				downloaded = true;
 			}
