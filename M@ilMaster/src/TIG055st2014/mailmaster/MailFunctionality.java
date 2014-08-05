@@ -61,7 +61,7 @@ public class MailFunctionality extends Authenticator {
         String encrypted = encryption.encrypt(key, password);
         Log.d("MailFunctionality", this.user + " " + encrypted + " " + type); 
         this.type = type;
-        Log.d("MailFunctionality",  this.user + "   " + this.password + "    " + type);
+        Log.d("MailFunctionality",  this.user + "   " + encrypted+ "    " + type);
         DisplayEmail d = DisplayEmail.getInstance();
         try{
         Properties props = new Properties();   

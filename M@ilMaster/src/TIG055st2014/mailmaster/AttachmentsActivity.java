@@ -88,15 +88,15 @@ public class AttachmentsActivity extends Activity implements
     	@Override
     	protected Void doInBackground(Void... v) {
 			try {
+
 				downloaded = false;
-				File SDCardRoot = Environment.getExternalStorageDirectory();
+		        File SDCardRoot = Environment.getExternalStorageDirectory();
 				File target = new File(SDCardRoot, name);
 				target.canWrite();
 				target.setWritable(true);
 				Log.d("Filepath", target.getPath());
 				FileOutputStream fos = new FileOutputStream(target);
 				InputStream is = source.getInputStream();
-				
 				byte[] buffer = new byte[1024];
 				int len1 = 0;
 				while ((len1 = is.read(buffer)) != -1) {
@@ -114,6 +114,7 @@ public class AttachmentsActivity extends Activity implements
 			    mediaScanIntent.setData(contentUri);
 			    sendBroadcast(mediaScanIntent);
 			    downloaded = true;
+            	
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -127,11 +128,21 @@ public class AttachmentsActivity extends Activity implements
             			"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             	toast.show();
-            	String imagePath = Environment.getExternalStorageDirectory()
+            	//based on http://developer.android.com/guide/appendix/media-formats.html
+            	// those are the ImageView supported files type and formats
+            	String filenameArray[] = name.split("\\.");
+		        String extension = filenameArray[filenameArray.length-1];
+		        if(extension.endsWith("jpg") || extension.endsWith("png")
+		        		|| extension.endsWith("gif")
+		        		|| extension.endsWith("bmp")
+		        		|| extension.endsWith("webp")){
+		        	String imagePath = Environment.getExternalStorageDirectory()
             			.toString() + "/" + name;
             			ImageView my_image = (ImageView) findViewById(R.id.my_image);
             			my_image.setImageDrawable(Drawable.createFromPath(imagePath));
-    		}
+            	
+            			}
+		        }
     		else{
 				Toast toast = Toast.makeText(context,
             			"Failed to download " + name + "!", Toast.LENGTH_SHORT);
