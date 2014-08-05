@@ -35,7 +35,7 @@
         android:text="@string/receiver"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Spinner
+     <AutoCompleteTextView
         android:id="@+id/receiveAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
