@@ -35,13 +35,12 @@
         android:text="@string/receiver"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <EditText
+    <Spinner
         android:id="@+id/receiveAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receiver"
         android:ems="10"
-        android:hint="Write receiver email here"
         android:singleLine="true" />
     
         <TextView
