@@ -83,6 +83,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		}
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.setIsReply(false);
+		apv.setEmail(null);
 		startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
 	}
 

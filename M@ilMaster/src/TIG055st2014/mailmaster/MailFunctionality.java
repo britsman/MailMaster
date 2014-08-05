@@ -197,7 +197,7 @@ public class MailFunctionality extends Authenticator {
 				mp = new MimeMultipart();
 				MimeMessage message = new MimeMessage(session); 
 				message.setFrom(new InternetAddress(sender));
-				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=utf-8"));  
+				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=UTF-8")); 
 				message.setDataHandler(handler);
 				message.setSubject(subject, "utf-8");   
 				BodyPart messageBodyPart = new MimeBodyPart(); 
@@ -701,7 +701,7 @@ public class MailFunctionality extends Authenticator {
 
 				}
 				else if(bp.isMimeType("text/*")){
-					plainContents += bp.getContent().toString() + "\n";
+					plainContents = bp.getContent().toString();
 
 				}
 				else if(bp.isMimeType("multipart/*")){
@@ -920,7 +920,7 @@ public class MailFunctionality extends Authenticator {
 				drafts.open(Folder.READ_WRITE);
 				MimeMessage message = new MimeMessage(session); 
 				message.setFrom(new InternetAddress(sender));
-				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=utf-8"));  
+				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=UTF-8"));  
 				message.setDataHandler(handler);
 				message.setSubject(subject, "utf-8");   
 				if(!recipients.equals("")){
@@ -932,7 +932,7 @@ public class MailFunctionality extends Authenticator {
 				if(!bcc.equals("")){
 					addRecipients(message, bcc, Message.RecipientType.BCC);
 				};
-				message.setContent(body, "text/html");
+				message.setContent(body, "text/html;charset=UTF-8");
 				message.setFlag(Flag.DRAFT, true);
 				drafts.appendMessages(new Message[]{message});
 				saved = true;

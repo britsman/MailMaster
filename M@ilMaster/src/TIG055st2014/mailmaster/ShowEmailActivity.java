@@ -62,7 +62,7 @@ public class ShowEmailActivity extends Activity {
 	 * Called from onPostExecute in AsyncTask after content has been parsed in the background.
 	 */
 	protected void load(String contents){	
-		wv.loadData(contents, "text/html", null);
+		wv.loadData(contents, "text/html;charset=UTF-8", null);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
