@@ -216,7 +216,7 @@ public class MailFunctionality extends Authenticator {
 				if(!bcc.equals("")){
 					addRecipients(message, bcc, Message.RecipientType.BCC);
 				}
-				message.setContent(mp, "text/html");
+				message.setContent(mp, "multipart/mixed");
 				Transport t = session.getTransport(sendProtocol);
 				t.connect(user, password);
 				t.sendMessage(message, message.getAllRecipients());
@@ -921,7 +921,7 @@ public class MailFunctionality extends Authenticator {
 				drafts.open(Folder.READ_WRITE);
 				MimeMessage message = new MimeMessage(session); 
 				message.setFrom(new InternetAddress(sender));
-				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain;charset=utf-8"));  
+				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=utf-8"));  
 				message.setDataHandler(handler);
 				message.setSubject(subject, "utf-8");   
 				if(!recipients.equals("")){
@@ -933,7 +933,7 @@ public class MailFunctionality extends Authenticator {
 				if(!bcc.equals("")){
 					addRecipients(message, bcc, Message.RecipientType.BCC);
 				};
-				message.setContent(body, "text/plain");
+				message.setContent(body, "text/html");
 				message.setFlag(Flag.DRAFT, true);
 				drafts.appendMessages(new Message[]{message});
 				saved = true;
