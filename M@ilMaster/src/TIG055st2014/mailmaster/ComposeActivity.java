@@ -24,6 +24,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Activity used for composing both new emails and replies.
+ */
 public class ComposeActivity extends FragmentActivity {
 
 	private SharedPreferences accounts;
@@ -43,10 +46,11 @@ public class ComposeActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		DisplayEmail d = DisplayEmail.getInstance();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		getActionBar().setDisplayShowHomeEnabled(false);
 		save = false;
-		if(d.getIsReply()){
+		//Different xml layouts are loaded depending on if new message/reply.
+		if(apv.getIsReply()){
 			setContentView(R.layout.listview_attachments);
 			listView = (ListView) findViewById(R.id.attachment_list);
 			listView.addHeaderView(getLayoutInflater().inflate(
@@ -68,19 +72,19 @@ public class ComposeActivity extends FragmentActivity {
 		String key = "Some Key";
 		Encryption encryption = new Encryption();
 		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
-		attachments = new ArrayList<String>();
-
-        
+		attachments = new ArrayList<String>();       
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		DisplayEmail d = DisplayEmail.getInstance();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		TextView sender;
 		TextView result;
-		
-		if(d.getIsReply()){
+
+		/*If message is a reply then certain fields are instantiated based on fields
+		from the message that is being replied to.*/
+		if(apv.getIsReply()){
 			getActionBar().setTitle(R.string.composing_rp);
 			result = (TextView) findViewById(R.id.totalsizeReply);
 			sender = (TextView) findViewById(R.id.sendAccReply);
@@ -90,9 +94,9 @@ public class ComposeActivity extends FragmentActivity {
 			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
 			cc.setText("");
 			try {
-				subject.setText(d.getReply().getSubject());
-				if (d.getFolderName().contains("Sent")) {
-					Address[] tempTo = d.getEmail().getRecipients(
+				subject.setText(apv.getReply().getSubject());
+				if (apv.getFolderName().contains("Sent")) {
+					Address[] tempTo = apv.getEmail().getRecipients(
 							RecipientType.TO);
 					if (tempTo != null) {
 						for (Address a : tempTo) {
@@ -104,33 +108,34 @@ public class ComposeActivity extends FragmentActivity {
 						}
 					}
 				} else {
-					to.setText(d.getEmail().getFrom()[0].toString());
+					to.setText(apv.getEmail().getFrom()[0].toString());
 				}
 				this.addAddresses(
-						d.getEmail().getRecipients(Message.RecipientType.CC),
+						apv.getEmail().getRecipients(Message.RecipientType.CC),
 						cc);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		//If not reply, app attempts to load all fields since message might be based on draft.
 		else{
 			getActionBar().setTitle(R.string.composing);
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
 			sender.setText(defaultAcc);
-			if(d.getFolderName().contains("Drafts")){
+			if(apv.getFolderName().contains("Drafts")){
 				try{
-				MailFunctionality mf = new MailFunctionality(defaultAcc, accounts.getString(defaultAcc, ""), 
-															 (defaultAcc.split("@"))[1]);
-				EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
-				EditText cc = ((EditText) findViewById(R.id.ccAccs));
-				EditText bcc = ((EditText) findViewById(R.id.bccAccs));
-				EditText subject = ((EditText) findViewById(R.id.subject));
-				subject.setText(d.getEmail().getSubject().toString());
-				mf.getContents(this);
-				addAddresses(d.getEmail().getRecipients(Message.RecipientType.TO), recipients);
-				addAddresses(d.getEmail().getRecipients(Message.RecipientType.CC), cc);
-				addAddresses(d.getEmail().getRecipients(Message.RecipientType.BCC), bcc);
+					MailFunctionality mf = new MailFunctionality(defaultAcc, accounts.getString(defaultAcc, ""), 
+							(defaultAcc.split("@"))[1]);
+					EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
+					EditText cc = ((EditText) findViewById(R.id.ccAccs));
+					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
+					EditText subject = ((EditText) findViewById(R.id.subject));
+					subject.setText(apv.getEmail().getSubject().toString());
+					mf.getContents(this);
+					addAddresses(apv.getEmail().getRecipients(Message.RecipientType.TO), recipients);
+					addAddresses(apv.getEmail().getRecipients(Message.RecipientType.CC), cc);
+					addAddresses(apv.getEmail().getRecipients(Message.RecipientType.BCC), bcc);
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -143,7 +148,9 @@ public class ComposeActivity extends FragmentActivity {
 					attachments, result));
 		}
 	}
-	
+	/**
+	 * Makes sure there are separators between the addresses to send to.
+	 */
 	private void addAddresses(Address[] addresses, EditText et) {
 		if (addresses != null) {
 			for (Address a : addresses) {
@@ -155,14 +162,14 @@ public class ComposeActivity extends FragmentActivity {
 			}
 		}
 	}
-
+	/**
+	 * Gets called after user has selected a gallery image to attach.
+	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == PICK_FROM_GALLERY && resultCode == RESULT_OK) {
-			/**
-			 * Get Path
-			 */
+			//get path to pressed picture.
 			Uri selectedImage = data.getData();
-			DisplayEmail d = DisplayEmail.getInstance();
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
 			Cursor cursor = getContentResolver().query(selectedImage,
@@ -170,12 +177,13 @@ public class ComposeActivity extends FragmentActivity {
 			cursor.moveToFirst();
 			columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			file_path = cursor.getString(columnIndex);
+			//Ignore press if file has already been attached previously.
 			if (!attachments.contains(file_path)) {
 				Log.d("Attachment Path:", file_path);
 				attachments.add(file_path);
 
-				// calculating the file size
 				File file = new File(file_path);
+				// calculating the file size
 				float bytes = file.length();
 				kilobytes = bytes/1024 ;
 				total = sizePref.getFloat("Total", (float)0.0);
@@ -184,12 +192,13 @@ public class ComposeActivity extends FragmentActivity {
 				sizeEdit.putFloat(file_path, kilobytes);
 				sizeEdit.commit();
 				TextView result;
-				if (d.getIsReply()) {
+				if (apv.getIsReply()) {
 					result = (TextView) findViewById(R.id.totalsizeReply);
 				} else {
 					result = (TextView) findViewById(R.id.totalsize);
 				}
 				result.setText("Total size: " + total + " KB");
+				//Attachments list is updated to contain the pressed attachment.
 				listView.setAdapter(new AttachmentsAdapter(
 						getApplicationContext(), R.layout.attachments_item,
 						R.id.attachments_text, attachments, result));
@@ -206,7 +215,9 @@ public class ComposeActivity extends FragmentActivity {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Launches chooser for gallery apps and restricts file selection to images.
+	 */
 	public void openGallery() {
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 		intent.setType("image/*");
@@ -217,7 +228,7 @@ public class ComposeActivity extends FragmentActivity {
 	}	
 	public void onClickSend(View v){
 		total = sizePref.getFloat("Total", (float)0.0);
-		if (total > 20480) {//The maximum attachment size to make email recievable by microsoft accounts
+		if (total > 20480) {//The maximum attachment size to make email receivable by microsoft accounts
 			Toast toast = Toast.makeText(getApplicationContext(),
 					"Could not send, files are too big to attach!",
 					Toast.LENGTH_SHORT);
@@ -226,8 +237,8 @@ public class ComposeActivity extends FragmentActivity {
 		} 
 		else {
 			String recipients, cc, bcc, subject, body;
-			DisplayEmail d = DisplayEmail.getInstance();
-			if (d.getIsReply()) {
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			if (apv.getIsReply()) {
 				recipients = ((TextView) findViewById(R.id.receiveAccsReply))
 						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccsReply)).getText()
@@ -255,7 +266,7 @@ public class ComposeActivity extends FragmentActivity {
 				try {   
 					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
 					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc, attachments, getApplicationContext(), this);  
-					startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
+					startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
 				} 
 				catch (Exception e) {    
 					e.printStackTrace();
@@ -276,38 +287,41 @@ public class ComposeActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.compose, menu);
 		return true;
 	}
-    @Override
-    public void onBackPressed() {
-    	new SaveDraftFragment().show(getSupportFragmentManager(), "SaveDraft");
-    }
-    public void dialogResult(){
-    	if(save){
-    		String recipients,cc,bcc,subject,body;
-    		DisplayEmail d = DisplayEmail.getInstance();
-    		if(d.getIsReply()){
-    			recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
-    			cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
-    			bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
-    			subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
-    			body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
-    		}
-    		else{
-    			recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
-    			cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
-    			bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
-    			subject = ((EditText) findViewById(R.id.subject)).getText().toString();
-    			body = ((EditText) findViewById(R.id.body)).getText().toString();
-    		}
-    		if(!recipients.equals("") || !subject.equals("") || !body.equals("") || !cc.equals("") || !bcc.equals("")){
-    			try {   
-    				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-    				mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, getApplicationContext(), this);  
-    			} 
-    			catch (Exception e) {    
-    				e.printStackTrace();
-    			}
-    		} 
-    	}
-    	startActivity(new Intent("TIG055st2014.mailmaster.InboxActivity"));
-    }
+	@Override
+	public void onBackPressed() {
+		new SaveDraftFragment().show(getSupportFragmentManager(), "SaveDraft");
+	}
+	/**
+	 * Used when user wishes to save a draft. Both replies and new messages can be saved.
+	 */
+	public void dialogResult(){
+		if(save){
+			String recipients,cc,bcc,subject,body;
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			if(apv.getIsReply()){
+				recipients = ((TextView) findViewById(R.id.receiveAccsReply)).getText().toString();
+				cc = ((EditText) findViewById(R.id.ccAccsReply)).getText().toString();
+				bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText().toString();
+				subject = ((TextView) findViewById(R.id.subjectReply)).getText().toString();
+				body = ((EditText) findViewById(R.id.bodyReply)).getText().toString();
+			}
+			else{
+				recipients = ((EditText) findViewById(R.id.receiveAccs)).getText().toString();
+				cc = ((EditText) findViewById(R.id.ccAccs)).getText().toString();
+				bcc = ((EditText) findViewById(R.id.bccAccs)).getText().toString();
+				subject = ((EditText) findViewById(R.id.subject)).getText().toString();
+				body = ((EditText) findViewById(R.id.body)).getText().toString();
+			}
+			if(!recipients.equals("") || !subject.equals("") || !body.equals("") || !cc.equals("") || !bcc.equals("")){
+				try {   
+					MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+					mf.saveDraft(subject, body, defaultAcc, recipients, cc, bcc, getApplicationContext(), this);  
+				} 
+				catch (Exception e) {    
+					e.printStackTrace();
+				}
+			} 
+		}
+		startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
+	}
 }

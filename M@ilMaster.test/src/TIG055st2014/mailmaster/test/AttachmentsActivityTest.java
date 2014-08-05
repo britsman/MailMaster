@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import TIG055st2014.mailmaster.AccountSettingsActivity;
 import TIG055st2014.mailmaster.AttachmentsActivity;
-import TIG055st2014.mailmaster.DisplayEmail;
+import TIG055st2014.mailmaster.AppVariablesSingleton;
 import android.content.Context;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
@@ -16,7 +16,7 @@ import android.test.InstrumentationTestCase;
 public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<AttachmentsActivity> {
 
 	private AttachmentsActivity activity;
-	private DisplayEmail d;
+	private AppVariablesSingleton d;
 	
 	public AttachmentsActivityTest() {
 		super(AttachmentsActivity.class);
@@ -24,7 +24,7 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 	@Override
 	protected void setUp() throws Exception{
 		super.setUp();
-		d = DisplayEmail.getInstance();
+		d = AppVariablesSingleton.getInstance();
 		d.setFolderName("INBOX");
 		activity = getActivity();
 	}

@@ -17,19 +17,19 @@
         	android:id="@+id/action_toInbox"
         	android:showAsAction="withText"
         	android:title="@string/inbox" 
-        	android:onClick="toInbox">
+        	android:onClick="toFolder">
         	</item>
         	<item
         	android:id="@+id/action_toSent"
         	android:showAsAction="withText"
         	android:title="@string/sent" 
-        	android:onClick="toInbox">
+        	android:onClick="toFolder">
         	</item>
         	<item
         	android:id="@+id/action_toDrafts"
         	android:showAsAction="withText"
         	android:title="@string/drafts" 
-        	android:onClick="toInbox">
+        	android:onClick="toFolder">
         	</item>
          </menu>
 	</item>

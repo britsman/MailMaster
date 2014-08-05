@@ -9,7 +9,7 @@ import org.junit.Test;
 import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.AccountSettingsActivity;
 import TIG055st2014.mailmaster.ComposeActivity;
-import TIG055st2014.mailmaster.DisplayEmail;
+import TIG055st2014.mailmaster.AppVariablesSingleton;
 import TIG055st2014.mailmaster.MailFunctionality;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
@@ -24,16 +24,16 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 
 	private ComposeActivity activity;
 	private MailFunctionality mf;
-	private DisplayEmail d;
+	private AppVariablesSingleton d;
 	
 	public ComposeActivityTest() {
 		super(ComposeActivity.class);
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
-		d = DisplayEmail.getInstance();
+		d = AppVariablesSingleton.getInstance();
 		d.setFolderName("INBOX");
-		Message m = mf.getInbox().get(0);
+		Message m = mf.getFolderTest().get(0);
 		d.setEmail(m);
-		d.setReply(mf.getReply(m));
+		d.setReply(mf.getTestReply(m));
 	}
 	@Override
 	protected void setUp() throws Exception{
