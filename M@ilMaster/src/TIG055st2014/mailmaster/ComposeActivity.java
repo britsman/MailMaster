@@ -17,6 +17,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,7 +37,8 @@ import android.widget.Toast;
 /**
  * Activity used for composing both new emails and replies.
  */
-public class ComposeActivity extends FragmentActivity implements OnItemSelectedListener{
+public class ComposeActivity extends FragmentActivity implements
+		OnItemSelectedListener {
 
 	private SharedPreferences accounts;
 	private String defaultAcc;
@@ -82,8 +84,9 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 		Encryption encryption = new Encryption();
 		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
 		attachments = new ArrayList<String>();
-		fetchContacts();
-
+		if (!apv.getIsReply()) {
+			fetchEmailsFromContacts();
+		}
 	}
 
 	@Override
@@ -143,9 +146,13 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 							accounts.getString(defaultAcc, ""),
 							(defaultAcc.split("@"))[1]);
 					EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
+					recipients.setTextColor(Color.parseColor("#a4c639"));
 					EditText cc = ((EditText) findViewById(R.id.ccAccs));
+					cc.setTextColor(Color.parseColor("#a4c639"));
 					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
+					bcc.setTextColor(Color.parseColor("#a4c639"));
 					EditText subject = ((EditText) findViewById(R.id.subject));
+					subject.setTextColor(Color.parseColor("#a4c639"));
 					subject.setText(apv.getEmail().getSubject().toString());
 					mf.getContents(this);
 					addAddresses(
@@ -193,7 +200,6 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 			Uri selectedImage = data.getData();
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
 			Cursor cursor = getContentResolver().query(selectedImage,
 					filePathColumn, null, null, null);
 			cursor.moveToFirst();
@@ -275,8 +281,8 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
 			} else {
-				recipients = (findViewById(R.id.receiveAccs))
-						.getContext().toString();
+				recipients = ((TextView) findViewById(R.id.receiveAccs))
+						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
 						.toString();
 				bcc = ((EditText) findViewById(R.id.bccAccs)).getText()
@@ -325,7 +331,7 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 	 * be saved.
 	 */
 
-	public void fetchContacts() {
+	public void fetchEmailsFromContacts() {
 
 		String email = null;
 		Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
@@ -334,12 +340,12 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 		Uri EmailCONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
 		String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
 		String DATA = ContactsContract.CommonDataKinds.Email.DATA;
-		
-		
-		 List<String> output = new ArrayList<String>();
-		
+
+		List<String> output = new ArrayList<String>();
+
 		ContentResolver contentResolver = getContentResolver();
-		Cursor cursor = contentResolver.query(CONTENT_URI, null, null, null,null);
+		Cursor cursor = contentResolver.query(CONTENT_URI, null, null, null,
+				null);
 		// Loop for every contact in the phone
 		if (cursor.getCount() > 0) {
 			output.add("");
@@ -349,48 +355,47 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 				String name = cursor.getString(cursor
 						.getColumnIndex(DISPLAY_NAME));
 
-					// Query and loop for every email of the contact
-					Cursor emailCursor = contentResolver.query(
-							EmailCONTENT_URI, null, EmailCONTACT_ID + " = ?",
-							new String[] { contact_id }, null);
+				// Query and loop for every email of the contact
+				Cursor emailCursor = contentResolver.query(EmailCONTENT_URI,
+						null, EmailCONTACT_ID + " = ?",
+						new String[] { contact_id }, null);
 
-					
-					while (emailCursor.moveToNext()) {
-						email = emailCursor.getString(emailCursor
-								.getColumnIndex(DATA));
-						
-						output.add(email);
-						
-				      
-					}
-					emailCursor.close();
+				while (emailCursor.moveToNext()) {
+					email = emailCursor.getString(emailCursor
+							.getColumnIndex(DATA));
+
+					output.add(email);
+
 				}
-		
+				emailCursor.close();
 			}
-		  ArrayAdapter<String>adapter = new ArrayAdapter<String>(ComposeActivity.this,
-	                android.R.layout.simple_spinner_item,output);
-		  AutoCompleteTextView myAutoComplete = (AutoCompleteTextView)findViewById(R.id.receiveAccs);
-	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	        myAutoComplete.setAdapter(adapter);
-	        myAutoComplete.setOnItemSelectedListener(this);
-		
+
 		}
-	
-	 public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
-		 parent.getItemAtPosition(0).equals("");
-			Toast.makeText(parent.getContext(), 
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+				ComposeActivity.this, android.R.layout.simple_spinner_item,
+				output);
+		AutoCompleteTextView myAutoComplete = (AutoCompleteTextView) findViewById(R.id.receiveAccs);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		myAutoComplete.setAdapter(adapter);
+		myAutoComplete.setOnItemSelectedListener(this);
+
+	}
+
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,
+			long id) {
+		parent.getItemAtPosition(0).equals("");
+		Toast.makeText(parent.getContext(),
 				"Email Selected : " + parent.getItemAtPosition(pos).toString(),
 				Toast.LENGTH_SHORT).show();
-		  }
-
+	}
 
 	public void dialogResult() {
 		if (save) {
 			String recipients, cc, bcc, subject, body;
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if (apv.getIsReply()) {
-				recipients = (findViewById(R.id.receiveAccsReply))
-						.getContext().toString();
+				recipients = (findViewById(R.id.receiveAccsReply)).getContext()
+						.toString();
 				cc = ((EditText) findViewById(R.id.ccAccsReply)).getText()
 						.toString();
 				bcc = ((EditText) findViewById(R.id.bccAccsReply)).getText()
@@ -400,8 +405,8 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
 			} else {
-				recipients = (findViewById(R.id.receiveAccs))
-						.getContext().toString();
+				recipients = ((TextView) findViewById(R.id.receiveAccsReply))
+						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
 						.toString();
 				bcc = ((EditText) findViewById(R.id.bccAccs)).getText()
@@ -429,6 +434,6 @@ public class ComposeActivity extends FragmentActivity implements OnItemSelectedL
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
