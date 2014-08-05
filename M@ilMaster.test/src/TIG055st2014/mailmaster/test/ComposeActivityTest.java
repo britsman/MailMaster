@@ -30,7 +30,6 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 		super(ComposeActivity.class);
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
 		d = AppVariablesSingleton.getInstance();
-		d.setFolderName("INBOX");
 		Message m = mf.getFolderTest().get(0);
 		d.setEmail(m);
 		d.setReply(mf.getTestReply(m));
@@ -38,19 +37,17 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 	@Override
 	protected void setUp() throws Exception{
 		super.setUp();
-		Intent intent = new Intent(getInstrumentation().getTargetContext(),
-		        ComposeActivity.class);
-		startActivity(intent, null, null);
-		activity = getActivity();
 	}
 	public void testReply() {
-		  activity.runOnUiThread(new Runnable() {
+		  new Thread(new Runnable() {
 
 		        public void run() {
 		        	try{
+		        		Intent intent = new Intent(getInstrumentation().getTargetContext(),
+		        		        ComposeActivity.class);
+		        		startActivity(intent, null, null);
+		        		activity = getActivity();
 		        		d.setIsReply(true);
-		        		getInstrumentation().callActivityOnCreate(activity, null);
-		        		getInstrumentation().callActivityOnStart(activity);
 		        		TextView subject = (TextView) activity.findViewById(R.id.subjectReply);
 		        		Log.d("Testing", subject.getText().toString());
 		        		Log.d("Testing", d.getReply().getSubject());
@@ -65,14 +62,16 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 			    });
 	}
 	public void testCompose() {
-		  activity.runOnUiThread(new Runnable() {
+		  new Thread(new Runnable() {
 
 		        public void run() {
 
 	        		try{
+		        		Intent intent = new Intent(getInstrumentation().getTargetContext(),
+		        		        ComposeActivity.class);
+		        		startActivity(intent, null, null);
+		        		activity = getActivity();
 		        		d.setIsReply(false);
-		        		getInstrumentation().callActivityOnCreate(activity, null);
-		        		getInstrumentation().callActivityOnStart(activity);
 		        		EditText subject = (EditText) activity.findViewById(R.id.subject);
 		        		assertTrue(subject.getText().toString().equals(""));
 		        	}
