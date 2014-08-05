@@ -28,6 +28,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.text.Html;
 import android.util.Log; 
 import android.view.Gravity;
 import android.webkit.WebView.FindListener;
@@ -679,6 +680,9 @@ public class MailFunctionality extends Authenticator {
 		}
 		if(htmlContents.equals("")){
 			return plainContents;
+		}
+		else if(apv.getFolderName().contains("Drafts")){
+			return Html.fromHtml(htmlContents).toString();
 		}
 		else{
 			return htmlContents;
