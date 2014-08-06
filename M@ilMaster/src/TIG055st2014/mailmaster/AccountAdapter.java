@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Adapter used to apply formatting and color to the text of items in the AccountSettings 
@@ -44,14 +46,15 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final String s = names.get(position);
-		final String defAcc = accounts.getString("default", "");
+		final Set<String> defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.account_item, null);
 		}
-		if(s.equals(defAcc)){
+		if(defAcc.contains(s)){
 			convertView.setBackgroundColor(Color.GREEN);
 		}
 		else{
@@ -71,15 +74,19 @@ public class AccountAdapter extends ArrayAdapter<String> {
 					public void onClick(View v) {
 						accEdit.remove(s);
 						names.remove(position);
-						if(s.equals(defAcc)){        
-							/*If there are memorized accounts left, but none of them are default,
-                	then set the first one as the new default.*/
-							if(names.size() > 0){
-								accEdit.putString("default", names.get(0));
+						if(defAcc.contains(s)){        
+							/*If there are enabled accounts left, update the list and the
+							 * enabled counter.*/
+							if(names.size() > 0 && defAcc.size() > 1){
+								defAcc.remove(s);
+								accEdit.putStringSet("default", defAcc);
+								int count = accounts.getInt("enabled", 1);
+								accEdit.putInt("enabled", count-1);
 							}
 							//If no accounts remain, disable the 'open folder' icon.
 							else{
 								accEdit.remove("default");
+								accEdit.putInt("enabled", 0);
 								act.invalidateOptionsMenu();
 							}
 						}

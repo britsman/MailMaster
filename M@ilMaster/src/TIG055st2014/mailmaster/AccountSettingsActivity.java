@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,6 +39,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 		Set<String> c = accounts.getAll().keySet();
 		if(c != null){
 			c.remove("default");
+			c.remove("enabled");
 		}
 		columns.addAll(c);
 		listView = (ListView) findViewById(R.id.account_list);
@@ -51,13 +53,30 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View newDef, int position, long id) {
-		String temp = accounts.getString("default", "");
-		if(!temp.equals(columns.get(position))){
-			accEdit.putString("default", columns.get(position));
+		int count = accounts.getInt("enabled", 0);
+		Set<String> defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		if(!defAcc.contains(columns.get(position)) && count < 3){
+			defAcc.add(columns.get(position));
+			accEdit.putStringSet("default", defAcc);  
+			accEdit.putInt("enabled", count+1);
 			accEdit.commit();
-			listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
-					R.id.account_text, columns, this));
+			if(defAcc.size() == 1){
+				invalidateOptionsMenu();
+			}
 		}
+		else if(defAcc.contains(columns.get(position))){
+			defAcc.remove(columns.get(position));
+			accEdit.putStringSet("default", defAcc);  
+			accEdit.putInt("enabled", count-1);
+			accEdit.commit();
+			if(defAcc.size() == 0){
+				invalidateOptionsMenu();
+			}
+		}
+		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
+				R.id.account_text, columns, this));
+		
 	}
 	/**
 	 * Redirect triggered by pressing the add account icon.
@@ -72,15 +91,21 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 	 */
 	public void toFolder(MenuItem m){
 		int id = m.getItemId();
+		Set<String> defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		apv.initAccounts();
+		for(String s : defAcc){
+			apv.setFolderName(s, apv.getFolderName(s));
+		}
 		if (id == R.id.action_toInbox) {
-			apv.setFolderName("INBOX");
+			apv.setAllFolders("INBOX");
 		}
 		else if (id == R.id.action_toSent) {
-			apv.setFolderName("[Gmail]/Sent Mail");
+			apv.setAllFolders("[Gmail]/Sent Mail");
 		}
 		else{
-			apv.setFolderName("[Gmail]/Drafts");
+			apv.setAllFolders("[Gmail]/Drafts");
 		}
 		startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
 	}
@@ -101,7 +126,10 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.account_settings, menu);
 		MenuItem folder = menu.findItem(R.id.action_folder);
-		if(columns.size() == 0){
+		Set<String> defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+
+		if(defAcc.size() == 0){
 			folder.setEnabled(false);
 			folder.setVisible(false);
 		}

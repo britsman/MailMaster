@@ -1,6 +1,8 @@
 package TIG055st2014.mailmaster;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.mail.Message;
 
@@ -28,7 +30,7 @@ import android.widget.ListView;
 public class MailFolderActivity extends Activity implements AdapterView.OnItemClickListener, EmailNotificationServiceClient{
 	//partially based on http://stackoverflow.com/questions/11390018/how-to-cal-the-activity-method-from-the-service
 	public SharedPreferences accounts;
-	private String defaultAcc;
+	private Set<String> defAcc;
 	private String pw;
 	protected ListView listView;
 	protected ArrayList<Message> emails;
@@ -41,21 +43,25 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		setContentView(R.layout.activity_mail_folder);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defaultAcc = accounts.getString("default", "");
-		String key = "Some Key";
-		Encryption encryption = new Encryption();
-		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
+		defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		if(defaultAcc.equals("")){//No accounts added
+		if(defAcc.size() == 0){//No default accounts added
 			startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
 		}
 		else{
-			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+			if(apv.folderName == null){
+				apv.initAccounts();
+				for(String s : defAcc){
+					apv.setFolderName(s, apv.getFolderName(s));
+				}
+			}
+			emails = new ArrayList<Message>();
 			listView = (ListView) findViewById(R.id.inbox_list);
 			listView.setClickable(true);
 			listView.setOnItemClickListener(this);
-			mf.getFolder(this);
-			if(apv.getFolderName().equals("INBOX") && !isServiceRunning()){
+			refreshList();
+			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning()){
 				startBackground();
 			}
 		}
@@ -64,10 +70,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	public void onStart(){
 		super.onStart();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		if(apv.getFolderName().contains("Drafts")){
+		if(apv.getFolderNames().contains("Drafts")){
 			getActionBar().setTitle(R.string.drafts);
 		}
-		else if(apv.getFolderName().contains("Sent")){
+		else if(apv.getFolderNames().contains("Sent")){
 			getActionBar().setTitle(R.string.sent);
 		}
 		else{
@@ -84,6 +90,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.setIsReply(false);
 		apv.setEmail(null);
+		for(String s : defAcc){	
+			apv.setAccount(s);
+			break;
+		}
 		startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
 	}
 
@@ -117,7 +127,13 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		}
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.setEmail(emails.get(position));
-		if(apv.getFolderName().contains("Drafts")){
+		for(String s : defAcc){
+			if(apv.getEmail().getFolder().equals(apv.getEmailFolder(s))){
+				apv.setAccount(s);
+				break;
+			}
+		}
+		if(getActionBar().getTitle().toString().equals((getResources().getString(R.string.drafts)))){
 			apv.setIsReply(false);
 			startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
 		}
@@ -137,7 +153,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		int id = m.getItemId();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
-			apv.setFolderName("INBOX");
+			apv.setAllFolders("INBOX");
 			getActionBar().setTitle(R.string.inbox);   
 			if(!isServiceRunning()){
 				startBackground();
@@ -147,18 +163,17 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			apv.setFolderName("[Gmail]/Sent Mail");
+			apv.setAllFolders("[Gmail]/Sent Mail");
 			getActionBar().setTitle(R.string.sent);
 		}
 		else{
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			apv.setFolderName("[Gmail]/Drafts");
+			apv.setAllFolders("[Gmail]/Drafts");
 			getActionBar().setTitle(R.string.drafts);
 		}
-		MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
-		mf.getFolder(this);
+		refreshList();
 	}
 	/**
 	 * Used to check if service needs to be started/stopped.
@@ -182,10 +197,13 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		runOnUiThread(new Runnable() {
 
 			public void run() {
-				Log.d("autoupdate", "in activity");
-				emails = m;
-				listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
-						R.id.email_preview, emails));
+				if(isServiceRunning()){
+					Log.d("autoupdate", "in activity");
+					emails = m;
+					Log.d("autoupdate size", emails.size() + "");
+					listView.setAdapter(new EmailAdapter(getApplicationContext(),R.layout.email_item,
+							R.id.email_preview, emails));
+				}
 			}
 		});
 	}
@@ -226,5 +244,15 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		stopService(new Intent(getApplicationContext(),
 				EmailNotificationService.class));
 		unbindService(mServiceConnection);
+	}
+	private void refreshList(){
+		String key = "Some Key";
+		Encryption decrypter = new Encryption();
+		emails = new ArrayList<Message>();
+		for(String s : defAcc){		
+			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
+			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
+			mf.getFolder(this);
+		}
 	}
 }

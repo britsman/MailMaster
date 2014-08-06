@@ -2,7 +2,9 @@ package TIG055st2014.mailmaster;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -41,7 +43,8 @@ public class ComposeActivity extends FragmentActivity implements
 		OnItemSelectedListener {
 
 	private SharedPreferences accounts;
-	private String defaultAcc;
+	private Set<String> defAcc;
+	private String currentAcc;
 	private String pw;
 	private static final int PICK_FROM_GALLERY = 101;
 	String file_path;
@@ -75,14 +78,16 @@ public class ComposeActivity extends FragmentActivity implements
 		}
 		listView.setClickable(true);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defaultAcc = accounts.getString("default", "");
+		defAcc = new HashSet<String>();
+		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		currentAcc = apv.getAccount();
 		sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
 		sizeEdit = sizePref.edit();
 		sizeEdit.putFloat("Total", (float) 0.0);
 		sizeEdit.commit();
 		String key = "Some Key";
 		Encryption encryption = new Encryption();
-		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
+		pw = encryption.decrypt(key, (accounts.getString(currentAcc, "")));
 		attachments = new ArrayList<String>();
 		if (!apv.getIsReply()) {
 			fetchEmailsFromContacts();
@@ -104,14 +109,14 @@ public class ComposeActivity extends FragmentActivity implements
 			getActionBar().setTitle(R.string.composing_rp);
 			result = (TextView) findViewById(R.id.totalsizeReply);
 			sender = (TextView) findViewById(R.id.sendAccReply);
-			sender.setText(defaultAcc);
+			sender.setText(currentAcc);
 			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
 			TextView subject = (TextView) findViewById(R.id.subjectReply);
 			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
 			cc.setText("");
 			try {
 				subject.setText(apv.getReply().getSubject());
-				if (apv.getFolderName().contains("Sent")) {
+				if (apv.getFolderName(currentAcc).contains("Sent")) {
 					Address[] tempTo = apv.getEmail().getRecipients(
 							RecipientType.TO);
 					if (tempTo != null) {
@@ -139,12 +144,12 @@ public class ComposeActivity extends FragmentActivity implements
 			getActionBar().setTitle(R.string.composing);
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
-			sender.setText(defaultAcc);
-			if (apv.getFolderName().contains("Drafts")) {
+			sender.setText(currentAcc);
+			if (apv.getFolderName(currentAcc).contains("Drafts")) {
 				try {
-					MailFunctionality mf = new MailFunctionality(defaultAcc,
-							accounts.getString(defaultAcc, ""),
-							(defaultAcc.split("@"))[1]);
+					MailFunctionality mf = new MailFunctionality(currentAcc,
+							accounts.getString(currentAcc, ""),
+							(currentAcc.split("@"))[1]);
 					EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
 					recipients.setTextColor(Color.parseColor("#a4c639"));
 					EditText cc = ((EditText) findViewById(R.id.ccAccs));
@@ -295,9 +300,9 @@ public class ComposeActivity extends FragmentActivity implements
 			if (!recipients.equals("") && !subject.equals("")
 					&& !body.equals("")) {
 				try {
-					MailFunctionality mf = new MailFunctionality(defaultAcc,
-							pw, (defaultAcc.split("@"))[1]);
-					mf.sendMail(subject, body, defaultAcc, recipients, cc, bcc,
+					MailFunctionality mf = new MailFunctionality(currentAcc,
+							pw, (currentAcc.split("@"))[1]);
+					mf.sendMail(subject, body, currentAcc, recipients, cc, bcc,
 							attachments, getApplicationContext(), this);
 					startActivity(new Intent(
 							"TIG055st2014.mailmaster.MailFolderActivity"));
@@ -419,9 +424,9 @@ public class ComposeActivity extends FragmentActivity implements
 			if (!recipients.equals("") || !subject.equals("")
 					|| !body.equals("") || !cc.equals("") || !bcc.equals("")) {
 				try {
-					MailFunctionality mf = new MailFunctionality(defaultAcc,
-							pw, (defaultAcc.split("@"))[1]);
-					mf.saveDraft(subject, body, defaultAcc, recipients, cc,
+					MailFunctionality mf = new MailFunctionality(currentAcc,
+							pw, (currentAcc.split("@"))[1]);
+					mf.saveDraft(subject, body, currentAcc, recipients, cc,
 							bcc, getApplicationContext(), this);
 				} catch (Exception e) {
 					e.printStackTrace();
