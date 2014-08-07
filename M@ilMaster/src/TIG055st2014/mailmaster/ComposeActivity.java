@@ -100,6 +100,7 @@ OnItemSelectedListener {
 		super.onStart();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		TextView sender;
+		TextView from;
 		TextView result;
 
 		/*
@@ -111,6 +112,11 @@ OnItemSelectedListener {
 			result = (TextView) findViewById(R.id.totalsizeReply);
 			sender = (TextView) findViewById(R.id.sendAccReply);
 			sender.setText(currentAcc);
+			sender.setEnabled(false);
+			sender.setVisibility(View.GONE);
+			from = (TextView) findViewById(R.id.senderReply);
+			from.setEnabled(false);
+			from.setVisibility(View.GONE);
 			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
 			TextView subject = (TextView) findViewById(R.id.subjectReply);
 			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
@@ -146,6 +152,11 @@ OnItemSelectedListener {
 			result = (TextView) findViewById(R.id.totalsize);
 			sender = (TextView) findViewById(R.id.sendAcc);
 			sender.setText(currentAcc);
+			sender.setEnabled(false);
+			sender.setVisibility(View.GONE);
+			from = (TextView) findViewById(R.id.sender);
+			from.setEnabled(false);
+			from.setVisibility(View.GONE);
 			if (apv.getFolderName(currentAcc).contains("Drafts")) {
 				try {
 					MailFunctionality mf = new MailFunctionality(currentAcc,
@@ -156,6 +167,7 @@ OnItemSelectedListener {
 					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
 					EditText subject = ((EditText) findViewById(R.id.subject));
 					subject.setText(apv.getEmail().getSubject().toString());
+					
 					mf.getContents(this);
 					addAddresses(
 							apv.getEmail().getRecipients(
@@ -468,7 +480,7 @@ OnItemSelectedListener {
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
 			} else {
-				recipients = ((TextView) findViewById(R.id.receiveAccsReply))
+				recipients = ((TextView) findViewById(R.id.receiveAccs))
 						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
 						.toString();
