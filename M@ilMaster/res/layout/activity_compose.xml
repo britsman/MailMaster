@@ -36,12 +36,13 @@
         android:text="@string/receiver"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-     <AutoCompleteTextView
+     <MultiAutoCompleteTextView
         android:id="@+id/receiveAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receiver"
         android:ems="10"
+        android:hint="Write Reciever here"
         android:singleLine="true" />
     
         <TextView
@@ -53,7 +54,7 @@
         android:text="@string/cc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
-        <EditText
+        <MultiAutoCompleteTextView
         android:id="@+id/ccAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -71,7 +72,7 @@
         android:text="@string/bcc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
-        <EditText
+        <MultiAutoCompleteTextView
         android:id="@+id/bccAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -116,22 +117,13 @@
         android:ems="10"
         android:hint="Write receiver message here"
         android:singleLine="false" />
-    
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/body"
-        android:onClick="onClickSend"
-        android:text="@string/send" />
 
     <TextView
         android:id="@+id/totalsize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/send_button"
+        android:layout_below="@+id/body"
         android:text="Total size:" />
       
 </RelativeLayout>

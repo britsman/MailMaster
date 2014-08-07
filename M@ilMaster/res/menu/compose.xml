@@ -6,5 +6,11 @@
         android:title="@string/attach" 
         android:onClick="onClickAttach"
         android:icon="@drawable/ic_action_new_attachment"/>
+    <item
+        android:id="@+id/send_button"
+        android:showAsAction="always"
+        android:title="@string/send" 
+        android:onClick="onClickSend"/>
+    
 
 </menu>

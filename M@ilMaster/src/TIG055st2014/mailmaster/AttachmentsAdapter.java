@@ -6,12 +6,15 @@ import android.R.string;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -67,6 +70,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		}	
 		TextView tv = (TextView) convertView
 				.findViewById(R.id.attachments_text);
+		
 		//We split the stored filename so we only show the name (not the absolute path) in the GUI.
 		String temp[] = a.split("/");
 		tv.setText(temp[temp.length-1] + "\t" + 

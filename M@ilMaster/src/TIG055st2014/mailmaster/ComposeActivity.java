@@ -7,6 +7,7 @@ import java.util.List;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage.RecipientType;
+import android.view.MotionEvent;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +40,7 @@ import android.widget.Toast;
  * Activity used for composing both new emails and replies.
  */
 public class ComposeActivity extends FragmentActivity implements
-		OnItemSelectedListener {
+OnItemSelectedListener {
 
 	private SharedPreferences accounts;
 	private String defaultAcc;
@@ -84,9 +86,8 @@ public class ComposeActivity extends FragmentActivity implements
 		Encryption encryption = new Encryption();
 		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
 		attachments = new ArrayList<String>();
-		if (!apv.getIsReply()) {
-			fetchEmailsFromContacts();
-		}
+		fetchEmailsFromContacts();
+
 	}
 
 	@Override
@@ -146,13 +147,9 @@ public class ComposeActivity extends FragmentActivity implements
 							accounts.getString(defaultAcc, ""),
 							(defaultAcc.split("@"))[1]);
 					EditText recipients = ((EditText) findViewById(R.id.receiveAccs));
-					recipients.setTextColor(Color.parseColor("#a4c639"));
 					EditText cc = ((EditText) findViewById(R.id.ccAccs));
-					cc.setTextColor(Color.parseColor("#a4c639"));
 					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
-					bcc.setTextColor(Color.parseColor("#a4c639"));
 					EditText subject = ((EditText) findViewById(R.id.subject));
-					subject.setTextColor(Color.parseColor("#a4c639"));
 					subject.setText(apv.getEmail().getSubject().toString());
 					mf.getContents(this);
 					addAddresses(
@@ -257,10 +254,10 @@ public class ComposeActivity extends FragmentActivity implements
 				PICK_FROM_GALLERY);
 	}
 
-	public void onClickSend(View v) {
+	public void onClickSend(MenuItem m) {
 		total = sizePref.getFloat("Total", (float) 0.0);
 		if (total > 20480) {// The maximum attachment size to make email
-							// receivable by microsoft accounts
+			// receivable by microsoft accounts
 			Toast toast = Toast.makeText(getApplicationContext(),
 					"Could not send, files are too big to attach!",
 					Toast.LENGTH_SHORT);
@@ -281,7 +278,7 @@ public class ComposeActivity extends FragmentActivity implements
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
 			} else {
-				recipients = ((TextView) findViewById(R.id.receiveAccs))
+				recipients = ((EditText) findViewById(R.id.receiveAccs))
 						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
 						.toString();
@@ -348,12 +345,11 @@ public class ComposeActivity extends FragmentActivity implements
 				null);
 		// Loop for every contact in the phone
 		if (cursor.getCount() > 0) {
-			output.add("");
+			//output.add("");
 			while (cursor.moveToNext()) {
 				String contact_id = cursor
 						.getString(cursor.getColumnIndex(_ID));
-				String name = cursor.getString(cursor
-						.getColumnIndex(DISPLAY_NAME));
+				//String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
 
 				// Query and loop for every email of the contact
 				Cursor emailCursor = contentResolver.query(EmailCONTENT_URI,
@@ -363,27 +359,89 @@ public class ComposeActivity extends FragmentActivity implements
 				while (emailCursor.moveToNext()) {
 					email = emailCursor.getString(emailCursor
 							.getColumnIndex(DATA));
-
-					output.add(email);
-
+					output.add(email +",");
 				}
 				emailCursor.close();
 			}
 
 		}
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				ComposeActivity.this, android.R.layout.simple_spinner_item,
-				output);
-		AutoCompleteTextView myAutoComplete = (AutoCompleteTextView) findViewById(R.id.receiveAccs);
+				ComposeActivity.this, android.R.layout.simple_spinner_item,output);
+		
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		myAutoComplete.setAdapter(adapter);
-		myAutoComplete.setOnItemSelectedListener(this);
-
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		if (!apv.getIsReply()){
+			final MultiAutoCompleteTextView myAutoComplete = (MultiAutoCompleteTextView) findViewById(R.id.receiveAccs);
+			final MultiAutoCompleteTextView myAutoCompletecc = (MultiAutoCompleteTextView) findViewById(R.id.ccAccs);
+			final MultiAutoCompleteTextView myAutoCompletebcc = (MultiAutoCompleteTextView) findViewById(R.id.bccAccs);
+			
+			myAutoComplete.setAdapter(adapter);
+			myAutoCompletecc.setAdapter(adapter);
+			myAutoCompletebcc.setAdapter(adapter);
+			myAutoComplete.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+			myAutoCompletecc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+			myAutoCompletebcc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+			myAutoComplete.setThreshold(0);
+			myAutoCompletecc.setThreshold(0);
+			myAutoCompletebcc.setThreshold(0);
+			
+			myAutoComplete.setOnTouchListener(new View.OnTouchListener(){
+				   @Override
+				   public boolean onTouch(View v, MotionEvent event){
+				      myAutoComplete.showDropDown();
+				      return false;
+				   }
+				});
+			myAutoCompletecc.setOnTouchListener(new View.OnTouchListener(){
+				   @Override
+				   public boolean onTouch(View v, MotionEvent event){
+				      myAutoCompletecc.showDropDown();
+				      return false;
+				   }
+				});
+			myAutoCompletebcc.setOnTouchListener(new View.OnTouchListener(){
+				   @Override
+				   public boolean onTouch(View v, MotionEvent event){
+				      myAutoCompletebcc.showDropDown();
+				      return false;
+				   }
+				});
+			
+			myAutoComplete.setOnItemSelectedListener(this);
+			myAutoCompletecc.setOnItemSelectedListener(this);
+			myAutoCompletebcc.setOnItemSelectedListener(this);
+		}
+		else{
+			final MultiAutoCompleteTextView myAutoCompleteccrep = (MultiAutoCompleteTextView) findViewById(R.id.ccAccsReply);
+			final MultiAutoCompleteTextView myAutoCompletebccrep = (MultiAutoCompleteTextView) findViewById(R.id.bccAccsReply);
+			myAutoCompleteccrep.setAdapter(adapter);
+			myAutoCompletebccrep.setAdapter(adapter);
+			myAutoCompleteccrep.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+			myAutoCompletebccrep.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+			myAutoCompleteccrep.setThreshold(0);
+			myAutoCompletebccrep.setThreshold(0);
+			myAutoCompleteccrep.setOnTouchListener(new View.OnTouchListener(){
+				   @Override
+				   public boolean onTouch(View v, MotionEvent event){
+				      myAutoCompleteccrep.showDropDown();
+				      return false;
+				   }
+				});
+			myAutoCompletebccrep.setOnTouchListener(new View.OnTouchListener(){
+				   @Override
+				   public boolean onTouch(View v, MotionEvent event){
+				      myAutoCompletebccrep.showDropDown();
+				      return false;
+				   }
+				});
+			myAutoCompleteccrep.setOnItemSelectedListener(this);
+			myAutoCompletebccrep.setOnItemSelectedListener(this);
+		}
 	}
 
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id) {
-		parent.getItemAtPosition(0).equals("");
+
 		Toast.makeText(parent.getContext(),
 				"Email Selected : " + parent.getItemAtPosition(pos).toString(),
 				Toast.LENGTH_SHORT).show();
@@ -394,7 +452,7 @@ public class ComposeActivity extends FragmentActivity implements
 			String recipients, cc, bcc, subject, body;
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if (apv.getIsReply()) {
-				recipients = (findViewById(R.id.receiveAccsReply)).getContext()
+				recipients = ((TextView)findViewById(R.id.receiveAccsReply)).getText()
 						.toString();
 				cc = ((EditText) findViewById(R.id.ccAccsReply)).getText()
 						.toString();

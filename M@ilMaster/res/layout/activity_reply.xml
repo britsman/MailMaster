@@ -53,7 +53,7 @@
         android:text="@string/cc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
-        <EditText
+        <MultiAutoCompleteTextView
         android:id="@+id/ccAccsReply"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         android:text="@string/bcc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         
-        <EditText
+        <MultiAutoCompleteTextView
         android:id="@+id/bccAccsReply"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -118,20 +118,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:singleLine="false" />
 
-    <Button
-        android:id="@+id/sendreply_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/bodyReply"
-        android:onClick="onClickSend"
-        android:text="@string/send" />
+  
     
         <TextView
         android:id="@+id/totalsizeReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/sendreply_button"
+        android:layout_below="@+id/bodyReply"
         android:text="Total size:" />
 </RelativeLayout>
