@@ -28,8 +28,9 @@ public class ComposeActivityTest extends ActivityUnitTestCase<ComposeActivity> {
 	
 	public ComposeActivityTest() {
 		super(ComposeActivity.class);
-		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
 		d = AppVariablesSingleton.getInstance();
+		d.initAccounts();
+		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
 		Message m = mf.getFolderTest().get(0);
 		d.setEmail(m);
 		d.setReply(mf.getTestReply(m));

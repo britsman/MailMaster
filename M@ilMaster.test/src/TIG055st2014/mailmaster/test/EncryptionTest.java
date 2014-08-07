@@ -29,7 +29,6 @@ private Encryption enc;
 		enc.encrypt(Key, password);
 		enc.decrypt(Key, password);
 		assertFalse(enc.encrypt(Key,password).equals(password));
-		//assertTrue(enc.decrypt(Key,password).equals(password));
 	
 	}
 	
@@ -39,6 +38,16 @@ private Encryption enc;
 		String encreptCode = enc.encrypt(Key, password);
 		enc.decrypt(Key, password);
 		assertTrue(enc.decrypt(Key, encreptCode).equals(password));
+	
+	}
+	
+
+	public void testDecryptAndDecrpt(){
+		String Key = "Some Key";
+		String password = "mailmaster123";
+		String encreptCode = enc.encrypt(Key, password);
+		String decreptCode= enc.decrypt(Key, encreptCode);
+		assertTrue(decreptCode.equals(password));
 	
 	}
 

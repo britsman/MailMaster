@@ -11,12 +11,15 @@ import junit.framework.TestCase;
 public class MailFunctionalityTest extends TestCase {
 	
 	private MailFunctionality mf;
+	private String account;
 	
 	@Override
 	public void setUp(){
-		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
+		account = "mailmastertesting@gmail.com";
+		mf = new MailFunctionality(account, "mailmaster123", "gmail.com");
 		AppVariablesSingleton d = AppVariablesSingleton.getInstance();
-		d.setFolderName("INBOX");
+		d.initAccounts();
+		d.setFolderName(account, "INBOX");
 	}
 	public void testValidate(){
 		assertTrue(mf.validateTest());

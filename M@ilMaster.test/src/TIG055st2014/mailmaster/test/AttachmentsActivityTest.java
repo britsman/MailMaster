@@ -26,8 +26,8 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 	public AttachmentsActivityTest() {
 		super(AttachmentsActivity.class);
 		d = AppVariablesSingleton.getInstance();
+		d.initAccounts();
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
-		d = AppVariablesSingleton.getInstance();
 		Message m = mf.getFolderTest().get(0);
 		d.setEmail(m);
 	}

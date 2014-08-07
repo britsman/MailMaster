@@ -21,11 +21,14 @@ public class ShowEmailActivityTest extends  ActivityUnitTestCase<ShowEmailActivi
 	private ShowEmailActivity activity;
 	private MailFunctionality mf;
 	private AppVariablesSingleton d;
+	private String account;
 	public ShowEmailActivityTest() {
 		super(ShowEmailActivity.class);
-		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
+		account = "mailmastertesting@gmail.com";
 		d = AppVariablesSingleton.getInstance();
-		d.setFolderName("INBOX");
+		d.initAccounts();
+		mf = new MailFunctionality(account, "mailmaster123", "gmail.com");
+		d.setFolderName(account, "INBOX");
 		Message m = mf.getFolderTest().get(0);
 		d.setEmail(m);
 		

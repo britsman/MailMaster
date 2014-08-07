@@ -25,12 +25,12 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class InboxActivityTest extends ActivityUnitTestCase<MailFolderActivity> {
+public class MailFolderActivityTest extends ActivityUnitTestCase<MailFolderActivity> {
 	private MailFolderActivity activity;
 	private SharedPreferences.Editor accEdit;
 	private AppVariablesSingleton apv;
 
-	public InboxActivityTest() {
+	public MailFolderActivityTest() {
 		super(MailFolderActivity.class);
 		apv = AppVariablesSingleton.getInstance();
 		// TODO Auto-generated constructor stub
@@ -68,7 +68,7 @@ public class InboxActivityTest extends ActivityUnitTestCase<MailFolderActivity> 
 		    		String target = "TIG055st2014.mailmaster.ComposeActivity";
 		    		String target2 = "TIG055st2014.mailmaster.ShowEmailActivity";
 		        	activity.onItemClick(null, null, 0, 0);
-		        	if(apv.getFolderName().contains("Drafts")){
+		        	if(apv.getFolderName("mailmastertesting@gmail.com").contains("Drafts")){
 		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
 		        	}
 		        	else{
@@ -122,10 +122,10 @@ public class InboxActivityTest extends ActivityUnitTestCase<MailFolderActivity> 
 				activity.accounts.getString("defaultAcc", "");
 				MenuItem m = (MenuItem)activity.findViewById(R.id.action_sent);
 				activity.changeFolder(m);
-				assertTrue(apv.getFolderName().contains("Drafts"));
+				assertTrue(apv.getFolderName("mailmastertesting@gmail.com").contains("Drafts"));
 				m = (MenuItem)activity.findViewById(R.id.action_inbox);
 				activity.changeFolder(m);
-				assertTrue(apv.getFolderName().contains("INBOX"));
+				assertTrue(apv.getFolderName("mailmastertesting@gmail.com").contains("INBOX"));
 			}
 		});
 	}
