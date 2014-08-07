@@ -1,8 +1,17 @@
 package TIG055st2014.mailmaster;
 
 import android.app.Activity;
+
+import java.util.Locale; 
+import android.os.Bundle; 
+import android.app.Activity; 
+import android.content.Intent; 
+import android.content.res.Configuration; 
+import android.content.res.Resources; 
+import android.util.DisplayMetrics; 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.*;
 import android.view.Gravity;
@@ -16,6 +25,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -47,6 +57,8 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 		listView.setOnItemClickListener(this);
 		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
 				R.id.account_text, columns, this));
+
+
 	}
 	/**
 	 * Overridden method used to change the default account.
@@ -89,6 +101,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 	 * Note that the foldername string is updated inside MailFunctionality if the 
 	 * current default email address is not gmail/student.gu.
 	 */
+	
 	public void toFolder(MenuItem m){
 		int id = m.getItemId();
 		Set<String> defAcc = new HashSet<String>();
@@ -100,6 +113,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 		}
 		if (id == R.id.action_toInbox) {
 			apv.setAllFolders("INBOX");
+			
 		}
 		else if (id == R.id.action_toSent) {
 			apv.setAllFolders("[Gmail]/Sent Mail");
@@ -109,6 +123,47 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 		}
 		startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
 	}
+	
+	
+	
+	public boolean toLanguge(MenuItem m1){
+		 switch (m1.getItemId()){
+		
+		 case R.id.action_En:
+             Locale locale2 = new Locale(""); 
+             Locale.setDefault(locale2);
+             Configuration config2 = new Configuration();
+             config2.locale = locale2;
+             getBaseContext().getResources().updateConfiguration(config2, getBaseContext().getResources().getDisplayMetrics());
+
+             Toast.makeText(this, "Locale in English !", Toast.LENGTH_LONG).show();
+             break;
+
+             
+        case R.id.action_Sw:
+             Locale locale3 = new Locale("sv"); 
+             Locale.setDefault(locale3);
+             // Configuration config3 = new Configuration();
+             Resources res = getResources(); 
+     		 DisplayMetrics dm = res.getDisplayMetrics(); 
+     		 Configuration conf = res.getConfiguration(); 
+     		 //config3.locale = locale3;
+     		 conf.locale = locale3;
+     		 res.updateConfiguration(conf, dm); 
+     		 Intent refresh = new Intent(this, AccountSettingsActivity.class); 
+     		 startActivity(refresh);
+     		
+             //getBaseContext().getResources().updateConfiguration(config3, getBaseContext().getResources().getDisplayMetrics());
+
+             Toast.makeText(this, "Locale in Swedish !", Toast.LENGTH_LONG).show();
+             break;
+		 }
+         return super.onOptionsItemSelected(m1);
+	}
+	
+
+	
+	
 	/**
 	 * We disable the back button while the user is on the add account screen, in order to prevent
 	 * certain possible issues (going back in history stack can cause display of "outdated" 

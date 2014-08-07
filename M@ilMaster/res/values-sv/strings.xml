@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">M@ilMaster</string>
+    <string name="title_activity_mail_sender">MailSenderAktivitet</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="action_reply">Svara</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_login">LoginAktivitet</string>
+    <string name="title_activity_account_picker">KontoVäljareAktivitet</string>
+    <string name="add_acc">Lägg Till Konto</string>
+    <string name="add_email">Lägg till ett epostadress ...</string>
+    <string name="email">E-post...</string>
+    <string name="password">Lösenord...</string>
+    <string name="inbox">Inbox</string>
+    <string name="sent">skickat</string>
+    <string name="drafts">Utkast</string>
+    <string name="send">skicka</string>
+    <string name="settings">Kontoinställningar</string>
+    <string name="title_activity_compose">SammanAktivitet</string>
+    <string name="sender">Från:</string>
+    <string name="receiver">Till:</string>
+    <string name="cc">CC:</string>
+    <string name="bcc">BCC:</string>
+    <string name="subject">Ämne:</string>
+    <string name="message">Meddelande:</string>
+    <string name="compose">Skriv e-post</string>
+    <string name="composing">Skriv av e-post......</string>
+    <string name="composing_rp">Skriva svar...</string>
+    <string name="attach">Bifoga fil...</string>
+    <string name="attached">Bifogade filer...</string>
+    <string name="get_attach">Få bilagor</string>
+    <string name="title_activity_show_email">VisaE-aktivitet</string>
+    <string name="title_activity_reply">SvaraAktivitet</string>
+    <string name="title_activity_attachments">BilagorAktivitet</string>
+    <string name="folders">Välj Mapp...</string>
+     <string name="languages">Språk</string>
+    <string name="english">En</string>
+    <string name="swedish">Sw</string>
+    <string name="msDrafts">Utkast</string>
+    <string name="msSent">Skickat</string>
+    <string name="gmailDrafts">[Gmail]/Utkast</string>
+    <string name="gmailSent">[Gmail]/Skickat Post</string>
+    <string name="choose_acc">Välj konto...</string>
+    <string name="download">LaddanerPunkt</string>
+
+</resources>

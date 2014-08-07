@@ -33,4 +33,27 @@
         	</item>
          </menu>
 	</item>
+	
+	<item
+        android:id="@+id/action_choose_language"
+        android:showAsAction="always"
+        android:title="@string/languages"
+        android:icon="@drawable/languages">
+        <menu>
+            <item
+        	android:id="@+id/action_En"
+        	android:showAsAction="always"
+        	android:title="@string/english"
+        	android:onClick="toLanguge">
+        	</item>
+        	<item
+        	android:id="@+id/action_Sw"
+        	android:showAsAction="always"
+        	android:title="@string/swedish"
+        	android:onClick="toLanguge">
+        	</item>
+        
+         </menu>
+    </item>
+    
 </menu>
