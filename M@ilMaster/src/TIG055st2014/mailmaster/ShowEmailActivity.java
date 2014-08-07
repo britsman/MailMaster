@@ -1,5 +1,7 @@
 package TIG055st2014.mailmaster;
 
+import java.util.Set;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +17,7 @@ import android.webkit.WebView;
 public class ShowEmailActivity extends Activity {
 
 	private SharedPreferences accounts;
-	private String defaultAcc;
+	private String currentAcc;
 	private String pw;
 	/**
 	 * A WebView is used in order to easily display HTML contents.
@@ -28,10 +30,11 @@ public class ShowEmailActivity extends Activity {
 		setContentView(R.layout.activity_show_email);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defaultAcc = accounts.getString("default", "");
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		currentAcc = apv.getAccount();
 		String key = "Some Key";
 		Encryption encryption = new Encryption();
-		pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
+		pw = encryption.decrypt(key, (accounts.getString(currentAcc, "")));
 	}
 	@Override
 	protected void onStart() {
@@ -50,7 +53,7 @@ public class ShowEmailActivity extends Activity {
 			//Increases max zoomout level.
 			wv.getSettings().setUseWideViewPort(true);
 			try {
-				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+				MailFunctionality mf = new MailFunctionality(currentAcc, pw, (currentAcc.split("@"))[1]);
 				mf.getContents(this);
 			} 
 			catch (Exception e) {
@@ -62,7 +65,7 @@ public class ShowEmailActivity extends Activity {
 	 * Called from onPostExecute in AsyncTask after content has been parsed in the background.
 	 */
 	protected void load(String contents){	
-		wv.loadData(contents, "text/html", null);
+		wv.loadData(contents, "text/html;charset=UTF-8", null);
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,7 +76,7 @@ public class ShowEmailActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.action_reply) {
-			MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+			MailFunctionality mf = new MailFunctionality(currentAcc, pw, (currentAcc.split("@"))[1]);
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			try{
 				mf.getReply(apv.getEmail(), this);

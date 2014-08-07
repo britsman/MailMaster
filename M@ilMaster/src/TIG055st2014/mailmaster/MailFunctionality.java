@@ -99,11 +99,11 @@ public class MailFunctionality extends Authenticator {
 				else{
 					props.setProperty("mail.host", "smtp.live.com");
 					imapHost = "imap-mail.outlook.com";
-					if(apv.getFolderName() != null && apv.getFolderName().equalsIgnoreCase("[Gmail]/Sent Mail")){
-						apv.setFolderName("Sent");
+					if(apv.getFolderName(user).equalsIgnoreCase("[Gmail]/Sent Mail")){
+						apv.setFolderName(user, "Sent");
 					}
-					else if(apv.getFolderName() != null && apv.getFolderName().equalsIgnoreCase("[Gmail]/Drafts")){
-						apv.setFolderName("Drafts");
+					else if(apv.getFolderName(user).equalsIgnoreCase("[Gmail]/Drafts")){
+						apv.setFolderName(user, "Drafts");
 					}
 				}
 				sendProtocol = "smtp";
@@ -197,7 +197,7 @@ public class MailFunctionality extends Authenticator {
 				mp = new MimeMultipart();
 				MimeMessage message = new MimeMessage(session); 
 				message.setFrom(new InternetAddress(sender));
-				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=utf-8"));  
+				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=UTF-8")); 
 				message.setDataHandler(handler);
 				message.setSubject(subject, "utf-8");   
 				BodyPart messageBodyPart = new MimeBodyPart(); 
@@ -354,7 +354,6 @@ public class MailFunctionality extends Authenticator {
 				String key = "Some Key";
 				String encrypted = encryption.encrypt(key, password);
 				activity.accEdit.putString(user, encrypted);
-				activity.accEdit.putString("default", user);
 				activity.accEdit.commit();
 				Intent i = new Intent("TIG055st2014.mailmaster.AccountSettingsActivity");
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -448,10 +447,10 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-			if(apv.getFolderName().contains("Drafts")){
+			if(apv.getFolderName(user).contains("Drafts")){
 				dialog.setMessage("Fetching Drafts...");
 			}
-			else if(apv.getFolderName().contains("Sent")){
+			else if(apv.getFolderName(user).contains("Sent")){
 				dialog.setMessage("Fetching Sent Emails...");
 			}
 			else{
@@ -464,13 +463,52 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			emails.addAll(getMailList(user, password));
+			sort();
 			return null;
+		}
+		private void sort(){
+			ArrayList<Message> temp = new ArrayList<Message>();
+			if(activity.emails.size() == 0){
+				activity.emails = emails;
+			}
+			else{
+				try{
+					int limit = 20;
+					int limit1 = activity.emails.size();
+					int limit2 = emails.size();
+					int i = 0;
+					int j = 0;
+					while(temp.size() < limit && i < limit1 && j < limit2){
+						if(activity.emails.get(i).getReceivedDate().after(emails.get(j).getReceivedDate())){
+							temp.add(activity.emails.get(i));
+							i++;
+						}
+						else{
+							temp.add(emails.get(j));
+							j++;
+						}
+					}
+					while(temp.size() < limit && limit1 > i){
+						temp.add(activity.emails.get(i));
+						i++;
+					}
+					while(temp.size() < limit && limit2 > j){
+						temp.add(emails.get(j));
+						j++;
+					}
+				}
+
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				activity.emails = temp;
+			}
 		}
 		@Override
 		protected void onPostExecute(Void v){
-			activity.emails = emails;
+			Log.d("async size", activity.emails.size() + "");
 			activity.listView.setAdapter(new EmailAdapter(activity.getApplicationContext(),R.layout.email_item,
-					R.id.email_preview, emails));
+					R.id.email_preview, activity.emails));
 			if (dialog.isShowing()) {
 				dialog.dismiss();
 			}
@@ -501,17 +539,17 @@ public class MailFunctionality extends Authenticator {
 		ArrayList<Message> emails = new ArrayList<Message>();
 		try {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-			if(apv.getStore()!=null && apv.getStore().isConnected()){
-				apv.getStore().close();
+			if(apv.getStore(user)!=null && apv.getStore(user).isConnected()){
+				apv.getStore(user).close();
 			}
 			Store store = session.getStore("imaps");
 			store.connect(imapHost, user, password);
-			apv.setStore(store);
-			if(apv.getEmailFolder()!=null && apv.getEmailFolder().isOpen()){
-				apv.getEmailFolder().close(false);
+			apv.setStore(user, store);
+			if(apv.getEmailFolder(user)!=null && apv.getEmailFolder(user).isOpen()){
+				apv.getEmailFolder(user).close(false);
 			}
-			Folder foldr = store.getFolder(apv.getFolderName());
-			apv.setEmailFolder(foldr);
+			Folder foldr = store.getFolder(apv.getFolderName(user));
+			apv.setEmailFolder(user, foldr);
 			foldr.open(Folder.READ_WRITE);
 			int limit = 19;
 			int count = foldr.getMessageCount();
@@ -655,11 +693,11 @@ public class MailFunctionality extends Authenticator {
 		plainContents = "";
 		htmlContents = "";
 		try{
-			if(apv.getStore()!=null && !apv.getStore().isConnected()){
-				apv.getStore().connect(imapHost, user, password);
+			if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
+				apv.getStore(user).connect(imapHost, user, password);
 			}
-			if(apv.getEmailFolder()!=null && !apv.getEmailFolder().isOpen()){
-				apv.getEmailFolder().open(Folder.READ_WRITE);
+			if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
+				apv.getEmailFolder(user).open(Folder.READ_WRITE);
 			}
 		}
 		catch(Exception ex){
@@ -680,7 +718,7 @@ public class MailFunctionality extends Authenticator {
 		if(htmlContents.equals("")){
 			return plainContents;
 		}
-		else if(apv.getFolderName().contains("Drafts")){
+		else if(apv.getFolderName(user).contains("Drafts")){
 			return Html.fromHtml(htmlContents).toString();
 		}
 		else{
@@ -701,7 +739,7 @@ public class MailFunctionality extends Authenticator {
 
 				}
 				else if(bp.isMimeType("text/*")){
-					plainContents += bp.getContent().toString() + "\n";
+					plainContents = bp.getContent().toString();
 
 				}
 				else if(bp.isMimeType("multipart/*")){
@@ -780,11 +818,11 @@ public class MailFunctionality extends Authenticator {
 		protected Void doInBackground(Message... m) {
 			try {
 				AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-				if(apv.getStore()!=null && !apv.getStore().isConnected()){
-					apv.getStore().connect(imapHost, user, password);
+				if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
+					apv.getStore(user).connect(imapHost, user, password);
 				}
-				if(apv.getEmailFolder()!=null && !apv.getEmailFolder().isOpen()){
-					apv.getEmailFolder().open(Folder.READ_WRITE);
+				if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
+					apv.getEmailFolder(user).open(Folder.READ_WRITE);
 				}
 				//reply(true) = reply all
 				apv.setReply(m[0].reply(true));
@@ -820,11 +858,11 @@ public class MailFunctionality extends Authenticator {
 		protected Message doInBackground(Message... m) {
 			try {
 				AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-				if(apv.getStore()!=null && !apv.getStore().isConnected()){
-					apv.getStore().connect(imapHost, user, password);
+				if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
+					apv.getStore(user).connect(imapHost, user, password);
 				}
-				if(apv.getEmailFolder()!=null && !apv.getEmailFolder().isOpen()){
-					apv.getEmailFolder().open(Folder.READ_WRITE);
+				if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
+					apv.getEmailFolder(user).open(Folder.READ_WRITE);
 				}
 				//reply(true) = reply all
 				return m[0].reply(true);
@@ -920,7 +958,7 @@ public class MailFunctionality extends Authenticator {
 				drafts.open(Folder.READ_WRITE);
 				MimeMessage message = new MimeMessage(session); 
 				message.setFrom(new InternetAddress(sender));
-				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=utf-8"));  
+				DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/html;charset=UTF-8"));  
 				message.setDataHandler(handler);
 				message.setSubject(subject, "utf-8");   
 				if(!recipients.equals("")){
@@ -932,7 +970,7 @@ public class MailFunctionality extends Authenticator {
 				if(!bcc.equals("")){
 					addRecipients(message, bcc, Message.RecipientType.BCC);
 				};
-				message.setContent(body, "text/html");
+				message.setContent(body, "text/html;charset=UTF-8");
 				message.setFlag(Flag.DRAFT, true);
 				drafts.appendMessages(new Message[]{message});
 				saved = true;

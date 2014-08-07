@@ -2,6 +2,8 @@ package TIG055st2014.mailmaster;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.mail.Flags.Flag;
 import javax.mail.Message;
@@ -29,7 +31,8 @@ public class EmailNotificationService extends Service{
 	private boolean running = false;
 	private SharedPreferences accounts;
 	private final int emailId = 1;
-	private String defaultAcc, pw;
+	private ArrayList<Message> emails;
+	private Set<String> defAcc;
 
 	/**
 	 * Interface used to access MailFolderActivity function inside of the service.
@@ -85,15 +88,12 @@ public class EmailNotificationService extends Service{
 				//Used for action that is triggered when notification is pressed/deleted.
 				Intent emailIntent = new Intent(getApplicationContext(), EmailForwarder.class);
 				accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-				defaultAcc = accounts.getString("default", "");
-				String key = "Some Key";
-				Encryption encryption = new Encryption();
-				pw = encryption.decrypt(key, (accounts.getString(defaultAcc, "")));
-				MailFunctionality mf = new MailFunctionality(defaultAcc, pw, (defaultAcc.split("@"))[1]);
+				defAcc = new HashSet<String>();
+				defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
 				while(running){
 					initVariables();
-					ArrayList<Message> emails = mf.getFolderTest();
+					getLatest();
 					for(Message m : emails){
 						try{
 							if(!m.getFlags().contains(Flag.SEEN)){
@@ -134,7 +134,7 @@ public class EmailNotificationService extends Service{
 						}
 						/*Sleep for 45 seconds (approx time for rest of loop iteration is 15 sec,
                     	  So total time for each iteration is close to 1 minute*/
-						sleep(45000);
+						sleep(60000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -160,5 +160,54 @@ public class EmailNotificationService extends Service{
 	}
 	private void initVariables(){
 		EmailNotificationVariables.nrUnreadEmail = 0;
+		emails = new ArrayList<Message>();
+	}
+	private void getLatest(){
+		String key = "Some Key";
+		Encryption decrypter = new Encryption();
+		
+		for(String s : defAcc){		
+			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
+			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
+			sort(mf.getFolderTest());
+		}
+	}
+	private void sort(ArrayList<Message> list){
+		ArrayList<Message> temp = new ArrayList<Message>();
+		if(emails.size() == 0){
+			emails = list;
+		}
+		else{
+			try{
+				int limit = 20;
+				int limit1 = emails.size();
+				int limit2 = list.size();
+				int i = 0;
+				int j = 0;
+				limit = list.size();
+				while(temp.size() < limit && i < limit1 && j < limit2){
+					if(emails.get(i).getReceivedDate().after(list.get(j).getReceivedDate())){
+						temp.add(emails.get(i));
+						i++;
+					}
+					else{
+						temp.add(list.get(j));
+						j++;
+					}
+				}
+				while(temp.size() < limit && limit1 > i){
+					temp.add(emails.get(i));
+					i++;
+				}
+				while(temp.size() < 20 && limit2 > j){
+					temp.add(list.get(j));
+					j++;
+				}
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			emails = temp;
+		}
 	}
 }
