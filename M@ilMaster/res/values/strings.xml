@@ -43,5 +43,6 @@
     <string name="gmailSent">[Gmail]/Sent Mail</string>
     <string name="choose_acc">Select account...</string>
     <string name="download">DownloadItem</string>
+    <string name="contacts">Download contacts</string>
 
 </resources>

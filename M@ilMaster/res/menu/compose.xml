@@ -7,6 +7,12 @@
         android:onClick="onClickAttach"
         android:icon="@drawable/ic_action_new_attachment"/>
     <item
+        android:id="@+id/action_download_contacts"
+        android:showAsAction="always"
+        android:title="@string/contacts" 
+        android:onClick="downloadContacts"
+        android:icon="@drawable/ic_action_add_group"/>
+    <item
         android:id="@+id/send_button"
         android:showAsAction="always"
         android:title="@string/send" 

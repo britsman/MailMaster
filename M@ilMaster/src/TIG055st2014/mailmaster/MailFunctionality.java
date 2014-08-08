@@ -7,12 +7,14 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;   
 import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
 import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;   
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
@@ -38,7 +40,10 @@ import android.widget.Toast;
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;   
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Class used as interface to the javamail API.
@@ -1026,6 +1031,91 @@ public class MailFunctionality extends Authenticator {
 				e.printStackTrace();
 			}
 			return null;
+		}
+	}
+	public void getContacts(ComposeActivity a) {	
+		try {
+			ContactsTask task = new ContactsTask(user,password, a);
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			Log.d("MailFunctionality",  "Reading reached");
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private class ContactsTask extends AsyncTask<Void, Void, Void>{
+
+		private String user, password;
+		private ProgressDialog dialog;
+		private TreeSet<String> treeSet;
+		private ComposeActivity activity;
+
+		private ContactsTask(String u, String p, ComposeActivity a){
+			user = u;
+			password = p; 
+			activity = a;
+			dialog = new ProgressDialog(a);
+			treeSet = new TreeSet<String>();
+		}
+		@Override
+		protected void onPreExecute() {
+		    dialog.setMessage("Parsing contacts (result will be saved for future use)...");
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
+			dialog.show();
+		}
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			try {		
+				Store store = session.getStore("imaps");
+				store.connect(imapHost, user, password);
+				Folder sent;
+				if(type.equals("gmail.com") || type.equals("student.gu.se")){
+					sent = store.getFolder(activity.getApplicationContext().getResources().getString(R.string.gmailSent));
+				}
+				else{
+					sent = store.getFolder(activity.getApplicationContext().getResources().getString(R.string.msSent));
+				}
+				sent.open(Folder.READ_WRITE);
+				int count = sent.getMessageCount();
+				Message[] temp = sent.getMessages(1, count);
+				//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
+				//Noticeable improvement compared to looping through each message.
+				FetchProfile profile = new FetchProfile();
+				profile.add(FetchProfile.Item.ENVELOPE);
+				sent.fetch(temp, profile);
+				for(int i = 0; i < temp.length; i++){
+					getRecipients(treeSet, temp[i]);
+					}
+				
+				sent.close(false);
+				store.close();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		private void getRecipients(TreeSet<String> ts, Message javaMailMessage) throws MessagingException {
+			String recipient = "";
+			Address a[] = javaMailMessage.getAllRecipients();
+			if ( a!=null ) {
+				for ( int i=0; i<a.length; i++ ){
+					recipient = a[i].toString();
+					if(recipient != null){
+						ts.add(recipient);
+					}
+				}
+			}
+		}
+		@Override
+		protected void onPostExecute(Void v){
+			Set<String> temp = new HashSet<String>();
+			temp.addAll(treeSet);
+			activity.updateContacts(temp);
+			if (dialog.isShowing()) {
+				dialog.dismiss();
+			}
 		}
 	}
 }

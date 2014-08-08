@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -45,7 +46,8 @@ public class ComposeActivity extends FragmentActivity implements
 OnItemSelectedListener {
 
 	private SharedPreferences accounts;
-	private Set<String> defAcc;
+	private SharedPreferences savedContacts;
+	private SharedPreferences.Editor contactsEdit;
 	private String currentAcc;
 	private String pw;
 	private static final int PICK_FROM_GALLERY = 101;
@@ -58,6 +60,8 @@ OnItemSelectedListener {
 	private SharedPreferences sizePref;
 	private SharedPreferences.Editor sizeEdit;
 	protected boolean save;
+	private TreeSet<String> output;
+	ArrayAdapter<String> adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +84,8 @@ OnItemSelectedListener {
 		}
 		listView.setClickable(true);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defAcc = new HashSet<String>();
-		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		savedContacts = getSharedPreferences("StoredContacts", MODE_PRIVATE);
+		contactsEdit = savedContacts.edit();
 		currentAcc = apv.getAccount();
 		sizePref = getSharedPreferences("FileSizes", MODE_PRIVATE);
 		sizeEdit = sizePref.edit();
@@ -366,7 +370,7 @@ OnItemSelectedListener {
 		String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
 		String DATA = ContactsContract.CommonDataKinds.Email.DATA;
 
-		List<String> output = new ArrayList<String>();
+		output = new TreeSet<String>();
 
 		ContentResolver contentResolver = getContentResolver();
 		Cursor cursor = contentResolver.query(CONTENT_URI, null, null, null,
@@ -393,8 +397,12 @@ OnItemSelectedListener {
 			}
 
 		}
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				ComposeActivity.this, android.R.layout.simple_spinner_item,output);
+		Set<String> temp = new HashSet<String>();
+		temp.addAll(savedContacts.getStringSet("contacts", new HashSet<String>()));
+		output.addAll(temp);
+		String[] array = new String[0];
+		adapter = new ArrayAdapter<String>(
+				ComposeActivity.this, android.R.layout.simple_spinner_item, output.toArray(array));
 		
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -521,5 +529,20 @@ OnItemSelectedListener {
 	public void onNothingSelected(AdapterView<?> parent) {
 		// TODO Auto-generated method stub
 
+	}
+	public void updateContacts(Set<String> contacts){
+		Set<String> temp = new HashSet<String>();
+		temp.addAll(savedContacts.getStringSet("contacts", new HashSet<String>()));
+		temp.addAll(contacts);
+		contactsEdit.putStringSet("contacts", temp);
+		contactsEdit.commit();
+		output.addAll(temp);
+		adapter.clear();
+		adapter.addAll(output);
+	}
+	public void downloadContacts(MenuItem m){
+		MailFunctionality mf = new MailFunctionality(currentAcc,
+				pw, (currentAcc.split("@"))[1]);
+		mf.getContacts(this);
 	}
 }

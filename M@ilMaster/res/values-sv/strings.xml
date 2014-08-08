@@ -39,5 +39,6 @@
     <string name="gmailSent">[Gmail]/Sent</string>
     <string name="choose_acc">Välj konto...</string>
     <string name="download">Ladda ner</string>
+    <string name="contacts">Hämta kontakter</string>
 
 </resources>
