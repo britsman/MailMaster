@@ -38,7 +38,7 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 	}
 
 	public void testNoAttachments() {
-		  new Thread(new Runnable() {
+		  activity.runOnUiThread(new Runnable() {
 
 		        public void run() {
 		        		d.resetLists();
