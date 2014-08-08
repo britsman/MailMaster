@@ -97,8 +97,10 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				else {
 					text.setTextColor(Color.BLACK);
 				}
-				//Solves a bug where sometimes total goes below zero after all attachments are deleted.
-				if(total < 1){
+				/*Hack to stop total from going below zero after adding then removing multiple activities.
+				Numbers look correct when adding/removing attachments, but sometimes when removing the last attachment
+				the totalsize will go below zero for some reason */
+				if(total < 0){
 					total = (float) 0.0;
 				}
 				text.setText("Total size: " +total + " KB");

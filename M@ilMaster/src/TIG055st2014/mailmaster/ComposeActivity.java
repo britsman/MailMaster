@@ -105,7 +105,8 @@ OnItemSelectedListener {
 
 		/*
 		 * If message is a reply then certain fields are instantiated based on
-		 * fields from the message that is being replied to.
+		 * fields from the message that is being replied to. BCC is not filled
+		 * since they're supposed to be secret.
 		 */
 		if (apv.getIsReply()) {
 			getActionBar().setTitle(R.string.composing_rp);
@@ -120,9 +121,14 @@ OnItemSelectedListener {
 			TextView to = (TextView) findViewById(R.id.receiveAccsReply);
 			TextView subject = (TextView) findViewById(R.id.subjectReply);
 			EditText cc = (EditText) findViewById(R.id.ccAccsReply);
+			EditText bcc = ((EditText) findViewById(R.id.bccAccsReply));
+			to.setText("");
 			cc.setText("");
+			bcc.setText("");
+			
 			try {
 				subject.setText(apv.getReply().getSubject());
+				//Used if replying to email sent by yourself (basically using sent email as draft).
 				if (apv.getFolderName(currentAcc).contains("Sent")) {
 					Address[] tempTo = apv.getEmail().getRecipients(
 							RecipientType.TO);
@@ -135,7 +141,12 @@ OnItemSelectedListener {
 							}
 						}
 					}
-				} else {
+					this.addAddresses(
+							apv.getEmail().getRecipients(Message.RecipientType.BCC),
+							bcc);
+				}
+				//Used for "normal" reply.
+				else {
 					to.setText(apv.getEmail().getFrom()[0].toString());
 				}
 				this.addAddresses(
@@ -167,6 +178,9 @@ OnItemSelectedListener {
 					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
 					EditText subject = ((EditText) findViewById(R.id.subject));
 					subject.setText(apv.getEmail().getSubject().toString());
+					recipients.setText("");
+					cc.setText("");
+					bcc.setText("");
 					
 					mf.getContents(this);
 					addAddresses(
@@ -192,17 +206,14 @@ OnItemSelectedListener {
 
 	/**
 	 * Makes sure there are separators between the addresses to send to.
+	 * 
 	 */
 	private void addAddresses(Address[] addresses, EditText et) {
 		if (addresses != null) {
 			for (Address a : addresses) {
-				if (et.getText().toString().equals("")) {
-					et.setText(a.toString());
-				} else {
-					et.setText(et.getText() + "," + a.toString());
-				}
+				et.setText(et.getText() + a.toString() + ",");
 			}
-		}
+		}		
 	}
 
 	/**

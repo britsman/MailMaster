@@ -34,8 +34,8 @@ import java.util.Set;
 public class AccountSettingsActivity extends Activity implements AdapterView.OnItemClickListener {
 
 	public SharedPreferences accounts;
-	private SharedPreferences.Editor accEdit;
-	private ListView listView;
+	public SharedPreferences.Editor accEdit;
+	public ListView listView;
 	public ArrayList<String> columns;
 
 	@Override
@@ -55,8 +55,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 		listView = (ListView) findViewById(R.id.account_list);
 		listView.setClickable(true);
 		listView.setOnItemClickListener(this);
-		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
-				R.id.account_text, columns, this));
+		updateList();
 
 
 	}
@@ -86,9 +85,7 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 				invalidateOptionsMenu();
 			}
 		}
-		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
-				R.id.account_text, columns, this));
-		
+		updateList();		
 	}
 	/**
 	 * Redirect triggered by pressing the add account icon.
@@ -193,5 +190,9 @@ public class AccountSettingsActivity extends Activity implements AdapterView.OnI
 			folder.setVisible(true);
 		}
 		return true;
+	}
+	public void updateList(){
+		listView.setAdapter(new AccountAdapter(getApplicationContext(),R.layout.account_item,
+				R.id.account_text, columns, this));
 	}
 }

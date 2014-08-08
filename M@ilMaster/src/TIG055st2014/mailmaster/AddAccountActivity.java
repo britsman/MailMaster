@@ -24,7 +24,6 @@ public class AddAccountActivity extends Activity {
 	public SharedPreferences accounts;
 	public SharedPreferences.Editor accEdit;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

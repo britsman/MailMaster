@@ -24,6 +24,7 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	private SharedPreferences accounts;
 	private SharedPreferences.Editor accEdit;
 	private ArrayList<String> names;
+	private int[] colours;
 	/**
 	 * Reference to the AccountSettingsActivity instance that the current list belongs to.
 	 * This is needed to update the options menu of the activity from within the adapter.
@@ -38,6 +39,9 @@ public class AccountAdapter extends ArrayAdapter<String> {
 		accounts = c.getSharedPreferences("StoredAccounts", c.MODE_PRIVATE);
 		accEdit = accounts.edit();
 		act = a;
+		this.colours = new int[]{
+				Color.argb(155, 215, 255, 188), Color.argb(155, 188, 243, 255), Color.argb(155, 255, 181, 132)
+		};
 	}
 	/**
 	 * This function is called automatically once for each listitem, and is used to apply
@@ -45,8 +49,9 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	 */
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		final String s = names.get(position);
+		final String name = names.get(position);
 		final Set<String> defAcc = new HashSet<String>();
+		int i = 0;
 		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
 		if (convertView == null) {
@@ -54,14 +59,18 @@ public class AccountAdapter extends ArrayAdapter<String> {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.account_item, null);
 		}
-		if(defAcc.contains(s)){
-			convertView.setBackgroundColor(Color.GREEN);
-		}
-		else{
-			convertView.setBackgroundColor(Color.TRANSPARENT);
+		for(String s : defAcc){
+			if(s.equals(name)){
+				convertView.setBackgroundColor(colours[i]);
+				break;
+			}
+			else{
+				i++;
+				convertView.setBackgroundColor(Color.TRANSPARENT);
+			}
 		}
 		TextView tv = (TextView) convertView.findViewById(R.id.account_text);
-		tv.setText(s);
+		tv.setText(name);
 		ImageButton delete = (ImageButton) convertView.findViewById(R.id.delete_button);
 		/*Need to make the button unfocusable, in order to be able to click the button and
           the background of the item separately.
@@ -72,13 +81,13 @@ public class AccountAdapter extends ArrayAdapter<String> {
 				new ImageButton.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						accEdit.remove(s);
+						accEdit.remove(name);
 						names.remove(position);
-						if(defAcc.contains(s)){        
+						if(defAcc.contains(name)){        
 							/*If there are enabled accounts left, update the list and the
 							 * enabled counter.*/
 							if(names.size() > 0 && defAcc.size() > 1){
-								defAcc.remove(s);
+								defAcc.remove(name);
 								accEdit.putStringSet("default", defAcc);
 								int count = accounts.getInt("enabled", 1);
 								accEdit.putInt("enabled", count-1);
@@ -91,7 +100,7 @@ public class AccountAdapter extends ArrayAdapter<String> {
 							}
 						}
 						accEdit.commit();
-						remove(s);
+						remove(name);
 					}
 				}
 				);

@@ -10,6 +10,7 @@ import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationBinder;
 import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationServiceClient;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +37,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	protected ArrayList<Message> emails;
 	private EmailNotificationServiceConnection mServiceConnection = new EmailNotificationServiceConnection();
 	private EmailNotificationService mService = null;
+	private ProgressDialog dialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,16 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			listView = (ListView) findViewById(R.id.inbox_list);
 			listView.setClickable(true);
 			listView.setOnItemClickListener(this);
-			refreshList();
 			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning()){
+				dialog = new ProgressDialog(this);
+				dialog.setMessage("Fetching Inbox...");
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
+				dialog.show();
 				startBackground();
+			}
+			else{
+				refreshList();
 			}
 		}
 	}
@@ -197,6 +206,9 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		runOnUiThread(new Runnable() {
 
 			public void run() {
+				if (dialog.isShowing()) {
+					dialog.dismiss();
+				}
 				if(isServiceRunning()){
 					Log.d("autoupdate", "in activity");
 					emails = m;

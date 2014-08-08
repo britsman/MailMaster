@@ -81,7 +81,7 @@ public class EmailNotificationService extends Service{
 		thread = new Thread(){
 			@Override
 			public void run() {
-				NotificationManager NotifyManager =
+				NotificationManager notifyManager =
 						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
@@ -123,7 +123,7 @@ public class EmailNotificationService extends Service{
 								.setDeleteIntent(PendingIntent.getActivity(EmailNotificationService.this, 0, emailIntent, 0))
 								.build();
 
-						NotifyManager.notify(emailId, emailNoti);
+						notifyManager.notify(emailId, emailNoti);
 					}
 
 					try {
@@ -134,7 +134,7 @@ public class EmailNotificationService extends Service{
 						}
 						/*Sleep for 45 seconds (approx time for rest of loop iteration is 15 sec,
                     	  So total time for each iteration is close to 1 minute*/
-						sleep(60000);
+						sleep(45000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -149,6 +149,9 @@ public class EmailNotificationService extends Service{
 		super.onDestroy();
 		running = false;
 		Toast.makeText(this,"Service destroyed", Toast.LENGTH_LONG).show();
+		NotificationManager notifyManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notifyManager.cancel(emailId);
 	}
 
 	@Override
