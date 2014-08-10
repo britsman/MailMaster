@@ -46,7 +46,7 @@
     <string name="download">DownloadItem</string>
     <string name="contacts">Download contacts</string>
     <string name="total_size">Total size:</string>
-    <string name="active_account">Active Account:</string>
+    <string name="active_account">Active Accounts:</string>
     <string name="message_title">Cancel Compose</string>
     <string name="message_dia">Do you wish to save a draft?</string>
     <string name="yes_answer">Yes</string>
@@ -54,7 +54,7 @@
     <string name="fetch_inbox">Fetching Inbox...</string>
     <string name="fetch_drafts">Fetching Drafts...</string>
     <string name="fetch_sennt">Fetching Sent Emails...</string>
-    <string name="read_email">Reading Email Contents...</string>
+    <string name="read_email">Loading Email Contents...</string>
     <string name="construct_rep">Constructing Reply...</string>
     <string name="read_contact">Parsing contacts (result will be saved for future use)...</string>
     <string name="save_draft">Saving Draft...</string>

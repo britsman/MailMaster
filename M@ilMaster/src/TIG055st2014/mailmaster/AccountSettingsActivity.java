@@ -39,7 +39,6 @@ public class AccountSettingsActivity extends Activity implements
 	public SharedPreferences.Editor accEdit;
 	public ListView listView;
 	public ArrayList<String> columns;
-	TextView activeaccount;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +59,11 @@ public class AccountSettingsActivity extends Activity implements
 		listView = (ListView) findViewById(R.id.account_list);
 		listView.setClickable(true);
 		listView.setOnItemClickListener(this);
+	}
+	@Override
+	protected void onStart(){
+		super.onStart();
 		updateList();
-
 	}
 
 	/**
@@ -92,13 +94,7 @@ public class AccountSettingsActivity extends Activity implements
 				invalidateOptionsMenu();
 			}
 		}
-		updateList();
-		activeaccount = (TextView) findViewById(R.id.active_acc);
-		//reading from the resource file depending on which language is selected
-		String active_account = (String) activeaccount.getResources().getText(R.string.active_account);
-		activeaccount.setText(active_account + defAcc.size());
-
-	
+		updateList();	
 	}
 
 	/**
@@ -217,7 +213,12 @@ public class AccountSettingsActivity extends Activity implements
 	}
 
 	public void updateList() {
+		int count = accounts.getInt("enabled", 0);
 		listView.setAdapter(new AccountAdapter(getApplicationContext(),
 				R.layout.account_item, R.id.account_text, columns, this));
+		TextView activeAccounts = (TextView) findViewById(R.id.active_acc);
+		//reading from the resource file depending on which language is selected
+		String active_account = (String) getResources().getText(R.string.active_account);
+		activeAccounts.setText(active_account + count + "/3");
 	}
 }

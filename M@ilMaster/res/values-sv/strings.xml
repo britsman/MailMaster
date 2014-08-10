@@ -8,7 +8,7 @@
     <string name="add_email">Lägg till en epostadress...</string>
     <string name="email">E-post...</string>
     <string name="password">Lösenord...</string>
-    <string name="inbox">Inbox</string>
+    <string name="inbox">Inkorgen</string>
     <string name="sent">Skickat</string>
     <string name="drafts">Utkast</string>
     <string name="send">Skicka</string>
@@ -41,18 +41,18 @@
     <string name="choose_acc">Välj konto...</string>
     <string name="download">Ladda ner</string>
     <string name="contacts">Hämta kontakter</string>
-    <string name="total_size">Totala storleken:</string>
-    <string name="active_account">Aktiv Konto:</string>
-    <string name="message_title">Avbryt Compose</string>
-    <string name="message_dia">Vill du spara det i utkast?</string>
+    <string name="total_size">Total storlek:</string>
+    <string name="active_account">Aktiva Konton:</string>
+    <string name="message_title">Avbryt Skrivande</string>
+    <string name="message_dia">Vill du spara ett utkast?</string>
    	<string name="yes_answer">Ja</string>
    	<string name="no_answer">Nej</string>
-   	<string name="fetch_inbox">Hämtar Inbox...</string>
+   	<string name="fetch_inbox">Hämtar Inkorgen...</string>
    	<string name="fetch_drafts">Hämtar Utkast...</string>
-    <string name="fetch_sennt">Hämtar skickade e-post...</string>
-    <string name="read_email">Läsa e-post Innehållet...</string>
-    <string name="construct_rep">Konstruera Svara...</string>
-    <string name="read_contact">Analysera kontakter (resultatet kommer att sparas för framtida användning)...</string>
+    <string name="fetch_sennt">Hämtar skickad e-post...</string>
+    <string name="read_email">Laddar EmailInnehåll...</string>
+    <string name="construct_rep">Förbereder SvarMail...</string>
+    <string name="read_contact">Hämtar kontakter (resultatet kommer att sparas för framtida användning)...</string>
     <string name="save_draft">Spara Utkast...</string>
 
 </resources>

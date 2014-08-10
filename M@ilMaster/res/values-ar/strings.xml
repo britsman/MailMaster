@@ -38,10 +38,16 @@
     <string name="english">En</string>
     <string name="swedish">Sw</string>
     <string name="arabic">Ar</string>
+    <!--  
     <string name="msDrafts">المسودات</string>
     <string name="msSent">أرسلت</string>
     <string name="gmailDrafts">[Gmail]/المسودات</string>
     <string name="gmailSent">[Gmail]/البريد المرسل</string>
+    -->
+    <string name="msDrafts">Drafts</string>
+    <string name="msSent">Sent</string>
+    <string name="gmailDrafts">[Gmail]/Drafts</string>
+    <string name="gmailSent">[Gmail]/Sent</string>
     <string name="choose_acc">اختيار حساب...</string>
     <string name="download">تحميل البند</string>
     <string name="contacts">تحميل الاتصالات</string>

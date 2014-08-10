@@ -83,6 +83,8 @@ public class AccountAdapter extends ArrayAdapter<String> {
 					public void onClick(View v) {
 						accEdit.remove(name);
 						names.remove(position);
+						defAcc.clear();
+						defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
 						if(defAcc.contains(name)){        
 							/*If there are enabled accounts left, update the list and the
 							 * enabled counter.*/
