@@ -39,6 +39,7 @@ public class AccountSettingsActivity extends Activity implements
 	public SharedPreferences.Editor accEdit;
 	public ListView listView;
 	public ArrayList<String> columns;
+	public Menu testMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +214,7 @@ public class AccountSettingsActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.account_settings, menu);
+		testMenu = menu;
 		MenuItem folder = menu.findItem(R.id.action_folder);
 		Set<String> defAcc = new HashSet<String>();
 		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));

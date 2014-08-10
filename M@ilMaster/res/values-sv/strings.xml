@@ -21,7 +21,7 @@
     <string name="subject">Ämne:</string>
     <string name="message">Meddelande:</string>
     <string name="compose">Skriv e-post</string>
-    <string name="composing">Skriver epost...</string>
+    <string name="composing">Skriver e-post...</string>
     <string name="composing_rp">Svara...</string>
     <string name="attach">Bifoga fil...</string>
     <string name="attached">Bifogade filer...</string>
