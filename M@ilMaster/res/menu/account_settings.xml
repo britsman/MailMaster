@@ -16,19 +16,22 @@
             <item
         	android:id="@+id/action_toInbox"
         	android:showAsAction="withText"
-        	android:title="@string/inbox" 
+        	android:title="@string/inbox"
+        	android:icon="@drawable/ic_action_inboxemail" 
         	android:onClick="toFolder">
         	</item>
         	<item
         	android:id="@+id/action_toSent"
         	android:showAsAction="withText"
         	android:title="@string/sent" 
+        	android:icon="@drawable/ic_action_send_inbox" 
         	android:onClick="toFolder">
         	</item>
         	<item
         	android:id="@+id/action_toDrafts"
         	android:showAsAction="withText"
-        	android:title="@string/drafts" 
+        	android:title="@string/drafts"
+        	android:icon="@drawable/ic_action_draftsave" 
         	android:onClick="toFolder">
         	</item>
          </menu>
