@@ -64,7 +64,9 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			listView.setOnItemClickListener(this);
 			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning()){
 				dialog = new ProgressDialog(this);
-				dialog.setMessage("Fetching Inbox...");
+			    //reading from the resource file depending on which language is selected
+		        String fetchinbox = (String) getResources().getText(R.string.fetch_inbox);
+				dialog.setMessage(fetchinbox);
 				dialog.setIndeterminate(true);
 				dialog.setCancelable(false);
 				dialog.show();

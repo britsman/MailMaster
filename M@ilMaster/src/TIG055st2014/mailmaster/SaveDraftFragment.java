@@ -15,11 +15,18 @@ public class SaveDraftFragment extends DialogFragment implements DialogInterface
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setTitle("Cancel Compose");
-        alertDialogBuilder.setMessage("Do you wish to save a draft?");
+        
+      //reading from the resource file depending on which language is selected
+        String messageTitle = (String) getResources().getText(R.string.message_title);
+        String dialogmessage = (String) getResources().getText(R.string.message_dia);
+		alertDialogBuilder.setTitle( messageTitle);
+        alertDialogBuilder.setMessage(dialogmessage);
         //null should be your on click listener
-        alertDialogBuilder.setPositiveButton("Yes", this);
-        alertDialogBuilder.setNegativeButton("No", this);
+        
+        String yes = (String) getResources().getText(R.string.yes_answer);
+        String no = (String) getResources().getText(R.string.no_answer);
+        alertDialogBuilder.setPositiveButton(yes, this);
+        alertDialogBuilder.setNegativeButton(no, this);
         alertDialogBuilder.setCancelable(false);
         return alertDialogBuilder.create();
     }

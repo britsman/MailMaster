@@ -254,7 +254,11 @@ OnItemSelectedListener {
 				} else {
 					result = (TextView) findViewById(R.id.totalsize);
 				}
-				result.setText("Total size: " + total + " KB");
+				
+
+				//reading from the resource file depending on which language is selected
+				String total_size = (String) result.getResources().getText(R.string.total_size);
+				result.setText(total_size+ " " + total + " KB");
 				// Attachments list is updated to contain the pressed
 				// attachment.
 				listView.setAdapter(new AttachmentsAdapter(

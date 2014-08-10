@@ -103,7 +103,11 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				if(total < 0){
 					total = (float) 0.0;
 				}
-				text.setText("Total size: " +total + " KB");
+				
+				//text.setText("Total size: " +total + " KB");
+				//reading from the resource file depending on which language is selected
+				String total_size = (String) text.getResources().getText(R.string.total_size);
+				text.setText(total_size+ " " + total + " KB");
 				sizeEdit.putFloat("Total", total);
 				sizeEdit.remove(a);
 				sizeEdit.commit();

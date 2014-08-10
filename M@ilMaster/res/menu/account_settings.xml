@@ -37,19 +37,27 @@
 	<item
         android:id="@+id/action_choose_language"
         android:showAsAction="always"
-        android:title="@string/languages"
-        android:icon="@drawable/languages">
+        android:title="@string/languages">
         <menu>
             <item
         	android:id="@+id/action_En"
         	android:showAsAction="always"
+        	android:icon="@drawable/ic_action_enflag"
         	android:title="@string/english"
         	android:onClick="toLanguge">
         	</item>
         	<item
         	android:id="@+id/action_Sw"
         	android:showAsAction="always"
+        	android:icon="@drawable/ic_action_swflag"
         	android:title="@string/swedish"
+        	android:onClick="toLanguge">
+        	</item>
+        	<item
+        	android:id="@+id/action_Ar"
+        	android:showAsAction="always"
+        	android:title="@string/arabic"
+        	android:icon="@drawable/ic_action_joflag"
         	android:onClick="toLanguge">
         	</item>
         

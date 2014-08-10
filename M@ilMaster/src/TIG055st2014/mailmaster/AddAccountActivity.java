@@ -29,6 +29,8 @@ public class AddAccountActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_account);
 		// Disabling icon in top left corner 
+		String addacc = (String) getResources().getText(R.string.add_acc);
+		setTitle(addacc);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		accEdit = accounts.edit();

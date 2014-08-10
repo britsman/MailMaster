@@ -453,13 +453,16 @@ public class MailFunctionality extends Authenticator {
 		protected void onPreExecute() {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if(apv.getFolderName(user).contains("Drafts")){
-				dialog.setMessage("Fetching Drafts...");
+				String fetchdrafts = (String) activity.getResources().getText(R.string.fetch_drafts);
+				dialog.setMessage(fetchdrafts);
 			}
 			else if(apv.getFolderName(user).contains("Sent")){
-				dialog.setMessage("Fetching Sent Emails...");
+				String fetchsent = (String) activity.getResources().getText(R.string.fetch_sennt);
+				dialog.setMessage(fetchsent);
 			}
 			else{
-				dialog.setMessage("Fetching Inbox...");
+				String fetchInbox = (String) activity.getResources().getText(R.string.fetch_inbox);
+				dialog.setMessage(fetchInbox);
 			}
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
@@ -646,7 +649,8 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			contents = "";
-			dialog.setMessage("Reading Email Contents...");    	
+			String fetchsent = (String) seAct.getResources().getText(R.string.read_email);
+			dialog.setMessage(fetchsent);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			dialog.show();
@@ -814,7 +818,8 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			dialog.setMessage("Constructing Reply...");    	
+			String constructrep = (String) activity.getResources().getText(R.string.construct_rep);
+			dialog.setMessage(constructrep);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			dialog.show();
@@ -911,6 +916,7 @@ public class MailFunctionality extends Authenticator {
 		private boolean saved;
 		private Context context;
 		private ProgressDialog dialog;
+		ComposeActivity activity;
 
 		private DraftTask(String u, String p, String sb, String bd, String sd, String rcp, 
 				String _cc, String _bcc, Context c, ComposeActivity a){
@@ -924,6 +930,7 @@ public class MailFunctionality extends Authenticator {
 			saved = false;
 			user = u;
 			password = p; 
+			activity =a;
 			dialog = new ProgressDialog(a);
 		}
 		private DraftTask(String u, String p, String sb, String bd, String sd, String rcp, 
@@ -942,7 +949,9 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			if(dialog != null){
-				dialog.setMessage("Saving Draft...");    	
+				String savedrafts = (String) activity.getResources().getText(R.string.save_draft);
+				
+				dialog.setMessage(savedrafts);    	
 				dialog.setIndeterminate(true);
 				dialog.setCancelable(false);
 				dialog.show();
@@ -1059,7 +1068,8 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-		    dialog.setMessage("Parsing contacts (result will be saved for future use)...");
+			String read_contacts = (String) activity.getResources().getText(R.string.read_contact);
+		    dialog.setMessage(read_contacts);
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			dialog.show();

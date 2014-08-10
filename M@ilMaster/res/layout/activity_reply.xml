@@ -116,7 +116,7 @@
         android:ems="10"
         android:hint="Write receiver message here"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:singleLine="false" />
+        android:singleLine="false"/>
 
   
     
@@ -126,5 +126,5 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/bodyReply"
-        android:text="Total size:" />
+        android:text="@string/total_size" />
 </RelativeLayout>

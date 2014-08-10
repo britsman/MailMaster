@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">M@ilMaster</string>
+    <string name="title_activity_mail_sender">البريدالمرسل فعال</string>
+    <string name="action_settings">إعدادات</string>
+    <string name="action_reply">الرد</string>
+    <string name="hello_world">مرحبا</string>
+    <string name="title_activity_login">تسجيل الدخول</string>
+    <string name="title_activity_account_picker">اختيار الحساب</string>
+    <string name="add_acc">إضافة حساب</string>
+    <string name="add_email">إضافة عنوان البريد الإلكتروني...</string>
+    <string name="email">البريد الإلكتروني...</string>
+    <string name="password">كلمة المرور...</string>
+    <string name="inbox">البريد الوارد</string>
+    <string name="sent">أرسلت</string>
+    <string name="drafts">المسودات</string>
+    <string name="send">إرسال</string>
+    <string name="settings">إعدادات الحساب</string>
+    <string name="title_activity_compose">إنشاء البريد الإلكتروني</string>
+    <string name="sender">المرسل:</string>
+    <string name="receiver">مستلم:</string>
+    <string name="cc">مستلم:</string>
+    <string name="bcc">مستلم:</string>
+    <string name="subject">الموضوع:</string>
+    <string name="message">رسالة:</string>
+    <string name="compose">إنشاء البريد الإلكتروني...</string>
+    <string name="composing">إنشاء البريد الإلكتروني...</string>
+    <string name="composing_rp">إنشاءالرد...</string>
+    <string name="attach">إرفاق الملف...</string>
+    <string name="attached">الملفات المرفقة...</string>
+    <string name="get_attach">الحصول مرفقات</string>
+    <string name="title_activity_show_email">عرض البريد الإلكتروني</string>
+    <string name="title_activity_reply">الرد البريد الإلكتروني</string>
+    <string name="title_activity_attachments">المرفقات</string>
+    <string name="folders">اختيار المجلد...</string>
+    <string name="languages">اللغة</string>
+    <string name="english">En</string>
+    <string name="swedish">Sw</string>
+    <string name="arabic">Ar</string>
+    <string name="msDrafts">المسودات</string>
+    <string name="msSent">أرسلت</string>
+    <string name="gmailDrafts">[Gmail]/المسودات</string>
+    <string name="gmailSent">[Gmail]/البريد المرسل</string>
+    <string name="choose_acc">اختيار حساب...</string>
+    <string name="download">تحميل البند</string>
+    <string name="contacts">تحميل الاتصالات</string>
+    <string name="total_size">الحجم الإجمالي:</string>
+    <string name="active_account">حساب فعال:</string>
+    <string name="message_title">إلغاء إنشاء البريد الإلكتروني</string>
+    <string name="message_dia">هل ترغب في حفظ في المسودات؟</string>
+    <string name="yes_answer">نعم</string>
+    <string name="no_answer">لا</string>
+    <string name="fetch_inbox">جلب صندوق الوارد...</string>
+    <string name="fetch_drafts">جلب المسودات...</string>
+    <string name="fetch_sennt">جلب رسائل البريد الإلكتروني المرسلة...</string>
+    <string name="read_email">قراءة البريد الإلكتروني المحتويات...</string>
+    <string name="construct_rep">بناء رد...</string>
+    <string name="read_contact">تحليل الاتصالات (سيتم حفظ نتيجة للاستخدام في المستقبل)...</string>
+    <string name="save_draft">حفظ في المسودات...</string>
+    
+
+</resources>

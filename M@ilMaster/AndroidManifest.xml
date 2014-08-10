@@ -39,7 +39,7 @@
         </activity>
         <activity
             android:name=".AddAccountActivity"
-            android:label="@string/add_email" >
+            android:label="@string/add_email">
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AddAccountActivity" />
 
@@ -48,7 +48,7 @@
         </activity>
         <activity
             android:name=".AccountSettingsActivity"
-            android:label="@string/choose_acc" >
+            android:label="@string/choose_acc">
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AccountSettingsActivity" />
 
