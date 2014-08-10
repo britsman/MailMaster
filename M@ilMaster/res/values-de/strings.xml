@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">M@ilMaster</string>
+    <string name="title_activity_mail_sender">MailSenderActivity</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_reply">Antworten</string>
+    <string name="hello_world">Hallo Welt!</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_account_picker">AccountPickerActivity</string>
+    <string name="add_acc">Konto hinzufügen</string>
+    <string name="add_email">Fügen Sie eine E-Mail-Adresse...</string>
+    <string name="email">E-Mail...</string>
+    <string name="password">Passwort...</string>
+    <string name="inbox">Posteingang</string>
+    <string name="sent">Gesendet</string>
+    <string name="drafts">Entwürfe</string>
+    <string name="send">Schicken</string>
+    <string name="settings">Kontoeinstellungen</string>
+    <string name="title_activity_compose">ComposeActivity</string>
+    <string name="sender">Aus:</string>
+    <string name="receiver">ZU:</string>
+    <string name="cc">CC:</string>
+    <string name="bcc">BCC:</string>
+    <string name="subject">Subjekt:</string>
+    <string name="message">Nachricht:</string>
+    <string name="compose">E-Mail verfassen...</string>
+    <string name="composing">E-Mail verfassen...</string>
+    <string name="composing_rp">Komponieren Antwort...</string>
+    <string name="attach">Datei anhängen...</string>
+    <string name="attached">Angehängte Dateien...</string>
+    <string name="get_attach">Holen Sie Anhänge</string>
+    <string name="title_activity_show_email">ShowEmailActivity</string>
+    <string name="title_activity_reply">ReplyActivity</string>
+    <string name="title_activity_attachments">AttachmentsActivity</string>
+    <string name="folders">Ordner auswählen...</string>
+    <string name="languages">Sprache</string>
+    <string name="english">EN</string>
+    <string name="swedish">SW</string>
+    <string name="arabic">AR</string>
+    <string name="german">DE</string>
+    <string name="msDrafts">Entwurf</string>
+    <string name="msSent">Gesendet</string>
+    <string name="gmailDrafts">[Gmail]/Entwurf</string>
+    <string name="gmailSent">[Gmail]/Gesendete Nachrichten</string>
+    <string name="choose_acc">Wählen Sie Kontot...</string>
+    <string name="download">Download Artikel</string>
+    <string name="contacts">Download Kontakte</string>
+    <string name="total_size">Gesamtgröße:</string>
+    <string name="active_account">Aktiv Kontot:</string>
+    <string name="message_title">Abbrechen Compose</string>
+    <string name="message_dia">Möchten Sie Entwurf speichern?</string>
+    <string name="yes_answer">Ja</string>
+    <string name="no_answer">Nein</string>
+    <string name="fetch_inbox">Abrufen Inbox...</string>
+    <string name="fetch_drafts">Abrufen Entwürfe...</string>
+    <string name="fetch_sennt">Abrufen von E-Mails verschickt...</string>
+    <string name="read_email">Lesen E-Mail Inhalt...</string>
+    <string name="construct_rep">konstruieren Antwort...</string>
+    <string name="read_contact">Parsen Kontakte(Ergebnis wird für die zukünftige Verwendung gespeichert werden)...</string>
+    <string name="save_draft">Sparen Entwurf...</string>
+    
+
+</resources>

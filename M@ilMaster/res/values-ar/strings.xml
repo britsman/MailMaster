@@ -35,9 +35,10 @@
     <string name="title_activity_attachments">المرفقات</string>
     <string name="folders">اختيار المجلد...</string>
     <string name="languages">اللغة</string>
-    <string name="english">En</string>
-    <string name="swedish">Sw</string>
-    <string name="arabic">Ar</string>
+    <string name="english">EN</string>
+    <string name="swedish">SW</string>
+    <string name="arabic">AR</string>
+    <string name="german">DE</string>
     <string name="msDrafts">المسودات</string>
     <string name="msSent">أرسلت</string>
     <string name="gmailDrafts">[Gmail]/المسودات</string>
