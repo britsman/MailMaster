@@ -16,18 +16,21 @@
         	android:id="@+id/action_inbox"
         	android:showAsAction="withText"
         	android:title="@string/inbox" 
+        	android:icon="@drawable/ic_action_inboxemail"
         	android:onClick="changeFolder">
         	</item>
         	<item
         	android:id="@+id/action_sent"
         	android:showAsAction="withText"
         	android:title="@string/sent" 
+        	android:icon="@drawable/ic_action_send_inbox"
         	android:onClick="changeFolder">
         	</item>
         	<item
         	android:id="@+id/action_drafts"
         	android:showAsAction="withText"
         	android:title="@string/drafts" 
+        	android:icon="@drawable/ic_action_draftsave"
         	android:onClick="changeFolder">
         	</item>
          </menu>

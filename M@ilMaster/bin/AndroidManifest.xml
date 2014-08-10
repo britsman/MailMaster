@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="TIG055st2014.mailmaster"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0"
+    android:configChanges="locale|orientation">
+    
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -12,16 +14,17 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".InboxActivity"
+            android:name=".MailFolderActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,14 +32,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.InboxActivity" />
+                <action android:name="TIG055st2014.mailmaster.MailFolderActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".AddAccountActivity"
-            android:label="@string/add_email" >
+            android:label="@string/add_email">
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AddAccountActivity" />
 
@@ -45,7 +48,7 @@
         </activity>
         <activity
             android:name=".AccountSettingsActivity"
-            android:label="@string/choose_acc" >
+            android:label="@string/choose_acc">
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AccountSettingsActivity" />
 
@@ -75,6 +78,18 @@
             android:label="@string/attached" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.AttachmentsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".EmailNotificationService" />
+
+        <activity
+            android:name=".EmailForwarder"
+            android:label="" >
+            <intent-filter>
+                <action android:name="TIG055st2014.mailmaster.EmailForwarder" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

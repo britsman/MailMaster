@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/delete_button"
         android:layout_gravity="right"
-        android:src="@android:drawable/ic_delete"/>
+        android:src="@drawable/ic_action_remove"/>
 
     <TextView
     android:id="@+id/account_text"

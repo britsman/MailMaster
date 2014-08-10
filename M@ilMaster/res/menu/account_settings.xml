@@ -63,7 +63,13 @@
         	android:icon="@drawable/ic_action_joflag"
         	android:onClick="toLanguge">
         	</item>
-        
+        	<item
+        	android:id="@+id/action_De"
+        	android:showAsAction="always"
+        	android:title="@string/german"
+        	android:icon="@drawable/ic_action_deflag"
+        	android:onClick="toLanguge">
+        	</item>
          </menu>
     </item>
     

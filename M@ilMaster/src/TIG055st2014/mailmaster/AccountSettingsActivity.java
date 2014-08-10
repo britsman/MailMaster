@@ -176,6 +176,21 @@ public class AccountSettingsActivity extends Activity implements
 			Toast.makeText(this, "Locale in Arabic!", Toast.LENGTH_LONG)
 					.show();
 			break;
+			
+		case R.id.action_De:
+			Locale locale5 = new Locale("de");
+			Locale.setDefault(locale5);
+			Resources res3 = getResources();
+			DisplayMetrics dm3 = res3.getDisplayMetrics();
+			Configuration conf3 = res3.getConfiguration();
+			conf3.locale = locale5;
+			res3.updateConfiguration(conf3, dm3);
+			Intent refresh3 = new Intent(this, AccountSettingsActivity.class);
+			startActivity(refresh3);
+			Toast.makeText(this, "Gebietsschema auf Deutsch!", Toast.LENGTH_LONG)
+					.show();
+			break;
+			
 		
 		}
 		return super.onOptionsItemSelected(m1);
