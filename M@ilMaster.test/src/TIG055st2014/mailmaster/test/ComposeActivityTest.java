@@ -44,21 +44,19 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 	protected void setUp() throws Exception{
 		super.setUp();
 		apv = AppVariablesSingleton.getInstance();
-		apv.setIsReply(false);
-		activity = getActivity();
 	}
 	public void testReply() {
 
 		apv.setIsReply(true);
+		activity = getActivity();
 		activity.runOnUiThread(new Runnable() {
 
 			public void run() {
 				try{
-					getInstrumentation().callActivityOnCreate(activity, null);
-					getInstrumentation().callActivityOnStart(activity);
 					TextView subject = (TextView) activity.findViewById(R.id.subjectReply);
 					assertTrue(subject.getText().toString().equals(apv.getEmail().getSubject()) ||
 							subject.getText().toString().equalsIgnoreCase("RE: " + apv.getEmail().getSubject()));
+					activity.finish();
 				}
 				catch(Exception e){
 					e.printStackTrace();
@@ -70,9 +68,12 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 	@UiThreadTest
 	public void testCompose() {
 
+		apv.setIsReply(false);
+		activity = getActivity();
 				try{
 					EditText subject = (EditText) activity.findViewById(R.id.subject);
 					assertTrue(subject.getText().toString().equals(""));
+					activity.finish();
 				}
 				catch(Exception e){
 					e.printStackTrace();

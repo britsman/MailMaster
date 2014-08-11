@@ -34,6 +34,8 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 	protected void setUp() throws Exception{
 		super.setUp();
 		setActivityInitialTouchMode(false);
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		apv.setTesting(true);
 		activity = getActivity();
 	}
 	@UiThreadTest 
@@ -60,15 +62,25 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		ActivityMonitor monitor =
 				getInstrumentation().
 				addMonitor(AddAccountActivity.class.getName(), null, false);
-		activity.toAdd(null);
+		getInstrumentation().runOnMainSync(new Runnable() {
+
+			public void run() {
+		activity.toAdd(null);;
+			}
+		});
+		getInstrumentation().waitForIdleSync();
 		// wait 2 seconds for the start of the activity
 		AddAccountActivity startedActivity = (AddAccountActivity) monitor
-				.waitForActivityWithTimeout(2000);
+				.waitForActivityWithTimeout(10000);
 		startedActivity.toSettings(null);
+		activity.finish();
 		assertNotNull(startedActivity);
 	}
 	public void testToInbox() {
-		activity.runOnUiThread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(MailFolderActivity.class.getName(), null, false);
+		getInstrumentation().runOnMainSync(new Runnable() {
 
 			public void run() {
 				String adress = "mailmastertesting@gmail.com";
@@ -79,17 +91,16 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 				activity.columns.add(adress);
 				activity.updateList();
 				activity.onItemClick(null, null, 0, 0);
+				MenuItem inboxIcon = activity.testMenu.findItem(R.id.action_toInbox);
+				activity.toFolder(inboxIcon);
 			}
 		});
-		ActivityMonitor monitor =
-				getInstrumentation().
-				addMonitor(MailFolderActivity.class.getName(), null, false);
-		MenuItem inboxIcon = activity.testMenu.findItem(R.id.action_toInbox);
-		activity.toFolder(inboxIcon);
+		getInstrumentation().waitForIdleSync();
 		MailFolderActivity startedActivity = (MailFolderActivity) monitor
 				.waitForActivityWithTimeout(2000);
 		activity.accEdit.clear();
 		activity.accEdit.commit();
+		activity.finish();
 		assertNotNull(startedActivity);
 		startedActivity.onClickSettings(null);
 	}
@@ -98,5 +109,10 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		activity.accEdit.commit();
 		MenuItem folderIcon = activity.testMenu.findItem(R.id.action_folder);
 		assertFalse(folderIcon.isEnabled());
+	}
+	public void tearDown() throws Exception{
+		super.tearDown();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		apv.setTesting(false);
 	}
 }
