@@ -332,10 +332,13 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			dialog.setMessage("Validating Account...");
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
+			if(!apv.isTesting()){
 			dialog.show();
+			}
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {
