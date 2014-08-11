@@ -1,5 +1,8 @@
 package TIG055st2014.mailmaster.test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import TIG055st2014.mailmaster.AddAccountActivity;
 import static org.junit.Assert.*;
 
@@ -8,6 +11,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import TIG055st2014.mailmaster.R;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.test.ActivityUnitTestCase;
@@ -16,117 +20,141 @@ import android.widget.Button;
 import android.widget.EditText;
 import TIG055st2014.mailmaster.AccountSettingsActivity;
 import TIG055st2014.mailmaster.AppVariablesSingleton;
+import TIG055st2014.mailmaster.ComposeActivity;
+import TIG055st2014.mailmaster.Encryption;
 import TIG055st2014.mailmaster.MailFolderActivity;
 import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.ShowEmailActivity;
 import android.content.Intent;
+import android.test.ActivityInstrumentationTestCase2;
 import android.test.ActivityUnitTestCase;
 import android.test.InstrumentationTestCase;
+import android.test.UiThreadTest;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class MailFolderActivityTest extends ActivityUnitTestCase<MailFolderActivity> {
+public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<MailFolderActivity> {
 	private MailFolderActivity activity;
 	private SharedPreferences.Editor accEdit;
 	private AppVariablesSingleton apv;
+	private Encryption encryption;
+	private Set<String> defAcc;
 
 	public MailFolderActivityTest() {
 		super(MailFolderActivity.class);
-		apv = AppVariablesSingleton.getInstance();
-		// TODO Auto-generated constructor stub
+		defAcc = new HashSet<String>();
+		defAcc.add("mailmastertesting@gmail.com");
+		encryption = new Encryption();
 	}
-
 	protected void setUp() throws Exception {
 		super.setUp();
+
+		accEdit = getInstrumentation().getTargetContext().getSharedPreferences("StoredAccounts", 
+				getInstrumentation().getTargetContext().MODE_PRIVATE).edit();
+		apv = AppVariablesSingleton.getInstance();
+		apv.setTesting(true);
+		accEdit.putString("mailmastertesting@gmail.com", encryption.encrypt("Some Key", "mailmaster123"));
+		accEdit.putInt("enabled", 1);
+		accEdit.putStringSet("default", defAcc);
+		accEdit.commit();
+		activity = getActivity();
 	}
 
 	public void testComposePress() {
-		new Thread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(ComposeActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
 
 			public void run() {
-				Intent intent = new Intent(getInstrumentation().getTargetContext(),
-						MailFolderActivity.class);
-				startActivity(intent, null, null);
-				activity = getActivity();
-				String target = "TIG055st2014.mailmaster.ComposeActivity";
-				MenuItem composeIcon = (MenuItem) activity
-						.findViewById(R.id.action_toCompose);
-				activity.onClickCompose(composeIcon);
-				assertTrue(getStartedActivityIntent().getAction()
-						.equals(target));
+				activity.onClickCompose(null);
+				accEdit.clear();
+				accEdit.commit();
 			}
 		});
+		// wait 2 seconds for the start of the activity
+		ComposeActivity startedActivity = (ComposeActivity) monitor
+				.waitForActivityWithTimeout(2000);
+		activity.finish();
+		assertNotNull(startedActivity);
+		startedActivity.finish();
 	}
 	public void testSelectEmail() {
-		  new Thread(new Runnable() {
+		try {
+			Thread.sleep(18000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(ShowEmailActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
 
-		        public void run() {
-		        	Intent intent = new Intent(getInstrumentation().getTargetContext(),
-		    				MailFolderActivity.class);
-		    		startActivity(intent, null, null);
-		    		activity = getActivity();
-		    		String target = "TIG055st2014.mailmaster.ComposeActivity";
-		    		String target2 = "TIG055st2014.mailmaster.ShowEmailActivity";
-		        	activity.onItemClick(null, null, 0, 0);
-		        	if(apv.getFolderName("mailmastertesting@gmail.com").contains("Drafts")){
-		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
-		        	}
-		        	else{
-		        		assertTrue(getStartedActivityIntent().getAction().equals(target2));
-		        	}
-		       }
-		    });
+			public void run() {
+				activity.onItemClick(null, null, 0, 0);
+			}
+		});
+		ShowEmailActivity startedActivity = (ShowEmailActivity) monitor
+				.waitForActivityWithTimeout(5000);
+		assertNotNull(startedActivity);
+		
+		accEdit.clear();
+		accEdit.commit();
+		activity.finish();
+		startedActivity.finish();
 	}
 	public void testSettingPress() {
-		new Thread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(AccountSettingsActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
 
 			public void run() {
-				Intent intent = new Intent(getInstrumentation().getTargetContext(),
-						MailFolderActivity.class);
-				startActivity(intent, null, null);
-				activity = getActivity();
-				String target = "TIG055st2014.mailmaster.AccountSettingsActivity";
-				MenuItem settingIcon = (MenuItem) activity
-						.findViewById(R.id.action_toSettings);
-				activity.onClickSettings(settingIcon);
-				assertTrue(getStartedActivityIntent().getAction()
-						.equals(target));
+				activity.onClickSettings(null);
+				accEdit.clear();
+				accEdit.commit();
 			}
 		});
+		// wait 2 seconds for the start of the activity
+		AccountSettingsActivity startedActivity = (AccountSettingsActivity) monitor
+				.waitForActivityWithTimeout(2000);
+		activity.finish();
+		assertNotNull(startedActivity);
+		startedActivity.finish();
 	}
-
 	public void testNoDefaultAcc() {
-		new Thread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(AddAccountActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				Intent intent = new Intent(getInstrumentation().getTargetContext(),
-						MailFolderActivity.class);
-				startActivity(intent, null, null);
-				activity = getActivity();
-				accEdit= activity.accounts.edit();
 				accEdit.remove("default");
 				accEdit.commit();
-				String target = "TIG055st2014.mailmaster.AddAccountActivity";
-				activity.accounts.getString("defaultAcc", "");
-				assertTrue(getStartedActivityIntent().getAction()
-						.equals(target));
+				getInstrumentation().callActivityOnCreate(activity, null);
 			}
 		});
+		AddAccountActivity startedActivity = (AddAccountActivity) monitor
+				.waitForActivityWithTimeout(5000);
+		assertNotNull(startedActivity);
+		startedActivity.finish();
+		accEdit.clear();
+		accEdit.commit();
+		activity.finish();
 	}
+	@UiThreadTest
 	public void testChangeFolder() {
-		new Thread(new Runnable() {
-			public void run() {
-				Intent intent = new Intent(getInstrumentation().getTargetContext(),
-						MailFolderActivity.class);
-				startActivity(intent, null, null);
-				activity = getActivity();
-				activity.accounts.getString("defaultAcc", "");
-				MenuItem m = (MenuItem)activity.findViewById(R.id.action_sent);
-				activity.changeFolder(m);
-				assertTrue(apv.getFolderName("mailmastertesting@gmail.com").contains("Drafts"));
-				m = (MenuItem)activity.findViewById(R.id.action_inbox);
-				activity.changeFolder(m);
-				assertTrue(apv.getFolderName("mailmastertesting@gmail.com").contains("INBOX"));
-			}
-		});
+		activity.changeFolder(activity.testMenu.findItem(R.id.action_drafts));
+		assertTrue(apv.getFolderName("mailmastertesting@gmail.com").contains("Drafts"));
+		activity.changeFolder(activity.testMenu.findItem(R.id.action_inbox));
+		accEdit.clear();
+		accEdit.commit();
+		activity.finish();
+	}
+	public void tearDown() throws Exception{
+		super.tearDown();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		apv.setTesting(false);
 	}
 }

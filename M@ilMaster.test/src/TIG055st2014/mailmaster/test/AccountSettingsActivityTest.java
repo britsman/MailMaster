@@ -72,9 +72,9 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		// wait 2 seconds for the start of the activity
 		AddAccountActivity startedActivity = (AddAccountActivity) monitor
 				.waitForActivityWithTimeout(10000);
-		startedActivity.toSettings(null);
 		activity.finish();
 		assertNotNull(startedActivity);
+		startedActivity.finish();
 	}
 	public void testToInbox() {
 		ActivityMonitor monitor =
@@ -102,7 +102,7 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		activity.accEdit.commit();
 		activity.finish();
 		assertNotNull(startedActivity);
-		startedActivity.onClickSettings(null);
+		startedActivity.finish();
 	}
 	public void testIconHidden() {
 		activity.accEdit.clear();
