@@ -38,6 +38,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	private EmailNotificationServiceConnection mServiceConnection = new EmailNotificationServiceConnection();
 	private EmailNotificationService mService = null;
 	private ProgressDialog dialog;
+	public Menu testMenu;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			listView = (ListView) findViewById(R.id.inbox_list);
 			listView.setClickable(true);
 			listView.setOnItemClickListener(this);
-			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning()){
+			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning() && !apv.isTesting()){
 				dialog = new ProgressDialog(this);
 			    //reading from the resource file depending on which language is selected
 		        String fetchinbox = (String) getResources().getText(R.string.fetch_inbox);
@@ -155,6 +156,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.mail_folder, menu);
+		testMenu = menu;
 		return true;
 	}
 	/**
@@ -241,7 +243,9 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		stopBackground();
+		if(isServiceRunning()){
+			stopBackground();
+		}
 	}
 	/**
 	 * Used to start and bind EmailNotificationService.

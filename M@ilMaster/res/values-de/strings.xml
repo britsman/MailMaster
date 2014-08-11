@@ -39,10 +39,16 @@
     <string name="swedish">SW</string>
     <string name="arabic">AR</string>
     <string name="german">DE</string>
+    <!--  
     <string name="msDrafts">Entwurf</string>
     <string name="msSent">Gesendet</string>
     <string name="gmailDrafts">[Gmail]/Entwurf</string>
     <string name="gmailSent">[Gmail]/Gesendete Nachrichten</string>
+    -->
+    <string name="msDrafts">Drafts</string>
+    <string name="msSent">Sent</string>
+    <string name="gmailDrafts">[Gmail]/Drafts</string>
+    <string name="gmailSent">[Gmail]/Sent</string>
     <string name="choose_acc">Wählen Sie Kontot...</string>
     <string name="download">Download Artikel</string>
     <string name="contacts">Download Kontakte</string>
@@ -54,7 +60,7 @@
     <string name="no_answer">Nein</string>
     <string name="fetch_inbox">Abrufen Inbox...</string>
     <string name="fetch_drafts">Abrufen Entwürfe...</string>
-    <string name="fetch_sennt">Abrufen von E-Mails verschickt...</string>
+    <string name="fetch_sent">Abrufen von E-Mails verschickt...</string>
     <string name="read_email">Lesen E-Mail Inhalt...</string>
     <string name="construct_rep">konstruieren Antwort...</string>
     <string name="read_contact">Parsen Kontakte(Ergebnis wird für die zukünftige Verwendung gespeichert werden)...</string>

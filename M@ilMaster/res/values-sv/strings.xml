@@ -50,7 +50,7 @@
    	<string name="no_answer">Nej</string>
    	<string name="fetch_inbox">Hämtar Inkorgen...</string>
    	<string name="fetch_drafts">Hämtar Utkast...</string>
-    <string name="fetch_sennt">Hämtar skickad e-post...</string>
+    <string name="fetch_sent">Hämtar skickad e-post...</string>
     <string name="read_email">Laddar EmailInnehåll...</string>
     <string name="construct_rep">Förbereder SvarMail...</string>
     <string name="read_contact">Hämtar kontakter (resultatet kommer att sparas för framtida användning)...</string>

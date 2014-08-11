@@ -54,7 +54,7 @@
     <string name="no_answer">No</string>
     <string name="fetch_inbox">Fetching Inbox...</string>
     <string name="fetch_drafts">Fetching Drafts...</string>
-    <string name="fetch_sennt">Fetching Sent Emails...</string>
+    <string name="fetch_sent">Fetching Sent Emails...</string>
     <string name="read_email">Loading Email Contents...</string>
     <string name="construct_rep">Constructing Reply...</string>
     <string name="read_contact">Parsing contacts (result will be saved for future use)...</string>

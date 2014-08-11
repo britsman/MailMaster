@@ -460,7 +460,7 @@ public class MailFunctionality extends Authenticator {
 				dialog.setMessage(fetchdrafts);
 			}
 			else if(apv.getFolderName(user).contains("Sent")){
-				String fetchsent = (String) activity.getResources().getText(R.string.fetch_sennt);
+				String fetchsent = (String) activity.getApplicationContext().getResources().getString(R.string.fetch_sent);
 				dialog.setMessage(fetchsent);
 			}
 			else{
@@ -469,7 +469,9 @@ public class MailFunctionality extends Authenticator {
 			}
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
+			if(!apv.isTesting()){
 			dialog.show();
+			}
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {
@@ -653,7 +655,13 @@ public class MailFunctionality extends Authenticator {
 		protected void onPreExecute() {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			contents = "";
-			String fetchsent = (String) seAct.getResources().getText(R.string.read_email);
+			String fetchsent = "";
+			if(seAct != null){
+			fetchsent = seAct.getApplicationContext().getResources().getString(R.string.read_email);
+			}
+			else if(cmAct != null){
+				fetchsent = cmAct.getApplicationContext().getResources().getString(R.string.read_email);
+			}
 			dialog.setMessage(fetchsent);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);

@@ -59,7 +59,7 @@
     <string name="no_answer">لا</string>
     <string name="fetch_inbox">جلب صندوق الوارد...</string>
     <string name="fetch_drafts">جلب المسودات...</string>
-    <string name="fetch_sennt">جلب رسائل البريد الإلكتروني المرسلة...</string>
+    <string name="fetch_snnt">جلب رسائل البريد الإلكتروني المرسلة...</string>
     <string name="read_email">قراءة البريد الإلكتروني المحتويات...</string>
     <string name="construct_rep">بناء رد...</string>
     <string name="read_contact">تحليل الاتصالات (سيتم حفظ نتيجة للاستخدام في المستقبل)...</string>
