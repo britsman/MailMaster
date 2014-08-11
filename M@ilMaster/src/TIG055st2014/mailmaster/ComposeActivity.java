@@ -65,7 +65,12 @@ OnItemSelectedListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		try{
 		super.onCreate(savedInstanceState);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		getActionBar().setDisplayShowHomeEnabled(false);
 		save = false;

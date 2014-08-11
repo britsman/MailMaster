@@ -33,11 +33,13 @@ public class AppVariablesSingleton {
 	private ArrayList<String> attachments;
 	private ArrayList<DataSource> files; 
 	public HashMap<String, String> folderName;
-	String currentAcc;
+	private String currentAcc;
+	private boolean testing;
 
 	private AppVariablesSingleton(){
 		resetLists();
 		currentAcc = "";
+		testing = false;
 	}
 
 	public void setEmail(Message m){
@@ -127,6 +129,12 @@ public class AppVariablesSingleton {
 	}
 	public String getAccount(){
 		return this.currentAcc;
+	}
+	public void setTesting(boolean b){
+		this.testing = b;
+	}
+	public boolean isTesting(){
+		return this.testing;
 	}
 	/**
 	 * Makes sure the same instance of AppVariables is used throughout

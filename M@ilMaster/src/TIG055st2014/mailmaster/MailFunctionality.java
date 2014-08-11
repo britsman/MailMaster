@@ -648,12 +648,15 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			contents = "";
 			String fetchsent = (String) seAct.getResources().getText(R.string.read_email);
 			dialog.setMessage(fetchsent);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
-			dialog.show();
+			if(!apv.isTesting()){
+				dialog.show();
+			}
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {

@@ -50,8 +50,10 @@ AdapterView.OnItemClickListener {
 		setContentView(R.layout.activity_attachments);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
-		fileNames = apv.getAttachments();
-		files = apv.getFiles();
+		fileNames = new ArrayList<String>();
+		files = new ArrayList<DataSource>();
+		fileNames.addAll(apv.getAttachments());
+		files.addAll(apv.getFiles());
 		hasAttachments = true;
 		if (fileNames.size() == 0) {
 			hasAttachments = false;

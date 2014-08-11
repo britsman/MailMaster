@@ -19,6 +19,7 @@ public class ShowEmailActivity extends Activity {
 	private SharedPreferences accounts;
 	private String currentAcc;
 	private String pw;
+	public Menu testMenu;
 	/**
 	 * A WebView is used in order to easily display HTML contents.
 	 */
@@ -70,6 +71,7 @@ public class ShowEmailActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.show_email, menu);
+		testMenu = menu;
 		return true;
 	}
 	@Override
@@ -87,7 +89,7 @@ public class ShowEmailActivity extends Activity {
 
 			return true;
 		}
-		if (id == R.id.get_attachments) {
+		else if (id == R.id.get_attachments) {
 			startActivity(new Intent("TIG055st2014.mailmaster.AttachmentsActivity"));
 			return true;
 		}
