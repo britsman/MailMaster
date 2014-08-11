@@ -6,72 +6,91 @@ import javax.mail.Message;
 
 import org.junit.Test;
 
+import TIG055st2014.mailmaster.AddAccountActivity;
 import TIG055st2014.mailmaster.AppVariablesSingleton;
+import TIG055st2014.mailmaster.AttachmentsActivity;
+import TIG055st2014.mailmaster.ComposeActivity;
 import TIG055st2014.mailmaster.MailFolderActivity;
 import TIG055st2014.mailmaster.MailFunctionality;
 import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.ShowEmailActivity;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
+import android.test.ActivityInstrumentationTestCase2;
 import android.test.ActivityUnitTestCase;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 import android.view.MenuItem;
 
-public class ShowEmailActivityTest extends  ActivityUnitTestCase<ShowEmailActivity>  {
+public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<ShowEmailActivity>  {
 	private ShowEmailActivity activity;
 	private MailFunctionality mf;
-	private AppVariablesSingleton d;
+	private AppVariablesSingleton apv;
 	private String account;
+	
 	public ShowEmailActivityTest() {
 		super(ShowEmailActivity.class);
 		account = "mailmastertesting@gmail.com";
-		d = AppVariablesSingleton.getInstance();
-		d.initAccounts();
+		apv = AppVariablesSingleton.getInstance();
+		apv.initAccounts();
+		apv.resetLists();
 		mf = new MailFunctionality(account, "mailmaster123", "gmail.com");
-		d.setFolderName(account, "INBOX");
+		apv.setFolderName(account, "INBOX");
 		Message m = mf.getFolderTest().get(0);
-		d.setEmail(m);
-		
-		
-		
+		apv.setEmail(m);		
 	}
 
 	protected void setUp() throws Exception{
 		super.setUp();
-	
+		apv = AppVariablesSingleton.getInstance();
+		apv.setAccount(account);
+		apv.setTesting(true);
+		activity = getActivity();
 	}
 	public void testReplyPress() {
-		  new Thread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(ComposeActivity.class.getName(), null, false);
+		  activity.runOnUiThread(new Runnable() {
 
 		        public void run() {
-		        	Intent intent = new Intent(getInstrumentation().getTargetContext(),
-		    				ShowEmailActivity.class);
-		    		startActivity(intent, null, null);
-		    		activity = getActivity();
-		        	String target = "TIG055st2014.mailmaster.ComposeActivity";
-					MenuItem replyIcon = (MenuItem) activity.findViewById(R.id.action_reply);
-					Log.d("test", replyIcon.getItemId() + "");
+					MenuItem replyIcon = activity.testMenu.findItem(R.id.action_reply);
 					activity.onOptionsItemSelected(replyIcon);
-					assertTrue(getStartedActivityIntent().getAction().equals(target));
-					
 		       }
 		    });
+			ComposeActivity startedActivity = (ComposeActivity) monitor
+					.waitForActivityWithTimeout(10000); 
+			assertNotNull(startedActivity);
 	}
 	
 	public void testAttachPress() {
-		  new Thread(new Runnable() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(AttachmentsActivity.class.getName(), null, false);
+		  activity.runOnUiThread(new Runnable() {
 
 		        public void run() {
-		        	Intent intent = new Intent(getInstrumentation().getTargetContext(),
-		    				ShowEmailActivity.class);
-		    		startActivity(intent, null, null);
-		    		activity = getActivity();
-		        	String target = "TIG055st2014.mailmaster.AttachmentsActivity";
-		        	MenuItem attachIcon = (MenuItem) activity.findViewById(R.id.get_attachments);
-		        	activity.onOptionsItemSelected(attachIcon);
-		        	assertTrue(getStartedActivityIntent().getAction().equals(target));
+					MenuItem attachIcon = activity.testMenu.findItem(R.id.get_attachments);
+					activity.onOptionsItemSelected(attachIcon);
 		       }
 		    });
+			final AttachmentsActivity startedActivity = (AttachmentsActivity) monitor
+					.waitForActivityWithTimeout(10000); 
+			assertNotNull(startedActivity);
+			  activity.runOnUiThread(new Runnable() {
+
+			        public void run() {
+			startedActivity.onBackPressed();
+				       }
+			    });
 	}
-	
+	@Override
+	public void tearDown() throws Exception{
+		super.tearDown();
+		apv = AppVariablesSingleton.getInstance();
+		apv.resetLists();
+		apv.initAccounts();
+		apv.setAccount(null);
+		apv.setTesting(false);
+	}
 }

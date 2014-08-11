@@ -68,7 +68,6 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		assertNotNull(startedActivity);
 	}
 	public void testToInbox() {
-
 		activity.runOnUiThread(new Runnable() {
 
 			public void run() {
@@ -91,8 +90,8 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 				.waitForActivityWithTimeout(2000);
 		activity.accEdit.clear();
 		activity.accEdit.commit();
-		startedActivity.onClickSettings(null);
 		assertNotNull(startedActivity);
+		startedActivity.onClickSettings(null);
 	}
 	public void testIconHidden() {
 		activity.accEdit.clear();
