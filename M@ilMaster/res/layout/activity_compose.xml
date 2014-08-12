@@ -1,12 +1,10 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
-    
 
     <TextView
         android:id="@+id/sender"
@@ -36,16 +34,16 @@
         android:text="@string/receiver"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-     <MultiAutoCompleteTextView
+    <MultiAutoCompleteTextView
         android:id="@+id/receiveAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receiver"
         android:ems="10"
-        android:hint="Write Reciever here"
+        android:hint="@string/hint_to"
         android:singleLine="true" />
-    
-        <TextView
+
+    <TextView
         android:id="@+id/cc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,17 +51,17 @@
         android:layout_below="@+id/receiveAccs"
         android:text="@string/cc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        <MultiAutoCompleteTextView
+
+    <MultiAutoCompleteTextView
         android:id="@+id/ccAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cc"
-        android:ems="10" 
-        android:hint="Write emails to CC here"
+        android:ems="10"
+        android:hint="@string/hint_cc"
         android:singleLine="true" />
-        
-        <TextView
+
+    <TextView
         android:id="@+id/bcc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,14 +69,14 @@
         android:layout_below="@+id/ccAccs"
         android:text="@string/bcc"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-        
-        <MultiAutoCompleteTextView
+
+    <MultiAutoCompleteTextView
         android:id="@+id/bccAccs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bcc"
-        android:ems="10" 
-        android:hint="Write emails to BCC here"
+        android:ems="10"
+        android:hint="@string/hint_bcc"
         android:singleLine="true" />
 
     <TextView
@@ -95,8 +93,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
-        android:ems="10" 
-        android:hint="Write subject here"
+        android:ems="10"
+        android:hint="@string/hint_subject"
         android:singleLine="true" />
 
     <TextView
@@ -115,15 +113,15 @@
         android:layout_alignLeft="@+id/message"
         android:layout_below="@+id/message"
         android:ems="10"
-        android:hint="Write receiver message here"
+        android:hint="@string/hint_message"
         android:singleLine="false" />
 
     <TextView
         android:id="@+id/totalsize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/body"
-       	android:text="@string/total_size" />
-      
+        android:layout_centerHorizontal="true"
+        android:text="@string/total_size" />
+
 </RelativeLayout>

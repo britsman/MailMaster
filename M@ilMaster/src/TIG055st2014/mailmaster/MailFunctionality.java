@@ -191,7 +191,9 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			dialog.setMessage("Sending Email...");
+			
+			dialog.setMessage(context.
+					getResources().getString(R.string.send_email));
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			dialog.show();
@@ -245,8 +247,8 @@ public class MailFunctionality extends Authenticator {
 			}
 			if(sent){
 				Toast toast = Toast.makeText(context,
-						"Send successful! (if email was close to max size, this may appear " +
-								"minutes after pressing send).", Toast.LENGTH_SHORT);
+						context.getResources()
+						.getString(R.string.toast_sendsucc), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
@@ -254,8 +256,8 @@ public class MailFunctionality extends Authenticator {
 			else{
 				saveDraft(subject, body, sender, recipients, cc, bcc, context);
 				Toast toast = Toast.makeText(context,
-						"Send failed, one or more supplied adresses contain illegal characters " +
-								"(email has been saved as draft).", Toast.LENGTH_LONG);
+						context.getResources()
+						.getString(R.string.toast_sendfail), Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();      
 			}
@@ -370,7 +372,8 @@ public class MailFunctionality extends Authenticator {
 			else{
 				//Invalid email account (will also trigger if no internet connection).
 				Toast toast = Toast.makeText(activity.getApplicationContext(),
-						"Wrong password or inexistant account.", Toast.LENGTH_SHORT);
+						activity.getApplicationContext().getResources()
+						.getString(R.string.toast_wrongpass), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
@@ -1017,13 +1020,15 @@ public class MailFunctionality extends Authenticator {
 			}
 			if(saved){
 				Toast toast = Toast.makeText(context,
-						"Draft Saved.", Toast.LENGTH_SHORT);
+						context.getResources()
+						.getString(R.string.toast_save_draft), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
 			else{
 				Toast toast = Toast.makeText(context,
-						"Failed to save draft.", Toast.LENGTH_SHORT);
+						context.getResources()
+						.getString(R.string.toast_fail_save), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}

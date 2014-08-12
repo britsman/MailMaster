@@ -57,13 +57,15 @@ AdapterView.OnItemClickListener {
 		hasAttachments = true;
 		if (fileNames.size() == 0) {
 			hasAttachments = false;
-			fileNames.add("This email contains no attachments");
+			
+			fileNames.add(getApplicationContext().
+					getResources().getString(R.string.no_attachments));
 		}
 		listView = (ListView) findViewById(R.id.attachment_list);
 		listView.setClickable(true);
 		listView.setOnItemClickListener(this);
 		listView.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
-				android.R.layout.simple_list_item_1, fileNames));
+				R.layout.simple_attach_item, R.id.simple_attachtext, fileNames));
 	}
 	@Override
 	protected void onStart() {
@@ -155,7 +157,8 @@ AdapterView.OnItemClickListener {
 		protected void onPostExecute(Void v){
 			if(downloaded){
 				Toast toast = Toast.makeText(context,
-            			"Succesfully downloaded " + name + "!", Toast.LENGTH_SHORT);
+						getApplicationContext().getResources()
+						.getString(R.string.toast_attdownload)+ " " +  name + "!", Toast.LENGTH_SHORT);
             	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
             	toast.show();
             	//based on http://developer.android.com/guide/appendix/media-formats.html
@@ -174,7 +177,8 @@ AdapterView.OnItemClickListener {
             			}
 		        }
 				Toast toast = Toast.makeText(context,
-						"Failed to download " + name + "!", Toast.LENGTH_SHORT);
+						getApplicationContext().getResources()
+						.getString(R.string.toast_attdownload1)+" "+ name + "!", Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}

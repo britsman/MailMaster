@@ -29,11 +29,14 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 	private float total;
 	private SharedPreferences sizePref;
 	private SharedPreferences.Editor sizeEdit;
+	
 	/**
 	 * This is the label in ComposeActivity that needs to be updated when attachments are
 	 * deleted.
 	 */
 	private TextView text; 
+	private int[] colours;
+	
 
 	public AttachmentsAdapter(Context applicationContext, int attachmentsItem,
 			int attachmentsText, ArrayList<String> attachments, TextView t) {
@@ -44,6 +47,9 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
 		sizeEdit = sizePref.edit();
 		total= sizePref.getFloat("Total", (float) 0.0);
+		this.colours = new int[]{
+				Color.argb(155, 215, 255, 188), Color.argb(155, 188, 243, 255), Color.argb(155, 255, 181, 132)
+		};
 
 
 	}
@@ -53,7 +59,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 	 */
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final String a = attach.get(position);
-
+		int i = 0;
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -62,11 +68,12 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		sizePref = context.getSharedPreferences("FileSizes", Context.MODE_PRIVATE);
 		//20 mb is the maximum attachment size to make email recievable by microsoft accounts.
 		if (total > 20480) {
-			convertView.setBackgroundColor(Color.RED);
+			convertView.setBackgroundColor(colours[i]);
 			text.setTextColor(Color.RED);
 		} else {
-			convertView.setBackgroundColor(Color.GREEN);
+			convertView.setBackgroundColor(colours[i]);
 			text.setTextColor(Color.BLACK);
+			
 		}	
 		TextView tv = (TextView) convertView
 				.findViewById(R.id.attachments_text);

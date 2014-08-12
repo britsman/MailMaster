@@ -76,7 +76,8 @@ public class EmailNotificationService extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Toast.makeText(this,"Service created", Toast.LENGTH_LONG).show();
+		Toast.makeText(this,getApplicationContext().getResources()
+				.getString(R.string.toast_service_creat), Toast.LENGTH_LONG).show();
 
 		thread = new Thread(){
 			@Override
@@ -148,7 +149,8 @@ public class EmailNotificationService extends Service{
 	public void onDestroy() {
 		super.onDestroy();
 		running = false;
-		Toast.makeText(this,"Service destroyed", Toast.LENGTH_LONG).show();
+		Toast.makeText(this,getApplicationContext().getResources()
+				.getString(R.string.toast_service_dest), Toast.LENGTH_LONG).show();
 		NotificationManager notifyManager =
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notifyManager.cancel(emailId);
@@ -156,7 +158,8 @@ public class EmailNotificationService extends Service{
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Toast.makeText(this,"Service started", Toast.LENGTH_LONG).show();
+		Toast.makeText(this,getApplicationContext().getResources()
+				.getString(R.string.toast_service_start), Toast.LENGTH_LONG).show();
 		running = true;
 		thread.start();
 		return super.onStartCommand(intent, flags, startId);

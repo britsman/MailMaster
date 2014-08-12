@@ -46,6 +46,9 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		try{
+			String from = (String) context.getResources().getText(R.string.sender);
+			String sent = (String) context.getResources().getText(R.string.sent);
+			String subject = (String) context.getResources().getText(R.string.subject);
 			int i = 0;
 			if (convertView == null) {
 				LayoutInflater inflater = (LayoutInflater) context
@@ -54,8 +57,8 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 			}
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			Message temp = emails.get(position);
-			String info = "From: " + (temp.getFrom())[0] + "\nSent: " + 
-					temp.getReceivedDate() + "\nSubject: " + temp.getSubject();
+			String info = from + (temp.getFrom())[0] + "\n" + sent +": "+  
+					temp.getReceivedDate() + "\n " + subject+ ": " + temp.getSubject();
 			TextView tv = (TextView) convertView.findViewById(R.id.email_preview);
 			tv.setText(info);
 			//If email has been read, the item's text is black

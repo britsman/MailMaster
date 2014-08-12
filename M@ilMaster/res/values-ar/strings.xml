@@ -20,8 +20,8 @@
     <string name="title_activity_compose">إنشاء البريد الإلكتروني</string>
     <string name="sender">المرسل:</string>
     <string name="receiver">مستلم:</string>
-    <string name="cc">مستلم:</string>
-    <string name="bcc">مستلم:</string>
+    <string name="cc">مستلم الثاني:</string>
+    <string name="bcc">مستلم الثالث:</string>
     <string name="subject">الموضوع:</string>
     <string name="message">رسالة:</string>
     <string name="compose">إنشاء البريد الإلكتروني...</string>
@@ -64,6 +64,28 @@
     <string name="construct_rep">بناء رد...</string>
     <string name="read_contact">تحليل الاتصالات (سيتم حفظ نتيجة للاستخدام في المستقبل)...</string>
     <string name="save_draft">حفظ في المسودات...</string>
+    <string name="no_attachments">هذا البريد الإلكتروني لا يحتوي على مرفقات</string>
+    <string name="hint_to">ادخال مستلم الرساله هنا...</string>
+    <string name="hint_cc">ادخال مستلم الرساله الثاني هنا...</string>
+    <string name="hint_bcc">ادخال مستلم الثالث الرساله هنا...</string>
+    <string name="hint_subject">ادخال الموضوع هنا...</string>
+    <string name="hint_message">ادخال الرسالة هنا...</string>
+    <string name="toast_addacc">الحقل (الحقول) قصيرة جدا/ فارغه.</string>
+    <string name="toast_addacc1">مزود البريد الإلكتروني غير معتمدة.</string>
+    <string name="toast_addacc2">تمت إضافة هذا الحساب مسبقا.</string>
+    <string name="toast_attdownload">تحميل بنجاح!</string>
+    <string name="toast_attdownload1">فشل في تحميل!</string>
+    <string name="toast_big_size">لم نتمكن من ارسال الملفات هي كبيرة جدا لنعلق!</string>
+    <string name="toast_emailsel">البريد الإلكتروني المختارة :</string>
+    <string name="toast_service_creat">خلق خدمة</string>
+    <string name="toast_service_dest">دمرت الخدمة</string>
+    <string name="toast_service_start">بدأت الخدمة</string>
+    <string name="toast_sendsucc">إرسال ناجحة! إذا كان البريد الإلكتروني قريبة إلى الحد الأقصى، سوف تظهر بعد الضغط على زر الارسال</string>
+    <string name="toast_sendfail">خطأ في الارسال، واحد أو أكثر الموردة عناوين تحتوي على أحرف غير قانونية (تم حفظ البريد الإلكتروني في المسودات).</string>
+    <string name="toast_wrongpass">كلمة مرور خاطئة أو الحساب غير موجود.</string>
+    <string name="toast_save_draft">تم الحفظ في المسودات </string>
+    <string name="toast_fail_save">فشل في عملية الحفظ</string>
+    <string name="send_email">إرسال البريد الإلكتروني...</string>
     
 
 </resources>

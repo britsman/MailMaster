@@ -50,7 +50,8 @@ public class AddAccountActivity extends Activity {
 		//Error handling too short or blank field.
 		if(email.length() < 1 || pw.length() < 1){
 			Toast toast = Toast.makeText(getApplicationContext(),
-					"Field(s) too short/unfilled", Toast.LENGTH_SHORT);
+					getApplicationContext().getResources()
+					.getString(R.string.toast_addacc), Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
 			toast.show();
 		}
@@ -68,7 +69,8 @@ public class AddAccountActivity extends Activity {
 			//Unsupported Email.
 			else{
 				Toast toast = Toast.makeText(getApplicationContext(),
-						"Email provider not supported.", Toast.LENGTH_SHORT);
+						getApplicationContext().getResources()
+						.getString(R.string.toast_addacc1), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
@@ -76,7 +78,8 @@ public class AddAccountActivity extends Activity {
 		//Account has already been added previously.
 		else {
 			Toast toast = Toast.makeText(getApplicationContext(),
-					"This account has already been added.", Toast.LENGTH_SHORT);
+					getApplicationContext().getResources()
+					.getString(R.string.toast_addacc2), Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 			toast.show();
 		}

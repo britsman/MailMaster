@@ -65,6 +65,29 @@
     <string name="construct_rep">konstruieren Antwort...</string>
     <string name="read_contact">Parsen Kontakte(Ergebnis wird für die zukünftige Verwendung gespeichert werden)...</string>
     <string name="save_draft">Sparen Entwurf...</string>
+    <string name="no_attachments">Diese E-Mail enthält keine Anhänge.</string>
+   	<string name="hint_to">Schreiben Sie Empfänger hier...</string>
+    <string name="hint_cc">Schreiben CC Ziele hier...</string>
+    <string name="hint_bcc">Schreiben BCC Ziele hier...</string>
+    <string name="hint_subject">Schreiben Thema hier...</string>
+    <string name="hint_message">Nachricht hier schreiben...</string>
+    <string name="toast_addacc">Feld(er) zu kurz / ungefüllt.</string>
+    <string name="toast_addacc1">E-Mail-Provider nicht unterstützt.</string>
+    <string name="toast_addacc2">Dieses Konto wurde bereits hinzugefügt.</string>
+    <string name="toast_attdownload">Erfolgreich heruntergeladen!</string>
+    <string name="toast_attdownload1">Konnten nicht heruntergeladen werden!</string>
+    <string name="toast_big_size">Konnte nicht gesendet werden, zu groß zu befestigen!</string>
+    <string name="toast_emailsel">E-Mail-Ausgewählte :</string>
+    <string name="toast_service_creat">Service erstellt</string>
+    <string name="toast_service_dest">Service zerstört</string>
+    <string name="toast_service_start">Dienst gestartet</string>
+    <string name="toast_sendsucc">Senden Sie erfolgreich!(wenn E-Mail war in der Nähe maximale Größe, kann dies erscheinen Minuten nach Drücken senden).</string>
+    <string name="toast_sendfail">Fehler beim Senden eines oder mehrere mitgelieferten Adressen enthalten unzulässige Zeichen (E-Mail als Entwurf gespeichert wurde).</string>
+    <string name="toast_wrongpass">Falsches Passwort oder nicht vorhandene Konto.</string>
+    <string name="toast_save_draft">Entwurf gespeichert.</string>
+    <string name="toast_fail_save">Fehler beim Entwurf zu speichern.</string>
+  	<string name="send_email">Senden E-Mail...</string>
+    
     
 
 </resources>

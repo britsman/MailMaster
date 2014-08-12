@@ -59,6 +59,31 @@
     <string name="construct_rep">Constructing Reply...</string>
     <string name="read_contact">Parsing contacts (result will be saved for future use)...</string>
     <string name="save_draft">Saving Draft...</string>
+    <string name="no_attachments">This email contains no attachments.</string>
+   	<string name="hint_to">Write recievers here...</string>
+    <string name="hint_cc">Write CC targets here...</string>
+    <string name="hint_bcc">Write BCC targets here...</string>
+    <string name="hint_subject">Write subject here...</string>
+    <string name="hint_message">Write message here...</string>
+    <string name="toast_addacc">Field(s) too short/unfilled.</string>
+    <string name="toast_addacc1">Email provider not supported.</string>
+    <string name="toast_addacc2">This account has already been added.</string>
+    <string name="toast_attdownload">Succesfully downloaded!</string>
+    <string name="toast_attdownload1">Failed to download!</string>
+    <string name="toast_big_size">Could not send, files are too big to attach!</string>
+    <string name="toast_emailsel">Email Selected :</string>
+    <string name="toast_service_creat">Service created</string>
+    <string name="toast_service_dest">Service destroyed</string>
+    <string name="toast_service_start">Service started</string>
+    <string name="toast_sendsucc">Send successful! (if email was close to max size, this may appear minutes after pressing send).</string>
+    <string name="toast_sendfail">Send failed, one or more supplied adresses contain illegal characters (email has been saved as draft).</string>
+    <string name="toast_wrongpass">Wrong password or inexistant account.</string>
+    <string name="toast_save_draft">Draft Saved.</string>
+    <string name="toast_fail_save">Failed to save draft.</string>
+  	<string name="send_email">Sending Email...</string>
+    
+    
+    
     
 
 </resources>

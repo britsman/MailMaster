@@ -300,7 +300,8 @@ OnItemSelectedListener {
 		if (total > 20480) {// The maximum attachment size to make email
 			// receivable by microsoft accounts
 			Toast toast = Toast.makeText(getApplicationContext(),
-					"Could not send, files are too big to attach!",
+					getApplicationContext().getResources()
+					.getString(R.string.toast_big_size),
 					Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 			toast.show();
@@ -345,7 +346,8 @@ OnItemSelectedListener {
 			} else {
 				// Missed fields
 				Toast toast = Toast.makeText(getApplicationContext(),
-						"One or more required fields are unfilled.",
+						getApplicationContext().getResources()
+						.getString(R.string.toast_addacc),
 						Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
@@ -488,7 +490,8 @@ OnItemSelectedListener {
 			long id) {
 
 		Toast.makeText(parent.getContext(),
-				"Email Selected : " + parent.getItemAtPosition(pos).toString(),
+				getApplicationContext().getResources()
+				.getString(R.string.toast_emailsel)+ " " + parent.getItemAtPosition(pos).toString(),
 				Toast.LENGTH_SHORT).show();
 	}
 

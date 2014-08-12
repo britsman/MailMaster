@@ -55,5 +55,28 @@
     <string name="construct_rep">Förbereder SvarMail...</string>
     <string name="read_contact">Hämtar kontakter (resultatet kommer att sparas för framtida användning)...</string>
     <string name="save_draft">Spara Utkast...</string>
+    <string name="no_attachments">Detts email innehåller inga bifogade filer.</string>
+    <string name="hint_to">Skriv mottagare här...</string>
+    <string name="hint_cc">Skriv CC addresser här...</string>
+    <string name="hint_bcc">Skriv BCC addresser här...</string>
+    <string name="hint_subject">Skriv ämne här...</string>
+    <string name="hint_message">Skriv meddelande här...</string>
+    <string name="toast_addacc">Område(n) för kort / ofylld.</string>
+    <string name="toast_addacc1">E-post leverantör stöds inte.</string>
+    <string name="toast_addacc2">Kontot har redan lagts till.</string>
+    <string name="toast_attdownload">Framgångsrikt nedladdning!</string>
+    <string name="toast_attdownload1">Fel i nedladdning!</string>
+    <string name="toast_big_size">Det gick inte att skicka, filer är för stora för att bifoga!</string>
+    <string name="toast_emailsel">E-post har Väljat :</string>
+    <string name="toast_service_creat">Tjänsten har skapats</string>
+    <string name="toast_service_dest">Tjänsten förstört</string>
+    <string name="toast_service_start">Tjänsten startade</string>
+    <string name="toast_sendsucc">Skicka framgångsrik!(om e-post var nära max storlek kan detta visas minuter efter att trycka Skicka).</string>
+    <string name="toast_sendfail">Skicka misslyckades, en eller flera medföljande adresser innehåller otillåtna tecken (email har sparats som utkast).</string>
+    <string name="toast_wrongpass">Fel lösenord eller obefintlig konto.</string>
+    <string name="toast_save_draft">Utkast har sparat.</string>
+    <string name="toast_fail_save">Fel att spara i utkast.</string>
+    <string name="send_email">Skickar E-post...</string>
+    
 
 </resources>
