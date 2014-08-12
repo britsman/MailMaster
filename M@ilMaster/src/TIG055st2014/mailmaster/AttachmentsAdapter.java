@@ -48,7 +48,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		sizeEdit = sizePref.edit();
 		total= sizePref.getFloat("Total", (float) 0.0);
 		this.colours = new int[]{
-				Color.argb(155, 215, 255, 188), Color.argb(155, 188, 243, 255), Color.argb(155, 255, 181, 132)
+				Color.argb(155, 85, 255, 43), Color.argb(155, 255, 17, 57)
 		};
 
 
@@ -59,7 +59,6 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 	 */
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final String a = attach.get(position);
-		int i = 0;
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,10 +67,10 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		sizePref = context.getSharedPreferences("FileSizes", Context.MODE_PRIVATE);
 		//20 mb is the maximum attachment size to make email recievable by microsoft accounts.
 		if (total > 20480) {
-			convertView.setBackgroundColor(colours[i]);
+			convertView.setBackgroundColor(colours[1]);
 			text.setTextColor(Color.RED);
 		} else {
-			convertView.setBackgroundColor(colours[i]);
+			convertView.setBackgroundColor(colours[0]);
 			text.setTextColor(Color.BLACK);
 			
 		}	
@@ -107,7 +106,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				/*Hack to stop total from going below zero after adding then removing multiple activities.
 				Numbers look correct when adding/removing attachments, but sometimes when removing the last attachment
 				the totalsize will go below zero for some reason */
-				if(total < 0){
+				if(total < 1){
 					total = (float) 0.0;
 				}
 				

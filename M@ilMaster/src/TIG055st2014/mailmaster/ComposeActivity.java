@@ -58,7 +58,7 @@ OnItemSelectedListener {
 	public ListView listView;
 	ArrayList<String> attachments;
 	private SharedPreferences sizePref;
-	private SharedPreferences.Editor sizeEdit;
+	public SharedPreferences.Editor sizeEdit;
 	protected boolean save;
 	private TreeSet<String> output;
 	ArrayAdapter<String> adapter;

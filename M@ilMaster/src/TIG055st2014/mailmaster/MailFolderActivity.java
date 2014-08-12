@@ -34,7 +34,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	private Set<String> defAcc;
 	private String pw;
 	protected ListView listView;
-	protected ArrayList<Message> emails;
+	public ArrayList<Message> emails;
 	private EmailNotificationServiceConnection mServiceConnection = new EmailNotificationServiceConnection();
 	private EmailNotificationService mService = null;
 	private ProgressDialog dialog;
