@@ -84,7 +84,6 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		try {
 			Thread.sleep(18000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ActivityMonitor monitor =
@@ -104,6 +103,19 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		accEdit.commit();
 		activity.finish();
 		startedActivity.finish();
+	}
+	public void testIsSorted() {
+		try {
+			Thread.sleep(18000L);
+			assertTrue(activity.emails.get(0).getReceivedDate()
+					.after(activity.emails.get(1).getReceivedDate()));
+			accEdit.clear();
+			accEdit.commit();
+			activity.finish();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Should not be reached.");
+		}
 	}
 	public void testSettingPress() {
 		ActivityMonitor monitor =

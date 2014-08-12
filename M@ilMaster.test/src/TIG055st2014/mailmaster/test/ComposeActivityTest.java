@@ -6,11 +6,13 @@ import javax.mail.internet.MimeMessage;
 
 import org.junit.Test;
 
+import TIG055st2014.mailmaster.MailFolderActivity;
 import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.AccountSettingsActivity;
 import TIG055st2014.mailmaster.ComposeActivity;
 import TIG055st2014.mailmaster.AppVariablesSingleton;
 import TIG055st2014.mailmaster.MailFunctionality;
+import android.app.Instrumentation.ActivityMonitor;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -79,6 +81,60 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 					e.printStackTrace();
 					fail("This should not be reached.");
 				}
+	}
+	public void testSendWithEmptyFields() {
+
+		apv.setIsReply(false);
+		activity = getActivity();
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(MailFolderActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
+
+			public void run() {
+				try{
+					activity.onClickSend(null);
+					activity.finish();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					fail("This should not be reached.");
+				}
+			}
+		});
+		// wait 2 seconds for the start of the activity
+		MailFolderActivity startedActivity = (MailFolderActivity) monitor
+				.waitForActivityWithTimeout(2000);
+		assertNull(startedActivity);
+	}
+	public void testSendWithToLargeSize() {
+
+		apv.setIsReply(true);
+		activity = getActivity();
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(MailFolderActivity.class.getName(), null, false);
+		activity.runOnUiThread(new Runnable() {
+
+			public void run() {
+				try{
+					activity.sizeEdit.putFloat("total", 99999);
+					activity.sizeEdit.commit();
+					activity.onClickSend(null);
+					activity.sizeEdit.clear();
+					activity.sizeEdit.commit();
+					activity.finish();
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					fail("This should not be reached.");
+				}
+			}
+		});
+		// wait 2 seconds for the start of the activity
+		MailFolderActivity startedActivity = (MailFolderActivity) monitor
+				.waitForActivityWithTimeout(2000);
+		assertNull(startedActivity);
 	}
 	@Override
 	public void tearDown() throws Exception{
