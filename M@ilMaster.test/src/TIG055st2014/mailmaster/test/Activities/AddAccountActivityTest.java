@@ -10,6 +10,9 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.widget.EditText;
 
+/**
+ * This class tests adding accounts and navigating from the add account page.
+ */
 public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<AddAccountActivity> {
 
 	private AddAccountActivity activity;
@@ -29,6 +32,11 @@ public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<Add
 		apv.setTesting(true);
 		activity = getActivity();
 	}
+	/**
+	 * This test tries to verify that after adding the first account, the application shall¨
+	 * go to account settings and have exactly one account in its list. It also verifies that an 
+	 * account with correct info is added in the first place.
+	 */
 	public void testAddNewAcc() {
 		activity.runOnUiThread(new Runnable() {
 
@@ -52,8 +60,12 @@ public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<Add
 		AccountSettingsActivity startedActivity = (AccountSettingsActivity) monitor
 				.waitForActivityWithTimeout(10000);
 		assertTrue(startedActivity != null && startedActivity.columns.size() == 1);
-		startedActivity.toAdd(null);
+		startedActivity.finish();
 	}
+	/**
+	 * This test tries to verify that trying to add an account that has been saved previously
+	 * shall cause the app to reject the account and not leave the add page.
+	 */
 	public void testUniqueAccounts() {
 		Log.d("in uniquetest", "after wait");
 		activity.runOnUiThread(new Runnable() {
@@ -79,6 +91,10 @@ public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<Add
 				.waitForActivityWithTimeout(5000);
 		assertNull(startedActivity);
 	}
+	/**
+	 * This test tries to press the add page's settings icon and verify that it leads
+	 * to account settings.
+	 */
 	public void testToSettingsViaIcon() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -88,8 +104,8 @@ public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<Add
 		// wait 2 seconds for the start of the activity
 		AccountSettingsActivity startedActivity = (AccountSettingsActivity) monitor
 				.waitForActivityWithTimeout(2000);
-		startedActivity.toAdd(null);
 		assertNotNull(startedActivity);
+		startedActivity.finish();
 	}
 	public void tearDown() throws Exception{
 		super.tearDown();

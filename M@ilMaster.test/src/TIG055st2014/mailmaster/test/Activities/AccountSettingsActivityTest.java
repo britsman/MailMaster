@@ -14,7 +14,10 @@ import android.test.UiThreadTest;
 import android.util.Log;
 import android.view.MenuItem;
 
-
+/**
+ * This class tests interacting with interface components on the account settings page,
+ * as well as testing to successfully navigate to other pages from this page.
+ */
 public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase2<AccountSettingsActivity> {
 
 	private AccountSettingsActivity activity;
@@ -34,8 +37,12 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		apv.setTesting(true);
 		activity = getActivity();
 	}
+	/**
+	 * This test attempts to set the testing account as active. simulating that it was
+	 * clicked shall result in it being written to the sharedpreferences. 
+	 */
 	@UiThreadTest 
-	public void testChangeDefault() {
+	public void testSetAsActive() {
 		String adress = "mailmastertesting@gmail.com";
 		activity.accEdit.clear();
 		activity.accEdit.putInt("enabled", 0);
@@ -44,16 +51,19 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		activity.columns.add(adress);
 		activity.updateList();
 		activity.onItemClick(null, null, 0, 0);
-		String defAcc = "";
+		String activeAcc = "";
 		for(String s : activity.accounts.getStringSet("default", new HashSet<String>())){
-			defAcc = s;
+			activeAcc = s;
 			break;
 		}
-		Log.d(adress, defAcc);
+		Log.d(adress, activeAcc);
 		activity.accEdit.clear();
 		activity.accEdit.commit();
-		assertTrue(adress.equals(defAcc));
+		assertTrue(adress.equals(activeAcc));
 	}
+	/**
+	 * This test attempts to press the icon that redirects to AddAccountActivity.
+	 */
 	public void testToAdd() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -72,6 +82,9 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		assertNotNull(startedActivity);
 		startedActivity.finish();
 	}
+	/**
+	 * This test attempts to press the icon that redirects to MailFolderActivity.
+	 */
 	public void testToInbox() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -100,6 +113,10 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		assertNotNull(startedActivity);
 		startedActivity.finish();
 	}
+	/**
+	 * This test tries to verify that the folder icon is hidden when no accounts are
+	 * marked as active.
+	 */
 	public void testIconHidden() {
 		activity.accEdit.clear();
 		activity.accEdit.commit();

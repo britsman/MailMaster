@@ -11,6 +11,9 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.MenuItem;
 
+/**
+ * This class tests navigating from the showemail contents page.
+ */
 public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<ShowEmailActivity>  {
 	private ShowEmailActivity activity;
 	private MailFunctionality mf;
@@ -36,6 +39,10 @@ public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<Sho
 		apv.setTesting(true);
 		activity = getActivity();
 	}
+	/**
+	 * This test tries to press the reply icon and verify that it takes you to
+	 * the compose page.
+	 */
 	public void testReplyPress() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -45,13 +52,18 @@ public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<Sho
 		        public void run() {
 					MenuItem replyIcon = activity.testMenu.findItem(R.id.action_reply);
 					activity.onOptionsItemSelected(replyIcon);
+					activity.finish();
 		       }
 		    });
 			ComposeActivity startedActivity = (ComposeActivity) monitor
-					.waitForActivityWithTimeout(10000); 
+					.waitForActivityWithTimeout(5000); 
 			assertNotNull(startedActivity);
+			startedActivity.finish();
 	}
-	
+	/**
+	 * This test tries to press the attachments icon and verify that it takes you to
+	 * the attachments page.
+	 */
 	public void testAttachPress() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -61,17 +73,13 @@ public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<Sho
 		        public void run() {
 					MenuItem attachIcon = activity.testMenu.findItem(R.id.get_attachments);
 					activity.onOptionsItemSelected(attachIcon);
+					activity.finish();
 		       }
 		    });
 			final AttachmentsActivity startedActivity = (AttachmentsActivity) monitor
-					.waitForActivityWithTimeout(10000); 
+					.waitForActivityWithTimeout(5000); 
 			assertNotNull(startedActivity);
-			  activity.runOnUiThread(new Runnable() {
-
-			        public void run() {
-			startedActivity.onBackPressed();
-				       }
-			    });
+			startedActivity.finish();
 	}
 	@Override
 	public void tearDown() throws Exception{

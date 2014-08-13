@@ -10,9 +10,14 @@ import android.app.Instrumentation.ActivityMonitor;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
-
+/**
+ * This class tests that ComposeActivity constructs replies/new messages as expected, and also
+ * checks that sending will not trigger if the message to consturct is not in an acceptable
+ * state.
+ */
 public class ComposeActivityTest extends ActivityInstrumentationTestCase2<ComposeActivity> {
 
 	private ComposeActivity activity;
@@ -35,6 +40,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 		super.setUp();
 		apv = AppVariablesSingleton.getInstance();
 	}
+	/**
+	 * This test attempts to verify that if message is labeled as a reply, the correct subject
+	 * should be automatically filled in.
+	 */
 	public void testReply() {
 
 		apv.setIsReply(true);
@@ -55,14 +64,20 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 			}
 		});
 	}
+	/**
+	 * This test attempts to verify that fields are empty on a new message.
+	 */
 	@UiThreadTest
 	public void testCompose() {
 
 		apv.setIsReply(false);
 		activity = getActivity();
 				try{
+					MultiAutoCompleteTextView recipients = (MultiAutoCompleteTextView) activity.findViewById(R.id.receiveAccs);
 					EditText subject = (EditText) activity.findViewById(R.id.subject);
-					assertTrue(subject.getText().toString().equals(""));
+					EditText body = (EditText) activity.findViewById(R.id.body);
+					assertTrue(recipients.getText().toString().equals("") && subject.getText()
+							.toString().equals("") && body.getText().toString().equals(""));
 					activity.finish();
 				}
 				catch(Exception e){
@@ -70,6 +85,10 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 					fail("This should not be reached.");
 				}
 	}
+	/**
+	 * This test attempts to verify that pressing send after starting on an new message should
+	 * not send it (since fields are unfilled).
+	 */
 	public void testSendWithEmptyFields() {
 
 		apv.setIsReply(false);
@@ -95,7 +114,11 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 				.waitForActivityWithTimeout(2000);
 		assertNull(startedActivity);
 	}
-	public void testSendWithToLargeSize() {
+	/**
+	 * This test attempts to verify that pressing send will not send the message if
+	 * total size of attachments is too large.
+	 */
+	public void testSendWithTooLargeSize() {
 
 		apv.setIsReply(true);
 		activity = getActivity();

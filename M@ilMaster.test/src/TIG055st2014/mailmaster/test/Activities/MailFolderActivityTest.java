@@ -15,6 +15,9 @@ import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 
+/**
+ * This class tests email retrieval + navigating from the MailFolder page.
+ */
 public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<MailFolderActivity> {
 	private MailFolderActivity activity;
 	private SharedPreferences.Editor accEdit;
@@ -41,7 +44,9 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		accEdit.commit();
 		activity = getActivity();
 	}
-
+	/**
+	 * This test tries to navigate to compose from mailfolder.
+	 */
 	public void testComposePress() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -61,6 +66,12 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		assertNotNull(startedActivity);
 		startedActivity.finish();
 	}
+	/**
+	 * This test attempts to verify that the mailfolder page successfully retrieves
+	 * emails. The long sleep at the start of the test is required to ensure the 
+	 * mailfolder has finished loading. Additionally it also tries to verify that 
+	 * selecting a retrieved email redirects to the showemail page.
+	 */
 	public void testSelectEmail() {
 		try {
 			Thread.sleep(18000L);
@@ -85,6 +96,9 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		activity.finish();
 		startedActivity.finish();
 	}
+	/**
+	 * This test tries to verify that the email list is sorted by date.
+	 */
 	public void testIsSorted() {
 		try {
 			Thread.sleep(18000L);
@@ -98,6 +112,9 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 			fail("Should not be reached.");
 		}
 	}
+	/**
+	 * This test tries to navigate to settings from mailfolder.
+	 */
 	public void testSettingPress() {
 		ActivityMonitor monitor =
 				getInstrumentation().
@@ -117,7 +134,11 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		assertNotNull(startedActivity);
 		startedActivity.finish();
 	}
-	public void testNoDefaultAcc() {
+	/**
+	 * This test tries verify that the app redirects to the addaccount page
+	 * when no active accounts are found.
+	 */
+	public void testNoActiveAccs() {
 		ActivityMonitor monitor =
 				getInstrumentation().
 				addMonitor(AddAccountActivity.class.getName(), null, false);
@@ -136,6 +157,10 @@ public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<Mai
 		accEdit.commit();
 		activity.finish();
 	}
+	/**
+	 * This test tries to verify that the "change folder" functionality works
+	 * as intended. 
+	 */
 	@UiThreadTest
 	public void testChangeFolder() {
 		activity.changeFolder(activity.testMenu.findItem(R.id.action_drafts));
