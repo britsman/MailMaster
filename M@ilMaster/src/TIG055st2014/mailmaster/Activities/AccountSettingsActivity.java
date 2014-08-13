@@ -1,5 +1,8 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Activities;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Adapters.AccountAdapter;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import android.app.Activity;
 
 import java.util.Locale;
@@ -39,7 +42,7 @@ AdapterView.OnItemClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.listview_accounts);
-		String chooseacc = (String) getResources().getString(R.string.choose_acc);
+		String chooseacc = getResources().getString(R.string.choose_acc);
 		setTitle(chooseacc);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		columns = new ArrayList<String>();
@@ -105,7 +108,7 @@ AdapterView.OnItemClickListener {
 	 * Redirect triggered by pressing the add account icon.
 	 */
 	public void toAdd(MenuItem m) {
-		startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.AddAccountActivity"));
 	}
 
 	/**
@@ -130,7 +133,7 @@ AdapterView.OnItemClickListener {
 		} else {
 			apv.setAllFolders("[Gmail]/Drafts");
 		}
-		startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.MailFolderActivity"));
 	}
 	/**
 	 * onClick method for the language menuitems. Only changes UI language, we do not
@@ -215,7 +218,7 @@ AdapterView.OnItemClickListener {
 				R.layout.account_item, R.id.account_text, columns, this));
 		TextView activeAccounts = (TextView) findViewById(R.id.active_acc);
 		//reading from the resource file depending on which language is selected
-		String active_account = (String) getResources().getString(R.string.active_account);
+		String active_account = getResources().getString(R.string.active_account);
 		activeAccounts.setText(active_account + count + "/3");
 	}
 }

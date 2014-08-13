@@ -1,5 +1,6 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Adapters;
 
+import TIG055st2014.mailmaster.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;

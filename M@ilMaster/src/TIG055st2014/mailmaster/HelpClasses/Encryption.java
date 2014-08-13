@@ -1,6 +1,6 @@
 //Uses code from http://stackoverflow.com/questions/5220761/fast-and-simple-string-encrypt-decrypt-in-java
 
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.HelpClasses;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;

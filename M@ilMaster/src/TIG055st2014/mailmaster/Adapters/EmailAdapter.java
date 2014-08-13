@@ -1,5 +1,7 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Adapters;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -45,9 +47,9 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		try{
-			String from = (String) context.getResources().getText(R.string.sender);
-			String sent = (String) context.getResources().getText(R.string.sent);
-			String subject = (String) context.getResources().getText(R.string.subject);
+			String from = context.getResources().getString(R.string.sender);
+			String sent = context.getResources().getString(R.string.sent);
+			String subject = context.getResources().getString(R.string.subject);
 			int i = 0;
 			if (convertView == null) {
 				LayoutInflater inflater = (LayoutInflater) context

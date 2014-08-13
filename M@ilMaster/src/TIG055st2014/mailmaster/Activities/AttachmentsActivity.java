@@ -1,10 +1,13 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Activities;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import javax.activation.DataSource;
+
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -67,7 +70,7 @@ AdapterView.OnItemClickListener {
 		//In case app has been left on attachments screen untouched for about 30 min
 		//Basically if OS destroys the AppVariablesSingleton instance.
 		if(apv.getEmail() == null){
-			startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
+			startActivity(new Intent("TIG055st2014.mailmaster.Activities.MailFolderActivity"));
 		}
 	}
 	@Override
@@ -107,7 +110,11 @@ AdapterView.OnItemClickListener {
 
 				downloaded = false;
 				File SDCardRoot = Environment.getExternalStorageDirectory();
-				File target = new File(SDCardRoot, name);
+				File dir = new File(SDCardRoot, "/M@ilMaster");
+				if(!dir.exists()){
+					dir.mkdir();
+				}
+				File target = new File(dir, name);
 				target.canWrite();
 				target.setWritable(true);
 				Log.d("Filepath", target.getPath());

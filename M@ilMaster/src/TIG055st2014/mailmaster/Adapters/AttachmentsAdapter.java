@@ -1,6 +1,8 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Adapters;
 
 import java.util.ArrayList;
+
+import TIG055st2014.mailmaster.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -105,7 +107,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 
 				//text.setText("Total size: " +total + " KB");
 				//reading from the resource file depending on which language is selected
-				String total_size = (String) text.getResources().getText(R.string.total_size);
+				String total_size = text.getResources().getString(R.string.total_size);
 				text.setText(total_size+ " " + total + " KB");
 				sizeEdit.putFloat("Total", total);
 				sizeEdit.remove(a);

@@ -1,4 +1,4 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Services;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -8,6 +8,12 @@ import java.util.Set;
 import javax.mail.Flags.Flag;
 import javax.mail.Message;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.HelpClasses.EmailNotificationForwarder;
+import TIG055st2014.mailmaster.HelpClasses.EmailNotificationVariables;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -61,7 +67,7 @@ public class EmailNotificationService extends Service{
 	 * Used to find this service from inside MailFolderActivity.
 	 */
 	public class EmailNotificationBinder extends Binder {
-		EmailNotificationService getService() {
+		public EmailNotificationService getService() {
 			return EmailNotificationService.this;
 		}
 	}

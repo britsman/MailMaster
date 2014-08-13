@@ -1,4 +1,4 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.HelpClasses;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,5 +1,7 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Activities;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +28,7 @@ public class AddAccountActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_account);
-		String addacc = (String) getResources().getText(R.string.add_acc);
+		String addacc = getResources().getString(R.string.add_acc);
 		setTitle(addacc);
 		// Disabling icon in top left corner. 
 		getActionBar().setDisplayShowHomeEnabled(false);
@@ -86,7 +88,7 @@ public class AddAccountActivity extends Activity {
 	 * User is redirected if the account settings button is pressed.
 	 */
 	public void toSettings(MenuItem m) {
-		startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.AccountSettingsActivity"));
 	}
 
 	/**

@@ -1,18 +1,22 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Activities;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.mail.Message;
 
-import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationBinder;
-import TIG055st2014.mailmaster.EmailNotificationService.EmailNotificationServiceClient;
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Adapters.EmailAdapter;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
+import TIG055st2014.mailmaster.Services.EmailNotificationService;
+import TIG055st2014.mailmaster.Services.EmailNotificationService.EmailNotificationBinder;
+import TIG055st2014.mailmaster.Services.EmailNotificationService.EmailNotificationServiceClient;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -31,13 +35,13 @@ import android.widget.ListView;
 public class MailFolderActivity extends Activity implements AdapterView.OnItemClickListener, EmailNotificationServiceClient{
 	//partially based on http://stackoverflow.com/questions/11390018/how-to-cal-the-activity-method-from-the-service
 	public SharedPreferences accounts;
-	private Set<String> defAcc;
-	private String pw;
-	protected ListView listView;
+	private Set<String> activeAccs;
+	public ListView listView;
 	public ArrayList<Message> emails;
 	private EmailNotificationServiceConnection mServiceConnection = new EmailNotificationServiceConnection();
 	private EmailNotificationService mService = null;
 	private ProgressDialog dialog;
+	/** Used to to give tests access to menuitems. **/
 	public Menu testMenu;
 
 	@Override
@@ -46,16 +50,17 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		setContentView(R.layout.activity_mail_folder);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-		defAcc = new HashSet<String>();
-		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		activeAccs = new HashSet<String>();
+		activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		if(defAcc.size() == 0){//No default accounts added
-			startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
+		//Redirect if no active accounts are fund.
+		if(activeAccs.size() == 0){
+			startActivity(new Intent("TIG055st2014.mailmaster.Activities.AddAccountActivity"));
 		}
 		else{
 			if(apv.folderNames == null){
 				apv.initAccounts();
-				for(String s : defAcc){
+				for(String s : activeAccs){
 					apv.setFolderName(s, apv.getFolderName(s));
 				}
 			}
@@ -66,7 +71,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning() && !apv.isTesting()){
 				dialog = new ProgressDialog(this);
 				//reading from the resource file depending on which language is selected
-				String fetchinbox = (String) getResources().getText(R.string.fetch_inbox);
+				String fetchinbox = getResources().getString(R.string.fetch_inbox);
 				dialog.setMessage(fetchinbox);
 				dialog.setIndeterminate(true);
 				dialog.setCancelable(false);
@@ -102,11 +107,11 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.setIsReply(false);
 		apv.setEmail(null);
-		for(String s : defAcc){	
+		for(String s : activeAccs){	
 			apv.setAccount(s);
 			break;
 		}
-		startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.ComposeActivity"));
 	}
 
 	/**
@@ -116,7 +121,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		if(isServiceRunning()){
 			stopBackground();
 		}
-		startActivity(new Intent("TIG055st2014.mailmaster.AccountSettingsActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.AccountSettingsActivity"));
 	}
 	/**
 	 * We disable the back button while the user is on the add account screen, in order to prevent
@@ -139,7 +144,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		}
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.setEmail(emails.get(position));
-		for(String s : defAcc){
+		for(String s : activeAccs){
 			if(apv.getEmail().getFolder().equals(apv.getEmailFolder(s))){
 				apv.setAccount(s);
 				break;
@@ -147,10 +152,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		}
 		if(getActionBar().getTitle().toString().equals((getResources().getString(R.string.drafts)))){
 			apv.setIsReply(false);
-			startActivity(new Intent("TIG055st2014.mailmaster.ComposeActivity"));
+			startActivity(new Intent("TIG055st2014.mailmaster.Activities.ComposeActivity"));
 		}
 		else{
-			startActivity(new Intent("TIG055st2014.mailmaster.ShowEmailActivity"));
+			startActivity(new Intent("TIG055st2014.mailmaster.Activities.ShowEmailActivity"));
 		}
 	}
 	@Override
@@ -210,7 +215,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		runOnUiThread(new Runnable() {
 
 			public void run() {
-				if (dialog.isShowing()) {
+				if (dialog != null && dialog.isShowing()) {
 					dialog.dismiss();
 				}
 				if(isServiceRunning()){
@@ -268,11 +273,15 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Used to update contents of email-list based on when user pressses a foldername
+	 * on the actionbar.
+	 */
 	private void refreshList(){
 		String key = "Some Key";
 		Encryption decrypter = new Encryption();
 		emails = new ArrayList<Message>();
-		for(String s : defAcc){		
+		for(String s : activeAccs){		
 			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
 			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
 			mf.getFolder(this);

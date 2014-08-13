@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MailFolderActivity"
+            android:name=".Activities.MailFolderActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,64 +32,64 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.MailFolderActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.MailFolderActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddAccountActivity"
+            android:name=".Activities.AddAccountActivity"
             android:label="@string/add_email">
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.AddAccountActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.AddAccountActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".AccountSettingsActivity"
+            android:name=".Activities.AccountSettingsActivity"
             android:label="@string/choose_acc">
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.AccountSettingsActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.AccountSettingsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ComposeActivity"
+            android:name=".Activities.ComposeActivity"
             android:label="@string/composing" >
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.ComposeActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.ComposeActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ShowEmailActivity"
+            android:name=".Activities.ShowEmailActivity"
             android:label="" >
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.ShowEmailActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.ShowEmailActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".AttachmentsActivity"
+            android:name=".Activities.AttachmentsActivity"
             android:label="@string/attached" >
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.AttachmentsActivity" />
+                <action android:name="TIG055st2014.mailmaster.Activities.AttachmentsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <service android:name=".EmailNotificationService" />
+        <service android:name=".Services.EmailNotificationService" />
 
         <activity
-            android:name=".EmailNotificationForwarder"
+            android:name=".HelpClasses.EmailNotificationForwarder"
             android:label="" >
             <intent-filter>
-                <action android:name="TIG055st2014.mailmaster.EmailForwarder" />
+                <action android:name="TIG055st2014.mailmaster.HelpClasses.EmailForwarder" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

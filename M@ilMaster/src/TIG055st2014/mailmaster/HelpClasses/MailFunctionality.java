@@ -1,6 +1,6 @@
 // Uses code from http://stackoverflow.com/questions/2020088/sending-email-in-android-using-javamail-api-without-using-the-default-built-in-a
 
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.HelpClasses;
 import javax.mail.Authenticator;
 import javax.activation.CommandMap;
 import javax.activation.DataHandler;   
@@ -10,13 +10,11 @@ import javax.activation.MailcapCommandMap;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
-import javax.mail.Flags;
 import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;   
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Store;
 import javax.mail.Transport;   
@@ -26,6 +24,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Activities.AddAccountActivity;
+import TIG055st2014.mailmaster.Activities.ComposeActivity;
+import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.Activities.ShowEmailActivity;
+import TIG055st2014.mailmaster.Adapters.EmailAdapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -33,10 +37,8 @@ import android.os.AsyncTask;
 import android.text.Html;
 import android.util.Log; 
 import android.view.Gravity;
-import android.webkit.WebView.FindListener;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.security.Security;   
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +63,7 @@ public class MailFunctionality extends Authenticator {
 	String htmlContents;
 
 	/**
-	 * Used to sent securely.
+	 * Used to send securely.
 	 */
 	static {   
 		Security.addProvider(new JSSEProvider());   
@@ -85,8 +87,6 @@ public class MailFunctionality extends Authenticator {
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		try{
 			Properties props = new Properties();   
-
-
 			props.setProperty("mail.store.protocol", "imaps"); 
 			props.setProperty("mail.imaps.auth.plain.disable", "true");
 			props.setProperty("mail.imaps.auth.ntlm.disable", "true");
@@ -146,10 +146,6 @@ public class MailFunctionality extends Authenticator {
 		}
 	}
 
-	@Override
-	public PasswordAuthentication getPasswordAuthentication() {   
-		return new PasswordAuthentication(user, password);   
-	}   
 	/**
 	 * Starts the AsyncTask for sending mail. Reference to activity is needed in order to display/dismiss loading dialog.
 	 */
@@ -264,7 +260,7 @@ public class MailFunctionality extends Authenticator {
 		}
 	}
 	/**
-	 * Attempts to parse out separate addresses from one string. Caues exception if string contains
+	 * Attempts to parse out separate addresses from one string. Causes exception if string contains
 	 * illegal characters.
 	 */
 	private void addRecipients(Message msg, String adresses, 
@@ -277,7 +273,7 @@ public class MailFunctionality extends Authenticator {
 		}
 	}
 	/**
-	 * Creates a attachable bodypart from a filename.
+	 * Creates an attachable bodypart from a filename.
 	 */
 	private void addAttachment(String filePath){
 		try{
@@ -359,13 +355,13 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPostExecute(Void v){
 			if(sucess){
-				//Account remembered even if app is force stopped.
+				//Account should be remembered even if app is force stopped.
 				Encryption encryption = new Encryption();
 				String key = "Some Key";
 				String encrypted = encryption.encrypt(key, password);
 				activity.accEdit.putString(user, encrypted);
 				activity.accEdit.commit();
-				Intent i = new Intent("TIG055st2014.mailmaster.AccountSettingsActivity");
+				Intent i = new Intent("TIG055st2014.mailmaster.Activities.AccountSettingsActivity");
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				activity.getApplicationContext().startActivity(i);
 			}
@@ -383,7 +379,7 @@ public class MailFunctionality extends Authenticator {
 		}
 	}
 	/**
-	 * Testing variant that returns the value of success.
+	 * Testing variant that returns if connection was successful.
 	 */
 	private class TestConnectTest extends AsyncTask<Void, Void, Boolean>{
 
@@ -459,15 +455,15 @@ public class MailFunctionality extends Authenticator {
 		protected void onPreExecute() {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if(apv.getFolderName(user).contains("Drafts")){
-				String fetchdrafts = (String) activity.getResources().getText(R.string.fetch_drafts);
+				String fetchdrafts = activity.getApplicationContext().getResources().getString(R.string.fetch_drafts);
 				dialog.setMessage(fetchdrafts);
 			}
 			else if(apv.getFolderName(user).contains("Sent")){
-				String fetchsent = (String) activity.getApplicationContext().getResources().getString(R.string.fetch_sent);
+				String fetchsent = activity.getApplicationContext().getResources().getString(R.string.fetch_sent);
 				dialog.setMessage(fetchsent);
 			}
 			else{
-				String fetchInbox = (String) activity.getResources().getText(R.string.fetch_inbox);
+				String fetchInbox = activity.getApplicationContext().getResources().getString(R.string.fetch_inbox);
 				dialog.setMessage(fetchInbox);
 			}
 			dialog.setIndeterminate(true);
@@ -551,7 +547,7 @@ public class MailFunctionality extends Authenticator {
 	 * Helper method to reduce code duplication in normal/testing variant of ReadTask.
 	 * Should not be called manually.
 	 */
-	public ArrayList<Message> getMailList(String user, String password){		
+	private ArrayList<Message> getMailList(String user, String password){		
 		ArrayList<Message> emails = new ArrayList<Message>();
 		try {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -713,7 +709,7 @@ public class MailFunctionality extends Authenticator {
 	 * Helper method to reduce code duplication in normal/testing variant of ContentsTask.
 	 * Should not be called manually.
 	 */
-	public String getBody(String user, String password){
+	private String getBody(String user, String password){
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		apv.resetLists();
 		plainContents = "";
@@ -835,7 +831,7 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			String constructrep = (String) activity.getResources().getText(R.string.construct_rep);
+			String constructrep = activity.getResources().getString(R.string.construct_rep);
 			dialog.setMessage(constructrep);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
@@ -862,7 +858,7 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPostExecute(Void v){
-			Intent i = new Intent("TIG055st2014.mailmaster.ComposeActivity");
+			Intent i = new Intent("TIG055st2014.mailmaster.Activities.ComposeActivity");
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			activity.startActivity(i);
 			if (dialog.isShowing()) {
@@ -966,7 +962,7 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			if(dialog != null){
-				String savedrafts = (String) activity.getResources().getText(R.string.save_draft);
+				String savedrafts = activity.getResources().getString(R.string.save_draft);
 				
 				dialog.setMessage(savedrafts);    	
 				dialog.setIndeterminate(true);
@@ -1034,6 +1030,10 @@ public class MailFunctionality extends Authenticator {
 			}
 		}
 	}
+	/**
+	 * Used to manually save message in sent folder. Only called  after sending with a student.gu address,
+	 * since gmail etc adds to sent automatically. 
+	 */
 	private class SaveAsSentTask extends AsyncTask<Void, Void, Void>{
 
 		private Message message;
@@ -1061,6 +1061,10 @@ public class MailFunctionality extends Authenticator {
 			return null;
 		}
 	}
+	/**
+	 * Starts the AsyncTask for getting contacts. Reference to activity is 
+	 * needed in order to display/dismiss loading dialog.
+	 */
 	public void getContacts(ComposeActivity a) {	
 		try {
 			ContactsTask task = new ContactsTask(user,password, a);
@@ -1071,6 +1075,10 @@ public class MailFunctionality extends Authenticator {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * AsyncTask for getting "contacts" based on addresses the current account has emailed in 
+	 * the past.
+	 */
 	private class ContactsTask extends AsyncTask<Void, Void, Void>{
 
 		private String user, password;
@@ -1087,7 +1095,7 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			String read_contacts = (String) activity.getResources().getText(R.string.read_contact);
+			String read_contacts = activity.getResources().getString(R.string.read_contact);
 		    dialog.setMessage(read_contacts);
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
@@ -1109,12 +1117,11 @@ public class MailFunctionality extends Authenticator {
 				int count = sent.getMessageCount();
 				Message[] temp = sent.getMessages(1, count);
 				//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
-				//Noticeable improvement compared to looping through each message.
 				FetchProfile profile = new FetchProfile();
 				profile.add(FetchProfile.Item.ENVELOPE);
 				sent.fetch(temp, profile);
 				for(int i = 0; i < temp.length; i++){
-					getRecipients(treeSet, temp[i]);
+					getRecipients(temp[i]);
 					}
 				
 				sent.close(false);
@@ -1125,14 +1132,17 @@ public class MailFunctionality extends Authenticator {
 			}
 			return null;
 		}
-		private void getRecipients(TreeSet<String> ts, Message javaMailMessage) throws MessagingException {
+		/**
+		 * Tries to add all recipients of the message as contacts (duplicates are trimmed).
+		 */
+		private void getRecipients(Message javaMailMessage) throws MessagingException {
 			String recipient = "";
 			Address a[] = javaMailMessage.getAllRecipients();
 			if ( a!=null ) {
 				for ( int i=0; i<a.length; i++ ){
 					recipient = a[i].toString();
 					if(recipient != null){
-						ts.add(recipient);
+						treeSet.add(recipient);
 					}
 				}
 			}

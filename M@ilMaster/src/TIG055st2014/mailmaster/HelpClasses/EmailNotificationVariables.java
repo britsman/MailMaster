@@ -1,4 +1,4 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.HelpClasses;
 
 /**
  * Interface used in order to be able to manipulate the same variable both in

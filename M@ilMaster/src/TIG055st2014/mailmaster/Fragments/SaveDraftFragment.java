@@ -1,5 +1,7 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Fragments;
 
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Activities.ComposeActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -17,14 +19,14 @@ public class SaveDraftFragment extends DialogFragment implements DialogInterface
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         
       //reading from the resource file depending on which language is selected
-        String messageTitle = (String) getResources().getText(R.string.message_title);
-        String dialogmessage = (String) getResources().getText(R.string.message_dia);
+        String messageTitle = getResources().getString(R.string.message_title);
+        String dialogmessage = getResources().getString(R.string.message_dia);
 		alertDialogBuilder.setTitle( messageTitle);
         alertDialogBuilder.setMessage(dialogmessage);
         //null should be your on click listener
         
-        String yes = (String) getResources().getText(R.string.yes_answer);
-        String no = (String) getResources().getText(R.string.no_answer);
+        String yes = getResources().getString(R.string.yes_answer);
+        String no = getResources().getString(R.string.no_answer);
         alertDialogBuilder.setPositiveButton(yes, this);
         alertDialogBuilder.setNegativeButton(no, this);
         alertDialogBuilder.setCancelable(false);

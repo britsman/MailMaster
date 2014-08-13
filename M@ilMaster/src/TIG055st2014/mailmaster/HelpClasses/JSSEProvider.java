@@ -1,4 +1,4 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.HelpClasses;
 
 //TAKEN FROM http://stackoverflow.com/questions/2020088/sending-email-in-android-using-javamail-api-without-using-the-default-built-in-a
 /**

@@ -1,4 +1,4 @@
-package TIG055st2014.mailmaster;
+package TIG055st2014.mailmaster.Activities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,6 +8,13 @@ import java.util.TreeSet;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage.RecipientType;
+
+import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Adapters.AttachmentsAdapter;
+import TIG055st2014.mailmaster.Fragments.SaveDraftFragment;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.view.MotionEvent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,7 +60,7 @@ OnItemSelectedListener {
 	ArrayList<String> attachments;
 	private SharedPreferences sizePref;
 	public SharedPreferences.Editor sizeEdit;
-	protected boolean save;
+	public boolean save;
 	private TreeSet<String> output;
 	ArrayAdapter<String> adapter;
 
@@ -255,7 +262,7 @@ OnItemSelectedListener {
 				} else {
 					result = (TextView) findViewById(R.id.totalsize);
 				}
-				String total_size = (String) result.getResources().getString(R.string.total_size);
+				String total_size = result.getResources().getString(R.string.total_size);
 				result.setText(total_size+ " " + total + " KB");
 				// Attachments list is updated to contain the pressed
 				// attachment.
@@ -336,7 +343,7 @@ OnItemSelectedListener {
 					mf.sendMail(subject, body, currentAcc, recipients, cc, bcc,
 							attachments, getApplicationContext(), this);
 					startActivity(new Intent(
-							"TIG055st2014.mailmaster.MailFolderActivity"));
+							"TIG055st2014.mailmaster.Activities.MailFolderActivity"));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -501,7 +508,7 @@ OnItemSelectedListener {
 				}
 			}
 		}
-		startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
+		startActivity(new Intent("TIG055st2014.mailmaster.Activities.MailFolderActivity"));
 	}
 
 	@Override
