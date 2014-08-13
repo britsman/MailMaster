@@ -187,7 +187,7 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
-			
+
 			dialog.setMessage(context.
 					getResources().getString(R.string.send_email));
 			dialog.setIndeterminate(true);
@@ -227,7 +227,7 @@ public class MailFunctionality extends Authenticator {
 				if(type.equals("student.gu.se")){
 					SaveAsSentTask sst = new SaveAsSentTask(message, context);
 					sst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-					
+
 				}
 			}
 			catch(Exception e){
@@ -335,7 +335,7 @@ public class MailFunctionality extends Authenticator {
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			if(!apv.isTesting()){
-			dialog.show();
+				dialog.show();
 			}
 		}
 		@Override
@@ -469,7 +469,7 @@ public class MailFunctionality extends Authenticator {
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			if(!apv.isTesting()){
-			dialog.show();
+				dialog.show();
 			}
 		}
 		@Override
@@ -656,7 +656,7 @@ public class MailFunctionality extends Authenticator {
 			contents = "";
 			String fetchsent = "";
 			if(seAct != null){
-			fetchsent = seAct.getApplicationContext().getResources().getString(R.string.read_email);
+				fetchsent = seAct.getApplicationContext().getResources().getString(R.string.read_email);
 			}
 			else if(cmAct != null){
 				fetchsent = cmAct.getApplicationContext().getResources().getString(R.string.read_email);
@@ -831,11 +831,14 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPreExecute() {
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String constructrep = activity.getResources().getString(R.string.construct_rep);
 			dialog.setMessage(constructrep);    	
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
-			dialog.show();
+			if(!apv.isTesting()){
+				dialog.show();
+			}
 		}
 		@Override
 		protected Void doInBackground(Message... m) {
@@ -963,7 +966,7 @@ public class MailFunctionality extends Authenticator {
 		protected void onPreExecute() {
 			if(dialog != null){
 				String savedrafts = activity.getResources().getString(R.string.save_draft);
-				
+
 				dialog.setMessage(savedrafts);    	
 				dialog.setIndeterminate(true);
 				dialog.setCancelable(false);
@@ -1046,7 +1049,7 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			try {
-				
+
 				Store store = session.getStore("imaps");
 				store.connect(imapHost, user, password);
 				Folder sent = store.getFolder(context.getResources().getString(R.string.gmailSent));
@@ -1096,7 +1099,7 @@ public class MailFunctionality extends Authenticator {
 		@Override
 		protected void onPreExecute() {
 			String read_contacts = activity.getResources().getString(R.string.read_contact);
-		    dialog.setMessage(read_contacts);
+			dialog.setMessage(read_contacts);
 			dialog.setIndeterminate(true);
 			dialog.setCancelable(false);
 			dialog.show();
@@ -1122,8 +1125,8 @@ public class MailFunctionality extends Authenticator {
 				sent.fetch(temp, profile);
 				for(int i = 0; i < temp.length; i++){
 					getRecipients(temp[i]);
-					}
-				
+				}
+
 				sent.close(false);
 				store.close();
 			}
