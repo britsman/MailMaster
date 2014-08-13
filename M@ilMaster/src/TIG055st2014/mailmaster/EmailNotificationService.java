@@ -32,7 +32,7 @@ public class EmailNotificationService extends Service{
 	private SharedPreferences accounts;
 	private final int emailId = 1;
 	private ArrayList<Message> emails;
-	private Set<String> defAcc;
+	private Set<String> activeAccs;
 
 	/**
 	 * Interface used to access MailFolderActivity function inside of the service.
@@ -87,10 +87,10 @@ public class EmailNotificationService extends Service{
 
 				NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
 				//Used for action that is triggered when notification is pressed/deleted.
-				Intent emailIntent = new Intent(getApplicationContext(), EmailForwarder.class);
+				Intent emailIntent = new Intent(getApplicationContext(), EmailNotificationForwarder.class);
 				accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
-				defAcc = new HashSet<String>();
-				defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+				activeAccs = new HashSet<String>();
+				activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
 				while(running){
 					initVariables();
@@ -171,8 +171,8 @@ public class EmailNotificationService extends Service{
 	private void getLatest(){
 		String key = "Some Key";
 		Encryption decrypter = new Encryption();
-		
-		for(String s : defAcc){		
+
+		for(String s : activeAccs){		
 			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
 			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
 			sort(mf.getFolderTest());

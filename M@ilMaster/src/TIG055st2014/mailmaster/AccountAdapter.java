@@ -24,6 +24,10 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	private SharedPreferences accounts;
 	private SharedPreferences.Editor accEdit;
 	private ArrayList<String> names;
+	/**
+	 * Used to determine what colour the emails of a certain active account will have in 
+	 * the email-list.
+	 */
 	private int[] colours;
 	/**
 	 * Reference to the AccountSettingsActivity instance that the current list belongs to.
@@ -50,20 +54,23 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		final String name = names.get(position);
-		final Set<String> defAcc = new HashSet<String>();
+		final Set<String> activeAccs = new HashSet<String>();
 		int i = 0;
-		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.account_item, null);
 		}
-		for(String s : defAcc){
+		//If account is the first active account, it will receive the first background colour etc.
+		for(String s : activeAccs){
 			if(s.equals(name)){
 				convertView.setBackgroundColor(colours[i]);
 				break;
 			}
+			/*Colour is set to transparent each time account does not match the current index in 
+			  defAcc. Will thus also remain transparent if the account is not currently active**/
 			else{
 				i++;
 				convertView.setBackgroundColor(Color.TRANSPARENT);
@@ -83,15 +90,15 @@ public class AccountAdapter extends ArrayAdapter<String> {
 					public void onClick(View v) {
 						accEdit.remove(name);
 						names.remove(position);
-						defAcc.clear();
-						defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
-						if(defAcc.contains(name)){        
+						activeAccs.clear();
+						activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
+						if(activeAccs.contains(name)){        
 							/*If there are enabled accounts left, update the list and the
 							 * enabled counter.*/
-							if(names.size() > 0 && defAcc.size() > 1){
-								defAcc.remove(name);
-								accEdit.putStringSet("default", defAcc);
-								int count = accounts.getInt("enabled", 1);
+							if(names.size() > 0 && activeAccs.size() > 1){
+								activeAccs.remove(name);
+								accEdit.putStringSet("default", activeAccs);
+								int count = accounts.getInt("enabled", 2);
 								accEdit.putInt("enabled", count-1);
 							}
 							//If no accounts remain, disable the 'open folder' icon.

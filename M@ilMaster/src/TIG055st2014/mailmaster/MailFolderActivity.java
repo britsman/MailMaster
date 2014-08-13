@@ -53,7 +53,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			startActivity(new Intent("TIG055st2014.mailmaster.AddAccountActivity"));
 		}
 		else{
-			if(apv.folderName == null){
+			if(apv.folderNames == null){
 				apv.initAccounts();
 				for(String s : defAcc){
 					apv.setFolderName(s, apv.getFolderName(s));
@@ -65,8 +65,8 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			listView.setOnItemClickListener(this);
 			if(apv.getFolderNames().equals("INBOX") && !isServiceRunning() && !apv.isTesting()){
 				dialog = new ProgressDialog(this);
-			    //reading from the resource file depending on which language is selected
-		        String fetchinbox = (String) getResources().getText(R.string.fetch_inbox);
+				//reading from the resource file depending on which language is selected
+				String fetchinbox = (String) getResources().getText(R.string.fetch_inbox);
 				dialog.setMessage(fetchinbox);
 				dialog.setIndeterminate(true);
 				dialog.setCancelable(false);
@@ -261,7 +261,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	public void stopBackground(){
 		stopService(new Intent(getApplicationContext(),
 				EmailNotificationService.class));
-		unbindService(mServiceConnection);
+		try{
+			unbindService(mServiceConnection);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	private void refreshList(){
 		String key = "Some Key";

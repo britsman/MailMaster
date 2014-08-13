@@ -3,15 +3,12 @@ package TIG055st2014.mailmaster;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage.RecipientType;
 import android.view.MotionEvent;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -21,7 +18,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,11 +27,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +60,7 @@ OnItemSelectedListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		try{
-		super.onCreate(savedInstanceState);
+			super.onCreate(savedInstanceState);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -115,7 +109,7 @@ OnItemSelectedListener {
 		/*
 		 * If message is a reply then certain fields are instantiated based on
 		 * fields from the message that is being replied to. BCC is not filled
-		 * since they're supposed to be secret.
+		 * (unless replying on one's own message) since they're supposed to be secret.
 		 */
 		if (apv.getIsReply()) {
 			getActionBar().setTitle(R.string.composing_rp);
@@ -134,7 +128,7 @@ OnItemSelectedListener {
 			to.setText("");
 			cc.setText("");
 			bcc.setText("");
-			
+
 			try {
 				subject.setText(apv.getReply().getSubject());
 				//Used if replying to email sent by yourself (basically using sent email as draft).
@@ -165,8 +159,8 @@ OnItemSelectedListener {
 				e.printStackTrace();
 			}
 		}
-		// If not reply, app attempts to load all fields since message might be
-		// based on draft.
+		/* If not reply, app attempts to load all fields since message might be
+		   based on draft. **/
 		else {
 			getActionBar().setTitle(R.string.composing);
 			result = (TextView) findViewById(R.id.totalsize);
@@ -190,7 +184,7 @@ OnItemSelectedListener {
 					recipients.setText("");
 					cc.setText("");
 					bcc.setText("");
-					
+
 					mf.getContents(this);
 					addAddresses(
 							apv.getEmail().getRecipients(
@@ -215,7 +209,9 @@ OnItemSelectedListener {
 
 	/**
 	 * Makes sure there are separators between the addresses to send to.
-	 * 
+	 * Also adds a comma at the end of the last address, since that is the
+	 * character our autocomplete looks for when determining if a new
+	 * "word" has been started.
 	 */
 	private void addAddresses(Address[] addresses, EditText et) {
 		if (addresses != null) {
@@ -259,10 +255,7 @@ OnItemSelectedListener {
 				} else {
 					result = (TextView) findViewById(R.id.totalsize);
 				}
-				
-
-				//reading from the resource file depending on which language is selected
-				String total_size = (String) result.getResources().getText(R.string.total_size);
+				String total_size = (String) result.getResources().getString(R.string.total_size);
 				result.setText(total_size+ " " + total + " KB");
 				// Attachments list is updated to contain the pressed
 				// attachment.
@@ -294,7 +287,9 @@ OnItemSelectedListener {
 				Intent.createChooser(intent, "Complete action using"),
 				PICK_FROM_GALLERY);
 	}
-
+	/**
+	 * onClick for the send item in the actionbar.
+	 */
 	public void onClickSend(MenuItem m) {
 		total = sizePref.getFloat("Total", (float) 0.0);
 		if (total > 20480) {// The maximum attachment size to make email
@@ -305,7 +300,8 @@ OnItemSelectedListener {
 					Toast.LENGTH_SHORT);
 			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 			toast.show();
-		} else {
+		} 
+		else {
 			String recipients, cc, bcc, subject, body;
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if (apv.getIsReply()) {
@@ -319,7 +315,8 @@ OnItemSelectedListener {
 						.getText().toString();
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
-			} else {
+			} 
+			else {
 				recipients = ((EditText) findViewById(R.id.receiveAccs))
 						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
@@ -361,18 +358,20 @@ OnItemSelectedListener {
 		return true;
 	}
 
+	/**
+	 * If back is pressed we check if the user wishes to save a draft.
+	 */
 	@Override
 	public void onBackPressed() {
 		new SaveDraftFragment().show(getSupportFragmentManager(), "SaveDraft");
 	}
 
 	/**
-	 * Used when user wishes to save a draft. Both replies and new messages can
-	 * be saved.
+	 * This function finds all phonecontacts that have email addresses linked to them, and
+	 * adds them as autocomplete options for when the user is typing in addresses too send
+	 * to.
 	 */
-
 	public void fetchEmailsFromContacts() {
-
 		String email = null;
 		Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
 		String _ID = ContactsContract.Contacts._ID;
@@ -381,6 +380,7 @@ OnItemSelectedListener {
 		String EmailCONTACT_ID = ContactsContract.CommonDataKinds.Email.CONTACT_ID;
 		String DATA = ContactsContract.CommonDataKinds.Email.DATA;
 
+		//Using TreeSet to avoid duplicate entries.
 		output = new TreeSet<String>();
 
 		ContentResolver contentResolver = getContentResolver();
@@ -388,12 +388,9 @@ OnItemSelectedListener {
 				null);
 		// Loop for every contact in the phone
 		if (cursor.getCount() > 0) {
-			//output.add("");
 			while (cursor.moveToNext()) {
 				String contact_id = cursor
 						.getString(cursor.getColumnIndex(_ID));
-				//String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-
 				// Query and loop for every email of the contact
 				Cursor emailCursor = contentResolver.query(EmailCONTENT_URI,
 						null, EmailCONTACT_ID + " = ?",
@@ -406,95 +403,64 @@ OnItemSelectedListener {
 				}
 				emailCursor.close();
 			}
-
 		}
 		Set<String> temp = new HashSet<String>();
+		//Load all previously saved contacts.
 		temp.addAll(savedContacts.getStringSet("contacts", new HashSet<String>()));
 		output.addAll(temp);
 		String[] array = new String[0];
 		adapter = new ArrayAdapter<String>(
 				ComposeActivity.this, android.R.layout.simple_spinner_item, output.toArray(array));
-		
+
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (!apv.getIsReply()){
 			final MultiAutoCompleteTextView myAutoComplete = (MultiAutoCompleteTextView) findViewById(R.id.receiveAccs);
 			final MultiAutoCompleteTextView myAutoCompletecc = (MultiAutoCompleteTextView) findViewById(R.id.ccAccs);
 			final MultiAutoCompleteTextView myAutoCompletebcc = (MultiAutoCompleteTextView) findViewById(R.id.bccAccs);
-			
-			myAutoComplete.setAdapter(adapter);
-			myAutoCompletecc.setAdapter(adapter);
-			myAutoCompletebcc.setAdapter(adapter);
-			myAutoComplete.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-			myAutoCompletecc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-			myAutoCompletebcc.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-			myAutoComplete.setThreshold(0);
-			myAutoCompletecc.setThreshold(0);
-			myAutoCompletebcc.setThreshold(0);
-			
-			myAutoComplete.setOnTouchListener(new View.OnTouchListener(){
-				   @Override
-				   public boolean onTouch(View v, MotionEvent event){
-				      myAutoComplete.showDropDown();
-				      return false;
-				   }
-				});
-			myAutoCompletecc.setOnTouchListener(new View.OnTouchListener(){
-				   @Override
-				   public boolean onTouch(View v, MotionEvent event){
-				      myAutoCompletecc.showDropDown();
-				      return false;
-				   }
-				});
-			myAutoCompletebcc.setOnTouchListener(new View.OnTouchListener(){
-				   @Override
-				   public boolean onTouch(View v, MotionEvent event){
-				      myAutoCompletebcc.showDropDown();
-				      return false;
-				   }
-				});
-			
-			myAutoComplete.setOnItemSelectedListener(this);
-			myAutoCompletecc.setOnItemSelectedListener(this);
-			myAutoCompletebcc.setOnItemSelectedListener(this);
+			setupAC(myAutoComplete, adapter);
+			setupAC(myAutoCompletecc, adapter);
+			setupAC(myAutoCompletebcc, adapter);
 		}
 		else{
 			final MultiAutoCompleteTextView myAutoCompleteccrep = (MultiAutoCompleteTextView) findViewById(R.id.ccAccsReply);
 			final MultiAutoCompleteTextView myAutoCompletebccrep = (MultiAutoCompleteTextView) findViewById(R.id.bccAccsReply);
-			myAutoCompleteccrep.setAdapter(adapter);
-			myAutoCompletebccrep.setAdapter(adapter);
-			myAutoCompleteccrep.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-			myAutoCompletebccrep.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-			myAutoCompleteccrep.setThreshold(0);
-			myAutoCompletebccrep.setThreshold(0);
-			myAutoCompleteccrep.setOnTouchListener(new View.OnTouchListener(){
-				   @Override
-				   public boolean onTouch(View v, MotionEvent event){
-				      myAutoCompleteccrep.showDropDown();
-				      return false;
-				   }
-				});
-			myAutoCompletebccrep.setOnTouchListener(new View.OnTouchListener(){
-				   @Override
-				   public boolean onTouch(View v, MotionEvent event){
-				      myAutoCompletebccrep.showDropDown();
-				      return false;
-				   }
-				});
-			myAutoCompleteccrep.setOnItemSelectedListener(this);
-			myAutoCompletebccrep.setOnItemSelectedListener(this);
+			setupAC(myAutoCompleteccrep, adapter);
+			setupAC(myAutoCompletebccrep, adapter);
 		}
 	}
-
-	public void onItemSelected(AdapterView<?> parent, View view, int pos,
-			long id) {
-
+	/**
+	 * Function used to configure the various MultiAutoCompleteTextViews (the autocomplete suggestions list that shows up when
+	 * writing in the to/cc/bcc fields).
+	 */
+	private void setupAC(final MultiAutoCompleteTextView ma, ArrayAdapter<String> adapter){
+		ma.setAdapter(adapter);
+		ma.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+		//How many letters needed to start showing suggestions.
+		ma.setThreshold(0);
+		ma.setOnTouchListener(new View.OnTouchListener(){
+			//Making sure suggestions are shown directly.
+			@Override
+			public boolean onTouch(View v, MotionEvent event){
+				ma.showDropDown();
+				return false;
+			}
+		});
+		ma.setOnItemSelectedListener(this);
+	}
+	/**
+	 * onClick for entries in the autocomplete suggestion list.
+	 */
+	public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
 		Toast.makeText(parent.getContext(),
 				getApplicationContext().getResources()
 				.getString(R.string.toast_emailsel)+ " " + parent.getItemAtPosition(pos).toString(),
 				Toast.LENGTH_SHORT).show();
 	}
-
+	/**
+	 * Used when user wishes to save a draft. Both replies and new messages can
+	 * be saved.
+	 */
 	public void dialogResult() {
 		if (save) {
 			String recipients, cc, bcc, subject, body;
@@ -510,7 +476,8 @@ OnItemSelectedListener {
 						.getText().toString();
 				body = ((EditText) findViewById(R.id.bodyReply)).getText()
 						.toString();
-			} else {
+			} 
+			else {
 				recipients = ((TextView) findViewById(R.id.receiveAccs))
 						.getText().toString();
 				cc = ((EditText) findViewById(R.id.ccAccs)).getText()
@@ -542,6 +509,9 @@ OnItemSelectedListener {
 		// TODO Auto-generated method stub
 
 	}
+	/**
+	 * Called from asynctask to update the contacts used as autocomplete alternatives
+	 */
 	public void updateContacts(Set<String> contacts){
 		Set<String> temp = new HashSet<String>();
 		temp.addAll(savedContacts.getStringSet("contacts", new HashSet<String>()));
@@ -552,6 +522,14 @@ OnItemSelectedListener {
 		adapter.clear();
 		adapter.addAll(output);
 	}
+	/**
+	 * Used to fetch additional contacts besides those with email present on the phone. Does not actually
+	 * use the real contact apis of our supported email providers, due to time constraints. Instead the
+	 * asynctask started by this function fetches all unique addresses that the current account has sent
+	 * email to in the past. This is of course email provider independent. Takes time depending on how
+	 * many emails the account has sent, expect it to take 3-6 minutes. However, these "contacts" are
+	 * then saved to sharedpreferences, so you only need to parse them once. 
+	 */
 	public void downloadContacts(MenuItem m){
 		MailFunctionality mf = new MailFunctionality(currentAcc,
 				pw, (currentAcc.split("@"))[1]);

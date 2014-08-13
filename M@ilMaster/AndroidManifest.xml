@@ -86,7 +86,7 @@
         <service android:name=".EmailNotificationService" />
 
         <activity
-            android:name=".EmailForwarder"
+            android:name=".EmailNotificationForwarder"
             android:label="" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.EmailForwarder" />

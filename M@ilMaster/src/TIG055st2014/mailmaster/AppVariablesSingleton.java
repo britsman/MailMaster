@@ -1,6 +1,5 @@
 package TIG055st2014.mailmaster;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -13,7 +12,7 @@ import javax.mail.Store;
 /**
  * Singleton class used to store and retrieve data throughout the application.
  * Simpler but less persistent than a database solution, probably causes more
- * overhead but also avoids expensive database operations.
+ * overhead but also avoids expensive database operations?
  */
 public class AppVariablesSingleton {
 	private static AppVariablesSingleton current;
@@ -23,16 +22,16 @@ public class AppVariablesSingleton {
 	 * Used to check if folder has to be reopened, or if old folder exists
 	 * that should be closed.
 	 */
-	private HashMap<String, Folder> emailFolder;
+	private HashMap<String, Folder> emailFolders;
 	/**
 	 * Used to check if store session has to be reopened, or if old session exists
 	 * that should be closed.
 	 */
-	private HashMap<String, Store> store;
+	private HashMap<String, Store> stores;
 	private boolean isReply;
-	private ArrayList<String> attachments;
-	private ArrayList<DataSource> files; 
-	public HashMap<String, String> folderName;
+	private ArrayList<String> attachmentNames;
+	private ArrayList<DataSource> attachmentSources; 
+	public HashMap<String, String> folderNames;
 	private String currentAcc;
 	private boolean testing;
 
@@ -41,17 +40,16 @@ public class AppVariablesSingleton {
 		currentAcc = "";
 		testing = false;
 	}
-
-	public void setEmail(Message m){
-		this.email = m;
-	}
 	/**
 	 * Used to reset lists when going back and forth between message/attachment
 	 * view on the same email message.
 	 */
 	public void resetLists(){
-		attachments = new ArrayList<String>();
-		files = new ArrayList<DataSource>();
+		attachmentNames = new ArrayList<String>();
+		attachmentSources = new ArrayList<DataSource>();
+	}
+	public void setEmail(Message m){
+		this.email = m;
 	}
 	public Message getEmail(){
 		return this.email;
@@ -63,22 +61,22 @@ public class AppVariablesSingleton {
 		return this.reply;
 	}
 	public void setEmailFolder(String account, Folder f){
-		this.emailFolder.put(account, f);
+		this.emailFolders.put(account, f);
 	}
 	public Folder getEmailFolder(String account){
-		if(this.emailFolder != null && this.emailFolder.containsKey(account)){
-			return this.emailFolder.get(account);
+		if(this.emailFolders != null && this.emailFolders.containsKey(account)){
+			return this.emailFolders.get(account);
 		}
 		else{
 			return null;
 		}
 	}
 	public void setStore(String account, Store s){
-		this.store.put(account, s);
+		this.stores.put(account, s);
 	}
 	public Store getStore(String account){
-		if(this.store != null && this.store.containsKey(account)){
-			return this.store.get(account);
+		if(this.stores != null && this.stores.containsKey(account)){
+			return this.stores.get(account);
 		}
 		else{
 			return null;
@@ -91,38 +89,41 @@ public class AppVariablesSingleton {
 		return this.isReply;
 	}
 	public void setFolderName(String account, String name){		
-		this.folderName.put(account, name);
+		this.folderNames.put(account, name);
 	}
 	public String getFolderName(String account){
-		if(this.folderName != null && this.folderName.containsKey(account)){
-		return this.folderName.get(account);
+		if(this.folderNames != null && this.folderNames.containsKey(account)){
+			return this.folderNames.get(account);
 		}
 		else{
 			return "INBOX";
 		}
 	}
+	/**
+	 * Used to get foldername without having/knowing accounts.
+	 */
 	public String getFolderNames(){
 		String name = "INBOX";
-		if(this.folderName != null && this.folderName.size() > 0){
-			Set<String> temp = folderName.keySet();
+		if(this.folderNames != null && this.folderNames.size() > 0){
+			Set<String> temp = folderNames.keySet();
 			for(String s : temp){
-				name = folderName.get(s);
+				name = folderNames.get(s);
 				break;
 			}
 		}
 		return name;
 	}
 	public void addAttachment(String name){
-		this.attachments.add(name);
+		this.attachmentNames.add(name);
+	}
+	public ArrayList<String> getFileNames(){
+		return this.attachmentNames;
 	}
 	public void addFile(DataSource file){
-		this.files.add(file);
+		this.attachmentSources.add(file);
 	}
 	public ArrayList<DataSource> getFiles(){
-		return this.files;
-	}
-	public ArrayList<String> getAttachments(){
-		return this.attachments;
+		return this.attachmentSources;
 	}
 	public void setAccount(String account){
 		this.currentAcc = account;
@@ -147,14 +148,14 @@ public class AppVariablesSingleton {
 		return current;
 	}
 	public void setAllFolders(String name){
-		Set<String> temp = folderName.keySet();
+		Set<String> temp = folderNames.keySet();
 		for(String s : temp){
-			folderName.put(s, name);
+			folderNames.put(s, name);
 		}
 	}
 	public void initAccounts(){
-		this.folderName = new HashMap<String, String>();
-		this.emailFolder = new HashMap<String, Folder>();
-		this.store = new HashMap<String, Store>();
+		this.folderNames = new HashMap<String, String>();
+		this.emailFolders = new HashMap<String, Folder>();
+		this.stores = new HashMap<String, Store>();
 	}
 }

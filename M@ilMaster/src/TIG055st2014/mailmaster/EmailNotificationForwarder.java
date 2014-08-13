@@ -8,7 +8,7 @@ import android.os.Bundle;
  * stops this activity from staying on the history stack 
  * (so back button won't take you to this empty activity).
  */
-public class EmailForwarder extends Activity {
+public class EmailNotificationForwarder extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

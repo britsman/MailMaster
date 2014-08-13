@@ -1,9 +1,12 @@
 package TIG055st2014.mailmaster;
-//TAKEN FROM http://stackoverflow.com/questions/2020088/sending-email-in-android-using-javamail-api-without-using-the-default-built-in-a
 
-/*
+//TAKEN FROM http://stackoverflow.com/questions/2020088/sending-email-in-android-using-javamail-api-without-using-the-default-built-in-a
+/**
+ * @author Alexander Y. Kleymenov
+ * @version $Revision$
+ * 
  *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
+ *  contributor license agreements. See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
  *  The ASF licenses this file to You under the Apache License, Version 2.0
  *  (the "License"); you may not use this file except in compliance with
@@ -16,11 +19,6 @@ package TIG055st2014.mailmaster;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
-
-/**
- * @author Alexander Y. Kleymenov
- * @version $Revision$
  */
 
 

@@ -1,21 +1,14 @@
 package TIG055st2014.mailmaster;
 
 import java.util.ArrayList;
-
-import android.R.string;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 /**
@@ -29,14 +22,14 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 	private float total;
 	private SharedPreferences sizePref;
 	private SharedPreferences.Editor sizeEdit;
-	
+
 	/**
 	 * This is the label in ComposeActivity that needs to be updated when attachments are
 	 * deleted.
 	 */
 	private TextView text; 
 	private int[] colours;
-	
+
 
 	public AttachmentsAdapter(Context applicationContext, int attachmentsItem,
 			int attachmentsText, ArrayList<String> attachments, TextView t) {
@@ -44,7 +37,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		this.attach = attachments;
 		this.context = applicationContext;
 		text=t;
-		sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
+		sizePref = context.getSharedPreferences("FileSizes", Context.MODE_PRIVATE);
 		sizeEdit = sizePref.edit();
 		total= sizePref.getFloat("Total", (float) 0.0);
 		this.colours = new int[]{
@@ -72,11 +65,11 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 		} else {
 			convertView.setBackgroundColor(colours[0]);
 			text.setTextColor(Color.BLACK);
-			
+
 		}	
 		TextView tv = (TextView) convertView
 				.findViewById(R.id.attachments_text);
-		
+
 		//We split the stored filename so we only show the name (not the absolute path) in the GUI.
 		String temp[] = a.split("/");
 		tv.setText(temp[temp.length-1] + "\t" + 
@@ -93,7 +86,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 			@Override
 			public void onClick(View v) {
 				attach.remove(position);
-				sizePref = context.getSharedPreferences("FileSizes", context.MODE_PRIVATE);
+				sizePref = context.getSharedPreferences("FileSizes", Context.MODE_PRIVATE);
 				sizeEdit = sizePref.edit();
 				total = sizePref.getFloat("Total", (float)0.0) - sizePref.getFloat(a, (float)0.0);
 				//20 mb is the maximum attachment size to make email recievable by microsoft accounts.
@@ -109,7 +102,7 @@ public class AttachmentsAdapter extends ArrayAdapter<String> {
 				if(total < 1){
 					total = (float) 0.0;
 				}
-				
+
 				//text.setText("Total size: " +total + " KB");
 				//reading from the resource file depending on which language is selected
 				String total_size = (String) text.getResources().getText(R.string.total_size);

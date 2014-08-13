@@ -68,8 +68,8 @@
     <string name="toast_addacc">Field(s) too short/unfilled.</string>
     <string name="toast_addacc1">Email provider not supported.</string>
     <string name="toast_addacc2">This account has already been added.</string>
-    <string name="toast_attdownload">Succesfully downloaded!</string>
-    <string name="toast_attdownload1">Failed to download!</string>
+    <string name="toast_attdownload">Successfully downloaded</string>
+    <string name="toast_attdownload1">Failed to download</string>
     <string name="toast_big_size">Could not send, files are too big to attach!</string>
     <string name="toast_emailsel">Email Selected :</string>
     <string name="toast_service_creat">Service created</string>

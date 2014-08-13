@@ -47,28 +47,28 @@
         	android:showAsAction="always"
         	android:icon="@drawable/ic_action_enflag"
         	android:title="@string/english"
-        	android:onClick="toLanguge">
+        	android:onClick="changeLanguage">
         	</item>
         	<item
         	android:id="@+id/action_Sw"
         	android:showAsAction="always"
         	android:icon="@drawable/ic_action_swflag"
         	android:title="@string/swedish"
-        	android:onClick="toLanguge">
+        	android:onClick="changeLanguage">
         	</item>
         	<item
         	android:id="@+id/action_Ar"
         	android:showAsAction="always"
         	android:title="@string/arabic"
         	android:icon="@drawable/ic_action_joflag"
-        	android:onClick="toLanguge">
+        	android:onClick="changeLanguage">
         	</item>
         	<item
         	android:id="@+id/action_De"
         	android:showAsAction="always"
         	android:title="@string/german"
         	android:icon="@drawable/ic_action_deflag"
-        	android:onClick="toLanguge">
+        	android:onClick="changeLanguage">
         	</item>
          </menu>
     </item>

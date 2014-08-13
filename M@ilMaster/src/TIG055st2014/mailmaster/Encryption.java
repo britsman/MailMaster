@@ -5,7 +5,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import android.os.Build;
 import android.util.Base64;
 /**
  * Class with functions for encrypting/decrypting strings, which is used when storing/

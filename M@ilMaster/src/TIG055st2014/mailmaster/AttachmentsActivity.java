@@ -2,15 +2,9 @@ package TIG055st2014.mailmaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.Folder;
-import javax.mail.Message;
-
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,18 +16,17 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 /**
  * Activity containing the list of the currently selected email's attachments
- * (if any).
+ * (if any). They can be downloaded to the phone. Depending on fileformat they
+ * will also be displayed in an imageview after the download is complete. 
  */
 public class AttachmentsActivity extends Activity implements
 AdapterView.OnItemClickListener {
@@ -52,12 +45,12 @@ AdapterView.OnItemClickListener {
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
 		fileNames = new ArrayList<String>();
 		files = new ArrayList<DataSource>();
-		fileNames.addAll(apv.getAttachments());
+		fileNames.addAll(apv.getFileNames());
 		files.addAll(apv.getFiles());
 		hasAttachments = true;
 		if (fileNames.size() == 0) {
 			hasAttachments = false;
-			
+
 			fileNames.add(getApplicationContext().
 					getResources().getString(R.string.no_attachments));
 		}
@@ -77,7 +70,6 @@ AdapterView.OnItemClickListener {
 			startActivity(new Intent("TIG055st2014.mailmaster.MailFolderActivity"));
 		}
 	}
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View newDef, int position,
 			long id) {
@@ -114,7 +106,7 @@ AdapterView.OnItemClickListener {
 			try {
 
 				downloaded = false;
-		        File SDCardRoot = Environment.getExternalStorageDirectory();
+				File SDCardRoot = Environment.getExternalStorageDirectory();
 				File target = new File(SDCardRoot, name);
 				target.canWrite();
 				target.setWritable(true);
@@ -141,7 +133,7 @@ AdapterView.OnItemClickListener {
 				}
 				else{
 					sendBroadcast (new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-								   Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+							Uri.parse("file://" + Environment.getExternalStorageDirectory())));
 				}
 				downloaded = true;
 			}
@@ -151,7 +143,7 @@ AdapterView.OnItemClickListener {
 			return null;
 		}   	
 		/**
-		 * Tries to display file if download was successful.
+		 * Tries to display file if download was successful and file is of a supported type.
 		 */
 		@Override
 		protected void onPostExecute(Void v){
@@ -159,23 +151,22 @@ AdapterView.OnItemClickListener {
 				Toast toast = Toast.makeText(context,
 						getApplicationContext().getResources()
 						.getString(R.string.toast_attdownload)+ " " +  name + "!", Toast.LENGTH_SHORT);
-            	toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
-            	toast.show();
-            	//based on http://developer.android.com/guide/appendix/media-formats.html
-            	// those are the ImageView supported files type and formats
-            	//String filenameArray[] = name.split("\\.");
-		        //String extension = filenameArray[filenameArray.length-1];
-		        if(name.endsWith("jpg") || name.endsWith("png")
-		        		|| name.endsWith("gif")
-		        		|| name.endsWith("bmp")
-		        		|| name.endsWith("webp")){
-		        	String imagePath = Environment.getExternalStorageDirectory()
-            			.toString() + "/" + name;
-            			ImageView my_image = (ImageView) findViewById(R.id.my_image);
-            			my_image.setImageDrawable(Drawable.createFromPath(imagePath));
-            	
-            			}
-		        }
+				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+				toast.show();
+				//based on http://developer.android.com/guide/appendix/media-formats.html
+				// these are the ImageView supported file types.
+				if(name.endsWith("jpg") || name.endsWith("png")
+						|| name.endsWith("gif")
+						|| name.endsWith("bmp")
+						|| name.endsWith("webp")){
+					String imagePath = Environment.getExternalStorageDirectory()
+							.toString() + "/" + name;
+					ImageView my_image = (ImageView) findViewById(R.id.my_image);
+					my_image.setImageDrawable(Drawable.createFromPath(imagePath));
+
+				}
+			}
+			else{
 				Toast toast = Toast.makeText(context,
 						getApplicationContext().getResources()
 						.getString(R.string.toast_attdownload1)+" "+ name + "!", Toast.LENGTH_SHORT);
@@ -184,4 +175,5 @@ AdapterView.OnItemClickListener {
 			}
 		}
 	}
+}
 

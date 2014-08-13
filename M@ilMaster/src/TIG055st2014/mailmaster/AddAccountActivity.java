@@ -8,8 +8,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,9 +26,9 @@ public class AddAccountActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_account);
-		// Disabling icon in top left corner 
 		String addacc = (String) getResources().getText(R.string.add_acc);
 		setTitle(addacc);
+		// Disabling icon in top left corner. 
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		accEdit = accounts.edit();

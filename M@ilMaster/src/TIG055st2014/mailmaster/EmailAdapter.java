@@ -7,15 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.mail.Flags.Flag;
 import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
 
 /**
  * Adapter used to apply formatting to items in the emails list.
@@ -26,18 +23,20 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 	private ArrayList<Message> emails;
 	private SharedPreferences accounts;
 	private int[] colours;
-	private Set<String> defAcc;
+	private Set<String> activeAccs;
 	
 	public EmailAdapter(Context c, int r, int tv, ArrayList<Message> l) {
 		super(c,r,tv,l);
 		this.context = c;
 		this.emails = l;
 		this.accounts = c.getSharedPreferences("StoredAccounts", c.MODE_PRIVATE);
+		/* Used to apply colour to each email corresponding to the colour their account
+		   has on the accountsettings page. **/
 		this.colours = new int[]{
 				Color.argb(155, 215, 255, 188), Color.argb(155, 188, 243, 255), Color.argb(155, 255, 181, 132)
 		};
-		defAcc = new HashSet<String>();
-		defAcc.addAll(accounts.getStringSet("default", new HashSet<String>()));
+		activeAccs = new HashSet<String>();
+		activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 	}
 	/**
 	 * This function is called automatically once for each listitem, and is used to apply
@@ -69,7 +68,7 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 			else{
 				tv.setTextColor(Color.BLUE);
 			}
-			for(String s : defAcc){
+			for(String s : activeAccs){
 				if(temp.getFolder().equals(apv.getEmailFolder(s))){
 					tv.setBackgroundColor(colours[i]);
 					break;
