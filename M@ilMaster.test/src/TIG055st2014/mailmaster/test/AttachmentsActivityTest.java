@@ -40,7 +40,7 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 		assertTrue(activity.fileNames.get(0).equals("This email contains no attachments"));
 	}
 	public void testAttachments() {
-		Log.d("Has Attachment", apv.getAttachments().get(0));
+		Log.d("Has Attachment", apv.getFileNames().get(0));
 		Log.d("Has Attachment", activity.fileNames.get(0));
 		assertTrue(activity.fileNames.get(0).equals("FilePath"));
 	}
