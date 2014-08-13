@@ -1,26 +1,14 @@
-package TIG055st2014.mailmaster.test;
-import static org.junit.Assert.*;
+package TIG055st2014.mailmaster.test.Activities;
 
 import javax.mail.Message;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.Test;
-
-import TIG055st2014.mailmaster.MailFolderActivity;
 import TIG055st2014.mailmaster.R;
-import TIG055st2014.mailmaster.AccountSettingsActivity;
-import TIG055st2014.mailmaster.ComposeActivity;
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.MailFunctionality;
+import TIG055st2014.mailmaster.Activities.ComposeActivity;
+import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
-import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 

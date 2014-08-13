@@ -1,11 +1,8 @@
-package TIG055st2014.mailmaster.test;
+package TIG055st2014.mailmaster.test.HelperClasses;
 
 import javax.mail.Message;
-
-import org.junit.Test;
-
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.MailFunctionality;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import junit.framework.TestCase;
 
 public class MailFunctionalityTest extends TestCase {

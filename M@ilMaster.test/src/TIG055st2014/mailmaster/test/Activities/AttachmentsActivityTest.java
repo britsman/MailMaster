@@ -1,11 +1,9 @@
-package TIG055st2014.mailmaster.test;
-
-import static org.junit.Assert.*;
+package TIG055st2014.mailmaster.test.Activities;
 
 import javax.mail.Message;
-import TIG055st2014.mailmaster.AttachmentsActivity;
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.MailFunctionality;
+import TIG055st2014.mailmaster.Activities.AttachmentsActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.util.Log;

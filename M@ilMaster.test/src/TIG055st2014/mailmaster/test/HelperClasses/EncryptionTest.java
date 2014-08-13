@@ -1,17 +1,6 @@
-package TIG055st2014.mailmaster.test;
+package TIG055st2014.mailmaster.test.HelperClasses;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-
-import TIG055st2014.mailmaster.Encryption;
-
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import junit.framework.TestCase;
 
 public class EncryptionTest  extends TestCase {

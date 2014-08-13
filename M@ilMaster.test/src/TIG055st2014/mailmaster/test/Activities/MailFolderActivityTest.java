@@ -1,38 +1,19 @@
-package TIG055st2014.mailmaster.test;
+package TIG055st2014.mailmaster.test.Activities;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import TIG055st2014.mailmaster.AddAccountActivity;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
 import TIG055st2014.mailmaster.R;
 import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.test.ActivityUnitTestCase;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
-import TIG055st2014.mailmaster.AccountSettingsActivity;
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.ComposeActivity;
-import TIG055st2014.mailmaster.Encryption;
-import TIG055st2014.mailmaster.MailFolderActivity;
-import TIG055st2014.mailmaster.R;
-import TIG055st2014.mailmaster.ShowEmailActivity;
-import android.content.Intent;
+import TIG055st2014.mailmaster.Activities.AccountSettingsActivity;
+import TIG055st2014.mailmaster.Activities.AddAccountActivity;
+import TIG055st2014.mailmaster.Activities.ComposeActivity;
+import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.Activities.ShowEmailActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
-import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
-import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
 
 public class MailFolderActivityTest extends ActivityInstrumentationTestCase2<MailFolderActivity> {
 	private MailFolderActivity activity;

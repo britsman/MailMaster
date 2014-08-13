@@ -1,25 +1,14 @@
-package TIG055st2014.mailmaster.test;
-
-import static org.junit.Assert.*;
+package TIG055st2014.mailmaster.test.Activities;
 
 import javax.mail.Message;
-
-import org.junit.Test;
-
-import TIG055st2014.mailmaster.AddAccountActivity;
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.AttachmentsActivity;
-import TIG055st2014.mailmaster.ComposeActivity;
-import TIG055st2014.mailmaster.MailFolderActivity;
-import TIG055st2014.mailmaster.MailFunctionality;
 import TIG055st2014.mailmaster.R;
-import TIG055st2014.mailmaster.ShowEmailActivity;
+import TIG055st2014.mailmaster.Activities.AttachmentsActivity;
+import TIG055st2014.mailmaster.Activities.ComposeActivity;
+import TIG055st2014.mailmaster.Activities.ShowEmailActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
 import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
 import android.view.MenuItem;
 
 public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<ShowEmailActivity>  {

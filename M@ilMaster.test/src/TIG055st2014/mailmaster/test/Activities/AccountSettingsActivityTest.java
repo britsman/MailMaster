@@ -1,22 +1,18 @@
-package TIG055st2014.mailmaster.test;
+package TIG055st2014.mailmaster.test.Activities;
 
 import java.util.HashSet;
-import java.util.Set;
-
-import TIG055st2014.mailmaster.*;
 
 import TIG055st2014.mailmaster.R;
-import android.app.Instrumentation;
+import TIG055st2014.mailmaster.Activities.AccountSettingsActivity;
+import TIG055st2014.mailmaster.Activities.AddAccountActivity;
+import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
 import android.test.UiThreadTest;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 
 public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase2<AccountSettingsActivity> {

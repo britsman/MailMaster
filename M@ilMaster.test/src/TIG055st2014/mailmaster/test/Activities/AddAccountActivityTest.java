@@ -1,22 +1,13 @@
-package TIG055st2014.mailmaster.test;
+package TIG055st2014.mailmaster.test.Activities;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import TIG055st2014.mailmaster.AccountSettingsActivity;
-import TIG055st2014.mailmaster.AddAccountActivity;
-import TIG055st2014.mailmaster.AppVariablesSingleton;
-import TIG055st2014.mailmaster.Encryption;
-import TIG055st2014.mailmaster.MailFunctionality;
 import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Activities.AccountSettingsActivity;
+import TIG055st2014.mailmaster.Activities.AddAccountActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
+import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import android.app.Instrumentation.ActivityMonitor;
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityUnitTestCase;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 
 public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<AddAccountActivity> {
