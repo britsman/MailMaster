@@ -1,4 +1,4 @@
-//Uses code from http://stackoverflow.com/questions/5220761/fast-and-simple-string-encrypt-decrypt-in-java
+//Found via http://stackoverflow.com/questions/5220761/fast-and-simple-string-encrypt-decrypt-in-java
 
 package TIG055st2014.mailmaster.HelpClasses;
 import javax.crypto.Cipher;
@@ -6,6 +6,25 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import android.util.Base64;
+
+/*
+ * Copyright 2013-2014
+ * Ademar Alves de Oliveira <ademar111190@gmail.com /> Simbio.se
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * Class with functions for encrypting/decrypting strings, which is used when storing/
  * retrieving passwords from sharedpreferences.
