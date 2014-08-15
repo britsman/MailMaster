@@ -10,6 +10,7 @@ import javax.mail.Message;
 
 import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.Activities.MailFolderActivity;
+import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import TIG055st2014.mailmaster.HelpClasses.EmailNotificationForwarder;
 import TIG055st2014.mailmaster.HelpClasses.EmailNotificationVariables;
 import TIG055st2014.mailmaster.HelpClasses.Encryption;
@@ -192,6 +193,8 @@ public class EmailNotificationService extends Service{
 	private void initVariables(){
 		EmailNotificationVariables.nrUnreadEmail = 0;
 		emails = new ArrayList<Message>();
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		apv.initAccounts();
 	}
 	private void getLatest(){
 		String key = "Some Key";
