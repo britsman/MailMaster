@@ -70,7 +70,7 @@ public class EmailNotificationService extends Service{
 	/**
 	 * Reference to the activity that starts the service.
 	 */
-	private WeakReference<EmailNotificationServiceClient> mClient;
+	private EmailNotificationServiceClient mClient;
 
 	/**
 	 * Used to assign the service's activity reference from inside the activity.
@@ -81,7 +81,7 @@ public class EmailNotificationService extends Service{
 			return;
 		}
 
-		mClient = new WeakReference<EmailNotificationServiceClient>(client);
+		mClient = client;
 	}
 	/**
 	 * Used to find this service from inside MailFolderActivity.
@@ -157,12 +157,16 @@ public class EmailNotificationService extends Service{
 						Log.d("in service", "" + (mClient != null));
 						if(mClient != null){
 							Log.d("autoupdate", "in service");
-							((MailFolderActivity)mClient.get()).autoUpdate(emails);
-						}
+							mClient.autoUpdate(emails);
 						/*Sleep for 45 seconds (approx time for rest of loop iteration is 15 sec,
                     	  So total time for each iteration is close to 1 minute*/
 						sleep(45000);
-					} catch (InterruptedException e) {
+						}
+						else{
+							running = false;
+						}
+					} 
+					catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
@@ -194,7 +198,9 @@ public class EmailNotificationService extends Service{
 		EmailNotificationVariables.nrUnreadEmail = 0;
 		emails = new ArrayList<Message>();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		apv.initAccounts();
+		if(apv.getFolderNames().equals("Inbox")){
+			apv.initAccounts();
+		}
 	}
 	private void getLatest(){
 		String key = "Some Key";

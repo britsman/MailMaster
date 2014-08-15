@@ -114,6 +114,16 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		}
 		else{
 			getActionBar().setTitle(R.string.inbox);
+			if(!isServiceRunning() && !apv.isTesting()){
+				dialog = new ProgressDialog(this);
+				//reading from the resource file depending on which language is selected
+				String fetchinbox = getResources().getString(R.string.fetch_inbox);
+				dialog.setMessage(fetchinbox);
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
+				dialog.show();
+				startBackground();
+			}
 		}
 	}
 	/**
