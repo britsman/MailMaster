@@ -124,4 +124,14 @@ public class AddAccountActivity extends Activity {
 		getMenuInflater().inflate(R.menu.add_account, menu);
 		return true;
 	}
+	public void toConditions(MenuItem m){
+		Intent i = new Intent(AddAccountActivity.this, GPLInfoActivity.class);
+		i.putExtra("type", "conditions");
+		startActivity(i);
+	}
+	public void toWarranty(MenuItem m){
+		Intent i = new Intent(AddAccountActivity.this, GPLInfoActivity.class);
+		i.putExtra("type", "warranty");
+		startActivity(i);
+	}
 }

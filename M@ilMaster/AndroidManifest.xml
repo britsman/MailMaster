@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="TIG055st2014.mailmaster"
+    android:configChanges="locale|orientation"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:configChanges="locale|orientation">
-    
+    android:versionName="1.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -39,7 +38,7 @@
         </activity>
         <activity
             android:name=".Activities.AddAccountActivity"
-            android:label="@string/add_email">
+            android:label="@string/add_email" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.Activities.AddAccountActivity" />
 
@@ -48,7 +47,7 @@
         </activity>
         <activity
             android:name=".Activities.AccountSettingsActivity"
-            android:label="@string/choose_acc">
+            android:label="@string/choose_acc" >
             <intent-filter>
                 <action android:name="TIG055st2014.mailmaster.Activities.AccountSettingsActivity" />
 
@@ -93,6 +92,10 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.GPLInfoActivity"
+            android:label="@string/title_activity_gplinfo" >
         </activity>
     </application>
 

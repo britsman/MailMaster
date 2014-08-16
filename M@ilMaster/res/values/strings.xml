@@ -60,7 +60,7 @@
     <string name="read_contact">Parsing contacts (result will be saved for future use)...</string>
     <string name="save_draft">Saving Draft...</string>
     <string name="no_attachments">This email contains no attachments.</string>
-   	<string name="hint_to">Write recievers here...</string>
+    <string name="hint_to">Write recievers here...</string>
     <string name="hint_cc">Write CC targets here...</string>
     <string name="hint_bcc">Write BCC targets here...</string>
     <string name="hint_subject">Write subject here...</string>
@@ -80,10 +80,7 @@
     <string name="toast_wrongpass">Wrong password or inexistant account.</string>
     <string name="toast_save_draft">Draft Saved.</string>
     <string name="toast_fail_save">Failed to save draft.</string>
-  	<string name="send_email">Sending Email...</string>
-    
-    
-    
-    
+    <string name="send_email">Sending Email...</string>
+    <string name="title_activity_gplinfo">GPLInfoActivity</string>
 
 </resources>
