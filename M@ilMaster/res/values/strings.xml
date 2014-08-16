@@ -82,5 +82,6 @@
     <string name="toast_fail_save">Failed to save draft.</string>
     <string name="send_email">Sending Email...</string>
     <string name="title_activity_gplinfo">GPLInfoActivity</string>
+    <string name="gpl_link">&lt;a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License&lt;/a></string>
 
 </resources>
