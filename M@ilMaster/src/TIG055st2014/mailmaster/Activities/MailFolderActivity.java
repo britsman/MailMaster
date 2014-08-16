@@ -200,27 +200,35 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		int id = m.getItemId();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
-			apv.setAllFolders("INBOX");
-			getActionBar().setTitle(R.string.inbox);   
 			if(!isServiceRunning()){
+				dialog = new ProgressDialog(this);
+				//reading from the resource file depending on which language is selected
+				String fetchinbox = getResources().getString(R.string.fetch_inbox);
+				dialog.setMessage(fetchinbox);
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
+				dialog.show();
 				startBackground();
 			}
+			getActionBar().setTitle(R.string.inbox);   
+			apv.setAllFolders("INBOX");
 		}
 		else if (id == R.id.action_sent) {
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			apv.setAllFolders("[Gmail]/Sent Mail");
 			getActionBar().setTitle(R.string.sent);
+			apv.setAllFolders("[Gmail]/Sent Mail");
+			refreshList();
 		}
 		else{
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			apv.setAllFolders("[Gmail]/Drafts");
 			getActionBar().setTitle(R.string.drafts);
+			apv.setAllFolders("[Gmail]/Drafts");
+			refreshList();
 		}
-		refreshList();
 	}
 	/**
 	 * Used to check if service needs to be started/stopped.

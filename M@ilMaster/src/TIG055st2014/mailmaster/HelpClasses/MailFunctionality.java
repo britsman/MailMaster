@@ -537,6 +537,7 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPostExecute(Void v){
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			Log.d("async size", activity.emails.size() + "");
 			activity.listView.setAdapter(new EmailAdapter(activity.getApplicationContext(),R.layout.email_item,
 					R.id.email_preview, activity.emails));

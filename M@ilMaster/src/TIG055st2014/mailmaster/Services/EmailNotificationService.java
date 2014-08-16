@@ -197,10 +197,6 @@ public class EmailNotificationService extends Service{
 	private void initVariables(){
 		EmailNotificationVariables.nrUnreadEmail = 0;
 		emails = new ArrayList<Message>();
-		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		if(apv.getFolderNames().equals("Inbox")){
-			apv.initAccounts();
-		}
 	}
 	private void getLatest(){
 		String key = "Some Key";
