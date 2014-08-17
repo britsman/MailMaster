@@ -695,7 +695,6 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected void onPostExecute(Void v){
-			Log.d("Contents", contents);
 			if(seAct != null){
 				seAct.load(contents);
 			}

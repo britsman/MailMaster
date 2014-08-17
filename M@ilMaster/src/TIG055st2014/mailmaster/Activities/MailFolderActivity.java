@@ -200,18 +200,23 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		int id = m.getItemId();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
-			if(!isServiceRunning()){
-				dialog = new ProgressDialog(this);
-				//reading from the resource file depending on which language is selected
-				String fetchinbox = getResources().getString(R.string.fetch_inbox);
-				dialog.setMessage(fetchinbox);
-				dialog.setIndeterminate(true);
-				dialog.setCancelable(false);
-				dialog.show();
-				startBackground();
-			}
+
+			dialog = new ProgressDialog(this);
+			//reading from the resource file depending on which language is selected
+			String fetchinbox = getResources().getString(R.string.fetch_inbox);
+			dialog.setMessage(fetchinbox);
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
+			dialog.show();
+
 			getActionBar().setTitle(R.string.inbox);   
 			apv.setAllFolders("INBOX");
+			if(!isServiceRunning()){
+				startBackground();
+			}
+			else{
+				mService.restart();
+			}
 		}
 		else if (id == R.id.action_sent) {
 			if(isServiceRunning()){

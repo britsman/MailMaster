@@ -4,6 +4,7 @@ import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import TIG055st2014.mailmaster.HelpClasses.MailFunctionality;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebSettings.ZoomDensity;
 
 /* M@ilMaster Multi-Account Email Client
 Copyright (C) 2014 Eric Britsman & Khaled Alnawasreh
@@ -72,6 +74,8 @@ public class ShowEmailActivity extends Activity {
 			//Enables zoom.
 			wv.getSettings().setBuiltInZoomControls(true);
 			wv.getSettings().setDisplayZoomControls(false);
+			//Zooms out as much as needed to display whole contents.
+			wv.getSettings().setLoadWithOverviewMode(true);
 			//Increases max zoomout level.
 			wv.getSettings().setUseWideViewPort(true);
 			try {

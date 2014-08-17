@@ -45,7 +45,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
-*/
+ */
 
 /**
  * Background service used to both check for new emails to notify about + to automatically
@@ -158,9 +158,11 @@ public class EmailNotificationService extends Service{
 						if(mClient != null){
 							Log.d("autoupdate", "in service");
 							mClient.autoUpdate(emails);
-						/*Sleep for 45 seconds (approx time for rest of loop iteration is 15 sec,
+							/*Wait for 45 seconds (approx time for rest of loop iteration is 15 sec,
                     	  So total time for each iteration is close to 1 minute*/
-						sleep(45000);
+							synchronized (this) {
+								this.wait(45000);
+							}
 						}
 						else{
 							running = false;
@@ -244,6 +246,15 @@ public class EmailNotificationService extends Service{
 				e.printStackTrace();
 			}
 			emails = temp;
+		}
+	}
+	/**
+	 * Used when manually refreshing inbox, will cancel the 45 second
+	 * wait if it is progress.
+	 */
+	public void restart(){
+		synchronized (thread) {
+			thread.notify();
 		}
 	}
 }
