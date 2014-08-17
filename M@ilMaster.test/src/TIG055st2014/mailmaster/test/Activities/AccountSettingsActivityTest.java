@@ -58,7 +58,7 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 	}
 	/**
 	 * This test attempts to set the testing account as active. simulating that it was
-	 * clicked shall result in it being written to the sharedpreferences. 
+	 * clicked. shall result in it being written to the sharedpreferences. 
 	 */
 	@UiThreadTest 
 	public void testSetAsActive() {
@@ -79,6 +79,24 @@ public class AccountSettingsActivityTest extends ActivityInstrumentationTestCase
 		activity.accEdit.clear();
 		activity.accEdit.commit();
 		assertTrue(adress.equals(activeAcc));
+	}
+	/**
+	 * This test attempts to verify that clicked account is not made active if
+	 * the number of active accounts is already at maximum.
+	 */
+	@UiThreadTest 
+	public void testMaxActive() {
+		String adress = "mailmastertesting@gmail.com";
+		activity.accEdit.clear();
+		activity.accEdit.putInt("enabled", 3);
+		activity.accEdit.putString(adress, encryption.encrypt(key, "mailmaster123"));
+		activity.accEdit.commit();
+		activity.columns.add(adress);
+		activity.updateList();
+		activity.onItemClick(null, null, 0, 0);
+		assertFalse(activity.accounts.getStringSet("default", new HashSet<String>()).contains(adress));
+		activity.accEdit.clear();
+		activity.accEdit.commit();
 	}
 	/**
 	 * This test attempts to press the icon that redirects to AddAccountActivity.

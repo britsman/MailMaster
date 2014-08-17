@@ -3,6 +3,7 @@ package TIG055st2014.mailmaster.test.Activities;
 import TIG055st2014.mailmaster.R;
 import TIG055st2014.mailmaster.Activities.AccountSettingsActivity;
 import TIG055st2014.mailmaster.Activities.AddAccountActivity;
+import TIG055st2014.mailmaster.Activities.GPLInfoActivity;
 import TIG055st2014.mailmaster.HelpClasses.AppVariablesSingleton;
 import TIG055st2014.mailmaster.HelpClasses.Encryption;
 import android.app.Instrumentation.ActivityMonitor;
@@ -121,6 +122,21 @@ public class AddAccountActivityTest extends ActivityInstrumentationTestCase2<Add
 		activity.finish();
 		// wait 2 seconds for the start of the activity
 		AccountSettingsActivity startedActivity = (AccountSettingsActivity) monitor
+				.waitForActivityWithTimeout(2000);
+		assertNotNull(startedActivity);
+		startedActivity.finish();
+	}
+	/**
+	 * This test tries to navigate to GPLInfo from AddAccount.
+	 */
+	public void testToInfoViaIcon() {
+		ActivityMonitor monitor =
+				getInstrumentation().
+				addMonitor(GPLInfoActivity.class.getName(), null, false);
+		activity.toConditions(null);
+		activity.finish();
+		// wait 2 seconds for the start of the activity
+		GPLInfoActivity startedActivity = (GPLInfoActivity) monitor
 				.waitForActivityWithTimeout(2000);
 		assertNotNull(startedActivity);
 		startedActivity.finish();
