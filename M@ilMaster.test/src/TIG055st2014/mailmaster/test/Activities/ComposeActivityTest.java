@@ -66,6 +66,13 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 	public void testReply() {
 
 		apv.setIsReply(true);
+		//Sometimes the finish() in testCompose does not finish quickly enough.
+		try {
+			Thread.sleep(5000L);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		activity = getActivity();
 		activity.runOnUiThread(new Runnable() {
 
