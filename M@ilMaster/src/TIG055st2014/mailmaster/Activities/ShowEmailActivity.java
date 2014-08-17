@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 
 /* M@ilMaster Multi-Account Email Client
@@ -69,13 +70,16 @@ public class ShowEmailActivity extends Activity {
 		}
 		else{
 			wv = (WebView) findViewById(R.id.display);
-			//Enables zoom.
-			wv.getSettings().setBuiltInZoomControls(true);
+			/*Disables zoom. we do this since max zoomout level without wide viewport level
+			 * is less than what is required to display whole email on 1 page, but enabling
+			 * wide viewport breaks text wrapping.
+			 */
+			wv.getSettings().setBuiltInZoomControls(false);
+			wv.getSettings().setSupportZoom(false);
 			wv.getSettings().setDisplayZoomControls(false);
-			//Zooms out as much as needed to display whole contents.
-			wv.getSettings().setLoadWithOverviewMode(true);
-			//Increases max zoomout level.
-			wv.getSettings().setUseWideViewPort(true);
+			wv.setInitialScale(100);
+		    wv.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+		    wv.setScrollbarFadingEnabled(false);
 			try {
 				MailFunctionality mf = new MailFunctionality(currentAcc, pw, (currentAcc.split("@"))[1]);
 				mf.getContents(this);
