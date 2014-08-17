@@ -70,14 +70,14 @@ public class ShowEmailActivity extends Activity {
 		}
 		else{
 			wv = (WebView) findViewById(R.id.display);
-			/*Disables zoom. we do this since max zoomout level without wide viewport level
-			 * is less than what is required to display whole email on 1 page, but enabling
-			 * wide viewport breaks text wrapping.
-			 */
-			wv.getSettings().setBuiltInZoomControls(false);
-			wv.getSettings().setSupportZoom(false);
+			//Enables zoom
+			wv.getSettings().setBuiltInZoomControls(true);
+			wv.getSettings().setSupportZoom(true);
+			//Hides onscreen zoom controls
 			wv.getSettings().setDisplayZoomControls(false);
-			wv.setInitialScale(100);
+			//Allows for further max zoomout distance.
+			wv.getSettings().setUseWideViewPort(true);
+			wv.setInitialScale(75);
 		    wv.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 		    wv.setScrollbarFadingEnabled(false);
 			try {
