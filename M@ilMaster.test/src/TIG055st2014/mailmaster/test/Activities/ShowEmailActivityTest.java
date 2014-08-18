@@ -47,7 +47,7 @@ public class ShowEmailActivityTest extends  ActivityInstrumentationTestCase2<Sho
 		apv.resetLists();
 		mf = new MailFunctionality(account, "mailmaster123", "gmail.com");
 		apv.setFolderName(account, "INBOX");
-		Message m = mf.getFolderTest().get(0);
+		Message m = mf.getFolderTest(1).get(0);
 		apv.setEmail(m);		
 	}
 

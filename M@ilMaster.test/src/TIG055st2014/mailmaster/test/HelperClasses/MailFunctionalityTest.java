@@ -65,7 +65,7 @@ public class MailFunctionalityTest extends TestCase {
 	 * the testing account's login info is valid.
 	 */
 	public void testGetInbox(){		
-		assertTrue(mf.getFolderTest().size() > 0);
+		assertTrue(mf.getFolderTest(1).size() > 0);
 	}
 	/**
 	 * This test tries to verify that getting contents from an IMAPfolder will fail when
@@ -73,7 +73,7 @@ public class MailFunctionalityTest extends TestCase {
 	 */
 	public void testGetInboxFailure(){
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "WrongPassword", "gmail.com");
-		assertFalse(mf.getFolderTest().size() > 0);
+		assertFalse(mf.getFolderTest(1).size() > 0);
 	}
 	/**
 	 * This test tries to verify that we can retrieve the full contents of a particular email message.
@@ -81,7 +81,7 @@ public class MailFunctionalityTest extends TestCase {
 	public void testGetContents(){
 		try{
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-			apv.setEmail(mf.getFolderTest().get(0));
+			apv.setEmail(mf.getFolderTest(1).get(0));
 			assertFalse(mf.getTestContents().equalsIgnoreCase(""));
 		}
 		//This should never be reached if code is working.
@@ -96,7 +96,7 @@ public class MailFunctionalityTest extends TestCase {
 	 */
 	public void testGetReply(){
 		try{
-			Message temp1 = mf.getFolderTest().get(0);
+			Message temp1 = mf.getFolderTest(1).get(0);
 			Message temp2 = mf.getTestReply(temp1);
 			assertTrue(temp2.getSubject().equalsIgnoreCase("RE: " + temp1.getSubject())
 					   || temp2.getSubject().equalsIgnoreCase(temp1.getSubject()));

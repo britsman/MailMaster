@@ -42,7 +42,7 @@ public class AttachmentsActivityTest extends ActivityInstrumentationTestCase2<At
 		apv = AppVariablesSingleton.getInstance();
 		apv.initAccounts();
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
-		Message m = mf.getFolderTest().get(0);
+		Message m = mf.getFolderTest(1).get(0);
 		apv.setEmail(m);
 	}
 	@Override

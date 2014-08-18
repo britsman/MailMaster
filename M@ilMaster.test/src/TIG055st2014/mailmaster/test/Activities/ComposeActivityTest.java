@@ -50,7 +50,7 @@ public class ComposeActivityTest extends ActivityInstrumentationTestCase2<Compos
 		apv.setAccount("mailmastertesting@gmail.com");
 		apv.setTesting(true);
 		mf = new MailFunctionality("mailmastertesting@gmail.com", "mailmaster123", "gmail.com");
-		Message m = mf.getFolderTest().get(0);
+		Message m = mf.getFolderTest(1).get(0);
 		apv.setEmail(m);
 		apv.setReply(mf.getTestReply(m));
 	}
