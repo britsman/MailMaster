@@ -73,7 +73,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
 		numEdit = pageNumbers.edit();
-		numEdit.putInt("max", 1);
+		//numEdit.putInt("max", 1);
 		numEdit.putInt("current", 1);
 		numEdit.commit();
 		activeAccs = new HashSet<String>();
@@ -210,8 +210,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
 			//If going to inbox from other folder.
-			if(!apv.getFolderNames().equals("Inbox")){
-				numEdit.putInt("max", 1);
+			if(!apv.getFolderNames().equals("INBOX")){
 				numEdit.putInt("current", 1);
 				numEdit.commit();
 			}
@@ -355,12 +354,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			mf.getFolder(this);
 		}
 	}
-	private void toNextPage(MenuItem m){
+	public void toNextPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
-		if(pageNumbers.getInt("max", 1) == current){
+		/*if(pageNumbers.getInt("max", 1) == current){
 			//Do toast "On last page".
 		}
-		else{
+		else{**/
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String temp = apv.getFolderNames();
 			numEdit.putInt("current", current+1);
@@ -375,8 +374,8 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				changeFolder(testMenu.findItem(R.id.action_inbox));
 			}
 		}
-	}
-	private void toPreviousPage(MenuItem m){
+	//}
+	public void toPreviousPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
 			//Do toast "Already on first page".

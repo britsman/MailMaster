@@ -572,6 +572,7 @@ public class MailFunctionality extends Authenticator {
 	 */
 	private ArrayList<Message> getMailList(String user, String password, int current){		
 		ArrayList<Message> emails = new ArrayList<Message>();
+		Log.d("current page", current + "");
 		try {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			if(apv.getStore(user)!=null && apv.getStore(user).isConnected()){

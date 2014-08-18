@@ -106,9 +106,6 @@ public class EmailNotificationService extends Service{
 		super.onCreate();
 		Toast.makeText(this,getApplicationContext().getResources()
 				.getString(R.string.toast_service_creat), Toast.LENGTH_LONG).show();
-		
-		pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
-		numEdit = pageNumbers.edit();
 
 		thread = new Thread(){
 			@Override
@@ -120,6 +117,7 @@ public class EmailNotificationService extends Service{
 				//Used for action that is triggered when notification is pressed/deleted.
 				Intent emailIntent = new Intent(getApplicationContext(), EmailNotificationForwarder.class);
 				accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
+				pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
 				activeAccs = new HashSet<String>();
 				activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
