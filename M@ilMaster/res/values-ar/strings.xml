@@ -47,7 +47,7 @@
     <string name="msDrafts">Drafts</string>
     <string name="msSent">Sent</string>
     <string name="gmailDrafts">[Gmail]/Drafts</string>
-    <string name="gmailSent">[Gmail]/Sent</string>
+    <string name="gmailSent">[Gmail]/Sent Mail</string>
     <string name="choose_acc">اختيار حساب...</string>
     <string name="download">تحميل البند</string>
     <string name="contacts">تحميل الاتصالات</string>

@@ -46,7 +46,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
-*/
+ */
 
 /**
  * Activity for displaying the 20 latest items in either inbox, drafts or sent folder.
@@ -105,24 +105,26 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	@Override
 	public void onStart(){
 		super.onStart();
-		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
-		if(apv.getFolderNames().contains("Drafts")){
-			getActionBar().setTitle(R.string.drafts);
-		}
-		else if(apv.getFolderNames().contains("Sent")){
-			getActionBar().setTitle(R.string.sent);
-		}
-		else{
-			getActionBar().setTitle(R.string.inbox);
-			if(!isServiceRunning() && !apv.isTesting()){
-				dialog = new ProgressDialog(this);
-				//reading from the resource file depending on which language is selected
-				String fetchinbox = getResources().getString(R.string.fetch_inbox);
-				dialog.setMessage(fetchinbox);
-				dialog.setIndeterminate(true);
-				dialog.setCancelable(false);
-				dialog.show();
-				startBackground();
+		if(activeAccs.size() > 0){
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			if(apv.getFolderNames().contains("Drafts")){
+				getActionBar().setTitle(R.string.drafts);
+			}
+			else if(apv.getFolderNames().contains("Sent")){
+				getActionBar().setTitle(R.string.sent);
+			}
+			else{
+				getActionBar().setTitle(R.string.inbox);
+				if(!isServiceRunning() && !apv.isTesting()){
+					dialog = new ProgressDialog(this);
+					//reading from the resource file depending on which language is selected
+					String fetchinbox = getResources().getString(R.string.fetch_inbox);
+					dialog.setMessage(fetchinbox);
+					dialog.setIndeterminate(true);
+					dialog.setCancelable(false);
+					dialog.show();
+					startBackground();
+				}
 			}
 		}
 	}

@@ -142,7 +142,6 @@ AdapterView.OnItemClickListener {
 				byte[] buffer = new byte[1024];
 				int len1 = 0;
 				while ((len1 = is.read(buffer)) != -1) {
-					Log.d("File", "Writing");
 					fos.write(buffer, 0, len1);
 				}	
 				fos.close();
@@ -185,8 +184,10 @@ AdapterView.OnItemClickListener {
 						|| name.endsWith("gif")
 						|| name.endsWith("bmp")
 						|| name.endsWith("webp")){
+					Log.d("Attachment is image.", Environment.getExternalStorageDirectory()
+					.toString() + "/M@ilMaster/" + name);
 					String imagePath = Environment.getExternalStorageDirectory()
-							.toString() + "/" + name;
+							.toString() + "/M@ilMaster/" + name;
 					ImageView my_image = (ImageView) findViewById(R.id.my_image);
 					my_image.setImageDrawable(Drawable.createFromPath(imagePath));
 
