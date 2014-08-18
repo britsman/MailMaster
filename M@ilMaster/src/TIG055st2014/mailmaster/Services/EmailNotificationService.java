@@ -59,6 +59,8 @@ public class EmailNotificationService extends Service{
 	private final int emailId = 1;
 	private ArrayList<Message> emails;
 	private Set<String> activeAccs;
+	public SharedPreferences pageNumbers;
+	public SharedPreferences.Editor numEdit;
 
 	/**
 	 * Interface used to access MailFolderActivity function inside of the service.
@@ -104,6 +106,9 @@ public class EmailNotificationService extends Service{
 		super.onCreate();
 		Toast.makeText(this,getApplicationContext().getResources()
 				.getString(R.string.toast_service_creat), Toast.LENGTH_LONG).show();
+		
+		pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
+		numEdit = pageNumbers.edit();
 
 		thread = new Thread(){
 			@Override
@@ -207,7 +212,7 @@ public class EmailNotificationService extends Service{
 		for(String s : activeAccs){		
 			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
 			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
-			sort(mf.getFolderTest());
+			sort(mf.getFolderTest(pageNumbers.getInt("current", 1)));
 		}
 	}
 	private void sort(ArrayList<Message> list){

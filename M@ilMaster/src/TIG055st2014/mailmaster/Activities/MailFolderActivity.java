@@ -54,6 +54,8 @@ Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
 public class MailFolderActivity extends Activity implements AdapterView.OnItemClickListener, EmailNotificationServiceClient{
 	//partially based on http://stackoverflow.com/questions/11390018/how-to-cal-the-activity-method-from-the-service
 	public SharedPreferences accounts;
+	public SharedPreferences pageNumbers;
+	public SharedPreferences.Editor numEdit;
 	private Set<String> activeAccs;
 	public ListView listView;
 	public ArrayList<Message> emails;
@@ -69,6 +71,11 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		setContentView(R.layout.activity_mail_folder);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
+		pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
+		numEdit = pageNumbers.edit();
+		numEdit.putInt("max", 1);
+		numEdit.putInt("current", 1);
+		numEdit.commit();
 		activeAccs = new HashSet<String>();
 		activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -202,7 +209,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		int id = m.getItemId();
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
-
+			//If going to inbox from other folder.
+			if(!apv.getFolderNames().equals("Inbox")){
+				numEdit.putInt("max", 1);
+				numEdit.putInt("current", 1);
+				numEdit.commit();
+			}
 			dialog = new ProgressDialog(this);
 			//reading from the resource file depending on which language is selected
 			String fetchinbox = getResources().getString(R.string.fetch_inbox);
@@ -221,6 +233,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			}
 		}
 		else if (id == R.id.action_sent) {
+			//If going to sent from other folder.
+			if(!apv.getFolderNames().contains("Sent")){
+				numEdit.putInt("max", 1);
+				numEdit.putInt("current", 1);
+				numEdit.commit();
+			}
 			if(isServiceRunning()){
 				stopBackground();
 			}
@@ -229,6 +247,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			refreshList();
 		}
 		else{
+			//If going to drafts from other folder.
+			if(!apv.getFolderNames().contains("Drafts")){
+				numEdit.putInt("max", 1);
+				numEdit.putInt("current", 1);
+				numEdit.commit();
+			}
 			if(isServiceRunning()){
 				stopBackground();
 			}
@@ -329,6 +353,48 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			String pw = decrypter.decrypt(key, accounts.getString(s, ""));
 			MailFunctionality mf = new MailFunctionality(s, pw, (s.split("@"))[1]);
 			mf.getFolder(this);
+		}
+	}
+	private void toNextPage(MenuItem m){
+		int current = pageNumbers.getInt("current", 1);
+		if(pageNumbers.getInt("max", 1) == current){
+			//Do toast "On last page".
+		}
+		else{
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			String temp = apv.getFolderNames();
+			numEdit.putInt("current", current+1);
+			numEdit.commit();
+			if(temp.contains("Drafts")){
+				changeFolder(testMenu.findItem(R.id.action_drafts));
+			}
+			else if(temp.contains("Sent")){
+				changeFolder(testMenu.findItem(R.id.action_sent));
+			}
+			else{
+				changeFolder(testMenu.findItem(R.id.action_inbox));
+			}
+		}
+	}
+	private void toPreviousPage(MenuItem m){
+		int current = pageNumbers.getInt("current", 1);
+		if(current == 1){
+			//Do toast "Already on first page".
+		}
+		else{
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			String temp = apv.getFolderNames();
+			numEdit.putInt("current", current-1);
+			numEdit.commit();
+			if(temp.contains("Drafts")){
+				changeFolder(testMenu.findItem(R.id.action_drafts));
+			}
+			else if(temp.contains("Sent")){
+				changeFolder(testMenu.findItem(R.id.action_sent));
+			}
+			else{
+				changeFolder(testMenu.findItem(R.id.action_inbox));
+			}
 		}
 	}
 }

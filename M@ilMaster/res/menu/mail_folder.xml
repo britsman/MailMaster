@@ -1,46 +1,56 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/action_to_previous"
+        android:icon="@drawable/previous"
+        android:onClick="toPreviousPage"
+        android:showAsAction="always"
+        android:title="Previous page"/>
+    <item
+        android:id="@+id/action_to_next"
+        android:icon="@drawable/next"
+        android:onClick="toNextPage"
+        android:showAsAction="always"
+        android:title="Next page"/>
+    <item
         android:id="@+id/action_toSettings"
-        android:showAsAction="always"
-        android:title="@string/settings" 
+        android:icon="@drawable/ic_action_settings"
         android:onClick="onClickSettings"
-        android:icon="@drawable/ic_action_settings"/>
-    
-        <item
         android:showAsAction="always"
-        android:title="@string/folders" 
-        android:icon="@drawable/ic_action_collection">
+        android:title="@string/settings"/>
+    <item
+        android:icon="@drawable/ic_action_collection"
+        android:showAsAction="always"
+        android:title="@string/folders">
         <menu>
             <item
-        	android:id="@+id/action_inbox"
-        	android:showAsAction="withText"
-        	android:title="@string/inbox" 
-        	android:icon="@drawable/ic_action_inboxemail"
-        	android:onClick="changeFolder">
-        	</item>
-        	<item
-        	android:id="@+id/action_sent"
-        	android:showAsAction="withText"
-        	android:title="@string/sent" 
-        	android:icon="@drawable/ic_action_send_inbox"
-        	android:onClick="changeFolder">
-        	</item>
-        	<item
-        	android:id="@+id/action_drafts"
-        	android:showAsAction="withText"
-        	android:title="@string/drafts" 
-        	android:icon="@drawable/ic_action_draftsave"
-        	android:onClick="changeFolder">
-        	</item>
-         </menu>
-	</item>
-    
+                android:id="@+id/action_inbox"
+                android:icon="@drawable/ic_action_inboxemail"
+                android:onClick="changeFolder"
+                android:showAsAction="withText"
+                android:title="@string/inbox">
+            </item>
+            <item
+                android:id="@+id/action_sent"
+                android:icon="@drawable/ic_action_send_inbox"
+                android:onClick="changeFolder"
+                android:showAsAction="withText"
+                android:title="@string/sent">
+            </item>
+            <item
+                android:id="@+id/action_drafts"
+                android:icon="@drawable/ic_action_draftsave"
+                android:onClick="changeFolder"
+                android:showAsAction="withText"
+                android:title="@string/drafts">
+            </item>
+        </menu>
+    </item>
     <item
         android:id="@+id/action_toCompose"
-        android:showAsAction="always"
-        android:title="@string/inbox" 
+        android:icon="@drawable/ic_action_new_email"
         android:onClick="onClickCompose"
-        android:icon="@drawable/ic_action_new_email"/>
+        android:showAsAction="always"
+        android:title="@string/inbox"/>
 
 </menu>

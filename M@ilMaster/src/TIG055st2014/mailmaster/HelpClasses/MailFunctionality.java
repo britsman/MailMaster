@@ -441,9 +441,9 @@ public class MailFunctionality extends Authenticator {
 	 * Testing variant that is used both to assert in tests + to provide the EmailNootificationService
 	 * with emails.
 	 */
-	public ArrayList<Message> getFolderTest() {	
+	public ArrayList<Message> getFolderTest(int current) {	
 		try {
-			TestReadTask task = new TestReadTask(user,password);
+			TestReadTask task = new TestReadTask(user,password, current);
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			Log.d("MailFunctionality",  "Reading reached");
 			return task.get();
@@ -493,7 +493,8 @@ public class MailFunctionality extends Authenticator {
 		}
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			emails.addAll(getMailList(user, password));
+			int current = activity.pageNumbers.getInt("current", 1);
+			emails.addAll(getMailList(user, password, current));
 			sort();
 			return null;
 		}
@@ -553,21 +554,23 @@ public class MailFunctionality extends Authenticator {
 	private class TestReadTask extends AsyncTask<Void, Void, ArrayList<Message>>{
 
 		private String user, password;
+		private int current;
 
-		private TestReadTask(String u, String p){
+		private TestReadTask(String u, String p, int c){
 			user = u;
 			password = p; 
+			current = c;
 		}   	
 		@Override
 		protected ArrayList<Message> doInBackground(Void... arg0) {
-			return getMailList(user, password);
+			return getMailList(user, password, current);
 		}
 	}
 	/**
 	 * Helper method to reduce code duplication in normal/testing variant of ReadTask.
 	 * Should not be called manually.
 	 */
-	private ArrayList<Message> getMailList(String user, String password){		
+	private ArrayList<Message> getMailList(String user, String password, int current){		
 		ArrayList<Message> emails = new ArrayList<Message>();
 		try {
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -583,22 +586,25 @@ public class MailFunctionality extends Authenticator {
 			Folder foldr = store.getFolder(apv.getFolderName(user));
 			apv.setEmailFolder(user, foldr);
 			foldr.open(Folder.READ_WRITE);
-			int limit = 19;
+			int limit = (20*current)-1;
 			int count = foldr.getMessageCount();
-			//Only getting latest 20 items for performance reasons.
-			if(count < 20){
-				limit = count-1;
-			} 
-			Message[] temp = foldr.getMessages(count-limit, count);
-			//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
-			//Noticeable improvement compared to looping through each message.
-			FetchProfile profile = new FetchProfile();
-			profile.add(FetchProfile.Item.CONTENT_INFO);
-			profile.add(FetchProfile.Item.ENVELOPE);
-			profile.add(FetchProfile.Item.FLAGS);
-			foldr.fetch(temp, profile);
-			Collections.addAll(emails, temp);
-			Collections.reverse(emails);
+			if(count - limit > -20){
+				
+				//Only getting latest 20 items for performance reasons.
+				if(count < 20 * current){
+					limit = count-1;
+				} 
+				Message[] temp = foldr.getMessages(count-limit, (count-limit)+19);
+				//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
+				//Noticeable improvement compared to looping through each message.
+				FetchProfile profile = new FetchProfile();
+				profile.add(FetchProfile.Item.CONTENT_INFO);
+				profile.add(FetchProfile.Item.ENVELOPE);
+				profile.add(FetchProfile.Item.FLAGS);
+				foldr.fetch(temp, profile);
+				Collections.addAll(emails, temp);
+				Collections.reverse(emails);
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
