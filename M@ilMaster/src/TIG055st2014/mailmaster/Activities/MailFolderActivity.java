@@ -114,14 +114,15 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		super.onStart();
 		if(activeAccs.size() > 0){
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			int page = pageNumbers.getInt("current", 1);
 			if(apv.getFolderNames().contains("Drafts")){
-				getActionBar().setTitle(R.string.drafts);
+				getActionBar().setTitle(R.string.drafts + " " + page);
 			}
 			else if(apv.getFolderNames().contains("Sent")){
-				getActionBar().setTitle(R.string.sent);
+				getActionBar().setTitle(R.string.sent + " " + page);
 			}
 			else{
-				getActionBar().setTitle(R.string.inbox);
+				getActionBar().setTitle(R.string.inbox + " " + page);
 				if(!isServiceRunning() && !apv.isTesting()){
 					dialog = new ProgressDialog(this);
 					//reading from the resource file depending on which language is selected
@@ -207,6 +208,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	 */
 	public void changeFolder(MenuItem m){
 		int id = m.getItemId();
+		int page = pageNumbers.getInt("current", 1);
 		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		if (id == R.id.action_inbox) {
 			//If going to inbox from other folder.
@@ -222,7 +224,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			dialog.setCancelable(false);
 			dialog.show();
 
-			getActionBar().setTitle(R.string.inbox);   
+			getActionBar().setTitle(R.string.inbox + " " + page);   
 			apv.setAllFolders("INBOX");
 			if(!isServiceRunning()){
 				startBackground();
@@ -241,7 +243,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			getActionBar().setTitle(R.string.sent);
+			getActionBar().setTitle(R.string.sent + " " + page);
 			apv.setAllFolders("[Gmail]/Sent Mail");
 			refreshList();
 		}
@@ -255,7 +257,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			getActionBar().setTitle(R.string.drafts);
+			getActionBar().setTitle(R.string.drafts + " " + page);
 			apv.setAllFolders("[Gmail]/Drafts");
 			refreshList();
 		}
@@ -384,6 +386,27 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String temp = apv.getFolderNames();
 			numEdit.putInt("current", current-1);
+			numEdit.commit();
+			if(temp.contains("Drafts")){
+				changeFolder(testMenu.findItem(R.id.action_drafts));
+			}
+			else if(temp.contains("Sent")){
+				changeFolder(testMenu.findItem(R.id.action_sent));
+			}
+			else{
+				changeFolder(testMenu.findItem(R.id.action_inbox));
+			}
+		}
+	}
+	public void toFirstPage(MenuItem m){
+		int current = pageNumbers.getInt("current", 1);
+		if(current == 1){
+			//Do toast "Already on first page".
+		}
+		else{
+			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+			String temp = apv.getFolderNames();
+			numEdit.putInt("current", 1);
 			numEdit.commit();
 			if(temp.contains("Drafts")){
 				changeFolder(testMenu.findItem(R.id.action_drafts));
