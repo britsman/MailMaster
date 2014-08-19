@@ -589,13 +589,17 @@ public class MailFunctionality extends Authenticator {
 			foldr.open(Folder.READ_WRITE);
 			int limit = (20*current)-1;
 			int count = foldr.getMessageCount();
-			if(count - limit > -20){
+			if(count - limit > -19){
 				
 				//Only getting latest 20 items for performance reasons.
 				if(count < 20 * current){
-					limit = count-1;
+					limit = limit - (limit - (count-1));
 				} 
-				Message[] temp = foldr.getMessages(count-limit, (count-limit)+19);
+				int forward = 19;
+				if(count < 20){
+					forward = count-1;
+				}
+				Message[] temp = foldr.getMessages(count-limit, (count-limit)+forward);
 				//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
 				//Noticeable improvement compared to looping through each message.
 				FetchProfile profile = new FetchProfile();

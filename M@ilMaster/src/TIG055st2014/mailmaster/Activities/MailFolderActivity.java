@@ -116,13 +116,16 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			int page = pageNumbers.getInt("current", 1);
 			if(apv.getFolderNames().contains("Drafts")){
-				getActionBar().setTitle(R.string.drafts + " " + page);
+				getActionBar().setTitle(getResources().getString(R.string.drafts) 
+						+ " " + page);
 			}
 			else if(apv.getFolderNames().contains("Sent")){
-				getActionBar().setTitle(R.string.sent + " " + page);
+				getActionBar().setTitle(getResources().getString(R.string.sent)
+						+ " " + page);
 			}
 			else{
-				getActionBar().setTitle(R.string.inbox + " " + page);
+				getActionBar().setTitle(getResources().getString(R.string.inbox)
+						+ " " + page);
 				if(!isServiceRunning() && !apv.isTesting()){
 					startBackground();
 				}
@@ -182,7 +185,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				break;
 			}
 		}
-		if(getActionBar().getTitle().toString().equals((getResources().getString(R.string.drafts)))){
+		if(getActionBar().getTitle().toString().contains((getResources().getString(R.string.drafts)))){
 			apv.setIsReply(false);
 			startActivity(new Intent("TIG055st2014.mailmaster.Activities.ComposeActivity"));
 		}
@@ -217,7 +220,8 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			dialog.setCancelable(false);
 			dialog.show();
 
-			getActionBar().setTitle(R.string.inbox + " " + page);   
+			getActionBar().setTitle(getResources().getString(R.string.inbox) 
+					+ " " + page);   
 			apv.setAllFolders("INBOX");
 			if(!isServiceRunning()){
 				startBackground();
@@ -236,7 +240,8 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			getActionBar().setTitle(R.string.sent + " " + page);
+			getActionBar().setTitle(getResources().getString(R.string.sent) 
+					+ " " + page);
 			apv.setAllFolders("[Gmail]/Sent Mail");
 			refreshList();
 		}
@@ -250,7 +255,8 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			if(isServiceRunning()){
 				stopBackground();
 			}
-			getActionBar().setTitle(R.string.drafts + " " + page);
+			getActionBar().setTitle(getResources().getString(R.string.drafts)
+					+ " " + page);
 			apv.setAllFolders("[Gmail]/Drafts");
 			refreshList();
 		}
