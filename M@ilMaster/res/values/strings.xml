@@ -83,5 +83,9 @@
     <string name="send_email">Sending Email...</string>
     <string name="title_activity_gplinfo">GPLInfoActivity</string>
     <string name="gpl_link">&lt;a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License&lt;/a></string>
-
+	<string name="download_att">downloading...</string>
+	
+	<string name="first_p">First page</string>
+	<string name="previous_p">Previous page</string>
+	<string name="next_p">Next page</string>
 </resources>

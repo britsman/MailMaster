@@ -77,6 +77,10 @@
     <string name="toast_save_draft">Utkast har sparat.</string>
     <string name="toast_fail_save">Fel att spara i utkast.</string>
     <string name="send_email">Skickar E-post...</string>
+    <string name="download_att">nerladdning...</string>
+	<string name="first_p">Första sidan</string>
+	<string name="previous_p">Föregående sida</string>
+	<string name="next_p">Nästa sida</string>
     
 
 </resources>

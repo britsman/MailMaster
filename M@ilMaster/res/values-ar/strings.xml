@@ -86,6 +86,10 @@
     <string name="toast_save_draft">تم الحفظ في المسودات </string>
     <string name="toast_fail_save">فشل في عملية الحفظ</string>
     <string name="send_email">إرسال البريد الإلكتروني...</string>
+    <string name="download_att">تحميل...</string>
+ 	<string name="first_p">الصفحة الأولى</string>
+	<string name="previous_p">الصفحة السابقة</string>
+	<string name="next_p">الصفحة التالية</string>
     
 
 </resources>

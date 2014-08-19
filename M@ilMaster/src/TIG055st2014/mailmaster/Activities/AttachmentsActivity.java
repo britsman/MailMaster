@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -27,44 +28,44 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 /* M@ilMaster Multi-Account Email Client
-Copyright (C) 2014 Eric Britsman & Khaled Alnawasreh
+ Copyright (C) 2014 Eric Britsman & Khaled Alnawasreh
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License 
-Version 2 only; as published by the Free Software Foundation.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License 
+ Version 2 only; as published by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
-*/
+ Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
+ */
 
 /**
  * Activity containing the list of the currently selected email's attachments
  * (if any). They can be downloaded to the phone. Depending on fileformat they
- * will also be displayed in an imageview after the download is complete. 
+ * will also be displayed in an imageview after the download is complete.
  */
 public class AttachmentsActivity extends Activity implements
-AdapterView.OnItemClickListener {
+		AdapterView.OnItemClickListener {
 
 	private ListView listView;
 	public ArrayList<String> fileNames;
 	public ArrayList<DataSource> files;
 	private boolean hasAttachments;
-
+	private ProgressDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_attachments);
 		getActionBar().setDisplayShowHomeEnabled(false);
-		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 		fileNames = new ArrayList<String>();
 		files = new ArrayList<DataSource>();
 		fileNames.addAll(apv.getFileNames());
@@ -73,8 +74,8 @@ AdapterView.OnItemClickListener {
 		if (fileNames.size() == 0) {
 			hasAttachments = false;
 
-			fileNames.add(getApplicationContext().
-					getResources().getString(R.string.no_attachments));
+			fileNames.add(getApplicationContext().getResources().getString(
+					R.string.no_attachments));
 		}
 		listView = (ListView) findViewById(R.id.attachment_list);
 		listView.setClickable(true);
@@ -82,44 +83,63 @@ AdapterView.OnItemClickListener {
 		listView.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
 				R.layout.simple_attach_item, R.id.simple_attachtext, fileNames));
 	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		AppVariablesSingleton apv = AppVariablesSingleton.getInstance(); 
-		//In case app has been left on attachments screen untouched for about 30 min
-		//Basically if OS destroys the AppVariablesSingleton instance.
-		if(apv.getEmail() == null){
-			startActivity(new Intent("TIG055st2014.mailmaster.Activities.MailFolderActivity"));
+		AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+		// In case app has been left on attachments screen untouched for about
+		// 30 min
+		// Basically if OS destroys the AppVariablesSingleton instance.
+		if (apv.getEmail() == null) {
+			startActivity(new Intent(
+					"TIG055st2014.mailmaster.Activities.MailFolderActivity"));
 		}
 	}
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View newDef, int position,
 			long id) {
+
 		// Download/open clicked on item
-		if(hasAttachments){
+		if (hasAttachments) {
 			try {
+				dialog = new ProgressDialog(this);
+				AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
+				dialog.setMessage(getApplicationContext().getResources()
+						.getString(R.string.download_att));
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
+				if (!apv.isTesting()) {
+					dialog.show();
+				}
 				String temp[] = fileNames.get(position).split("/");
-				DownloadTask dt = new DownloadTask(temp[temp.length-1], files.get(position), getApplicationContext());
+				DownloadTask dt = new DownloadTask(temp[temp.length - 1],
+						files.get(position), getApplicationContext());
 				dt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
+
 	/**
-	 * AsyncTask used to download attachments and mark them as media (so they can be found by the gallery app).
-	 * This also allows the user to use the downloaded file as an attachment when composing/replying.
+	 * AsyncTask used to download attachments and mark them as media (so they
+	 * can be found by the gallery app). This also allows the user to use the
+	 * downloaded file as an attachment when composing/replying.
 	 */
-	private class DownloadTask extends AsyncTask<Void, Void, Void>{
+	private class DownloadTask extends AsyncTask<Void, Void, Void> {
 
 		private String name;
 		private DataSource source;
 		private Context context;
 		private boolean downloaded;
 
-		private DownloadTask(String n, DataSource d, Context c){
+		private AttachmentsActivity activity;
+
+		private DownloadTask(String n, DataSource d, Context c) {
 			name = n;
-			source = d; 
+			source = d;
 			context = c;
 		}
 
@@ -130,7 +150,7 @@ AdapterView.OnItemClickListener {
 				downloaded = false;
 				File SDCardRoot = Environment.getExternalStorageDirectory();
 				File dir = new File(SDCardRoot, "/M@ilMaster");
-				if(!dir.exists()){
+				if (!dir.exists()) {
 					dir.mkdir();
 				}
 				File target = new File(dir, name);
@@ -143,64 +163,72 @@ AdapterView.OnItemClickListener {
 				int len1 = 0;
 				while ((len1 = is.read(buffer)) != -1) {
 					fos.write(buffer, 0, len1);
-				}	
+				}
 				fos.close();
 				is.close();
-				//based on http://stackoverflow.com/questions/5250515/how-to-update-the-android-media-database
-				//this code is needed to get file to appear in gallery app.
-				if((Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)){
-					Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-					String mCurrentFilePath = "file://" + target.getPath(); 
+				// based on
+				// http://stackoverflow.com/questions/5250515/how-to-update-the-android-media-database
+				// this code is needed to get file to appear in gallery app.
+				if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)) {
+					Intent mediaScanIntent = new Intent(
+							Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+					String mCurrentFilePath = "file://" + target.getPath();
 					File file = new File(mCurrentFilePath);
 					Uri contentUri = Uri.fromFile(file);
 					mediaScanIntent.setData(contentUri);
 					sendBroadcast(mediaScanIntent);
-				}
-				else{
-					sendBroadcast (new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-							Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+				} else {
+					sendBroadcast(new Intent(
+							Intent.ACTION_MEDIA_MOUNTED,
+							Uri.parse("file://"
+									+ Environment.getExternalStorageDirectory())));
 				}
 				downloaded = true;
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return null;
-		}   	
+		}
+
 		/**
-		 * Tries to display file if download was successful and file is of a supported type.
+		 * Tries to display file if download was successful and file is of a
+		 * supported type.
 		 */
 		@Override
-		protected void onPostExecute(Void v){
-			if(downloaded){
-				Toast toast = Toast.makeText(context,
-						getApplicationContext().getResources()
-						.getString(R.string.toast_attdownload)+ " " +  name + "!", Toast.LENGTH_SHORT);
+		protected void onPostExecute(Void v) {
+			if (dialog.isShowing()) {
+				dialog.dismiss();
+			}
+			if (downloaded) {
+				Toast toast = Toast.makeText(context, getApplicationContext()
+						.getResources().getString(R.string.toast_attdownload)
+						+ " " + name + "!", Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
-				//based on http://developer.android.com/guide/appendix/media-formats.html
+				// based on
+				// http://developer.android.com/guide/appendix/media-formats.html
 				// these are the ImageView supported file types.
-				if(name.endsWith("jpg") || name.endsWith("png")
-						|| name.endsWith("gif")
-						|| name.endsWith("bmp")
-						|| name.endsWith("webp")){
-					Log.d("Attachment is image.", Environment.getExternalStorageDirectory()
-					.toString() + "/M@ilMaster/" + name);
-					String imagePath = Environment.getExternalStorageDirectory()
-							.toString() + "/M@ilMaster/" + name;
+				if (name.endsWith("jpg") || name.endsWith("png")
+						|| name.endsWith("gif") || name.endsWith("bmp")
+						|| name.endsWith("webp")) {
+					Log.d("Attachment is image.", Environment
+							.getExternalStorageDirectory().toString()
+							+ "/M@ilMaster/" + name);
+					String imagePath = Environment
+							.getExternalStorageDirectory().toString()
+							+ "/M@ilMaster/" + name;
 					ImageView my_image = (ImageView) findViewById(R.id.my_image);
-					my_image.setImageDrawable(Drawable.createFromPath(imagePath));
+					my_image.setImageDrawable(Drawable
+							.createFromPath(imagePath));
 
 				}
-			}
-			else{
-				Toast toast = Toast.makeText(context,
-						getApplicationContext().getResources()
-						.getString(R.string.toast_attdownload1)+" "+ name + "!", Toast.LENGTH_SHORT);
+			} else {
+				Toast toast = Toast.makeText(context, getApplicationContext()
+						.getResources().getString(R.string.toast_attdownload1)
+						+ " " + name + "!", Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
 				toast.show();
 			}
 		}
 	}
 }
-

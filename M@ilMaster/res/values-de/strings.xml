@@ -87,6 +87,10 @@
     <string name="toast_save_draft">Entwurf gespeichert.</string>
     <string name="toast_fail_save">Fehler beim Entwurf zu speichern.</string>
   	<string name="send_email">Senden E-Mail...</string>
+  	<string name="download_att">download...</string>
+  	<string name="first_p">Erste Seite</string>
+	<string name="previous_p">Vorherige Seite</string>
+	<string name="next_p">nächste Seite</string>
     
     
 
