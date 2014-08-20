@@ -73,7 +73,6 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		accounts = getSharedPreferences("StoredAccounts", MODE_PRIVATE);
 		pageNumbers = getSharedPreferences("pages", MODE_PRIVATE);
 		numEdit = pageNumbers.edit();
-		//numEdit.putInt("max", 1);
 		numEdit.putInt("current", 1);
 		numEdit.commit();
 		activeAccs = new HashSet<String>();
@@ -196,7 +195,6 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.mail_folder, menu);
-		testMenu = menu;
 		return true;
 	}
 	/**
@@ -233,7 +231,6 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		else if (id == R.id.action_sent) {
 			//If going to sent from other folder.
 			if(!apv.getFolderNames().contains("Sent")){
-				numEdit.putInt("max", 1);
 				numEdit.putInt("current", 1);
 				numEdit.commit();
 			}
@@ -248,7 +245,6 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 		else{
 			//If going to drafts from other folder.
 			if(!apv.getFolderNames().contains("Drafts")){
-				numEdit.putInt("max", 1);
 				numEdit.putInt("current", 1);
 				numEdit.commit();
 			}
@@ -357,10 +353,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	}
 	public void toNextPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
-		/*if(pageNumbers.getInt("max", 1) == current){
+		if(emails.size() < 20){
 			//Do toast "On last page".
 		}
-		else{**/
+		else{
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
 			String temp = apv.getFolderNames();
 			numEdit.putInt("current", current+1);
@@ -375,7 +371,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				changeFolder(testMenu.findItem(R.id.action_inbox));
 			}
 		}
-	//}
+	}
 	public void toPreviousPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
@@ -417,5 +413,35 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				changeFolder(testMenu.findItem(R.id.action_inbox));
 			}
 		}
+	}
+	@Override
+	public boolean onPrepareOptionsMenu (Menu menu){
+		testMenu = menu;
+		//if one account is active we allow page change.
+		if(activeAccs.size() == 1){
+			MenuItem f = menu.findItem(R.id.action_to_first);
+			MenuItem n = menu.findItem(R.id.action_to_next);
+			MenuItem p = menu.findItem(R.id.action_to_previous);
+			f.setEnabled(true);
+			f.setVisible(true);
+			n.setEnabled(true);
+			n.setVisible(true);
+			p.setEnabled(true);
+			p.setVisible(true);
+		}
+		/*If more than one account is active we disable page change, since our page change
+		  algorithm currently doesn't support multiple accounts. **/
+		else{
+			MenuItem f = menu.findItem(R.id.action_to_first);
+			MenuItem n = menu.findItem(R.id.action_to_next);
+			MenuItem p = menu.findItem(R.id.action_to_previous);
+			f.setEnabled(false);
+			f.setVisible(false);
+			n.setEnabled(false);
+			n.setVisible(false);
+			p.setEnabled(false);
+			p.setVisible(false);
+		}
+		return true;
 	}
 }

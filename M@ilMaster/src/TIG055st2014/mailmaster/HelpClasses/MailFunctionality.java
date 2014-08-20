@@ -596,8 +596,8 @@ public class MailFunctionality extends Authenticator {
 					limit = limit - (limit - (count-1));
 				} 
 				int forward = 19;
-				if(count < 20){
-					forward = count-1;
+				if(count < 20 * current){
+					forward = (count - 20 * (current-1)) -1;
 				}
 				Message[] temp = foldr.getMessages(count-limit, (count-limit)+forward);
 				//Fetch code based on http://codereview.stackexchange.com/questions/36878/is-there-any-way-to-make-this-javamail-code-faster
