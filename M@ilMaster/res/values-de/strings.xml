@@ -91,6 +91,10 @@
   	<string name="first_p">Erste Seite</string>
 	<string name="previous_p">Vorherige Seite</string>
 	<string name="next_p">nächste Seite</string>
+	
+	<string name="page">Seite</string>
+    <string name="on_first">Sie befinden sich auf der ersten Seite.</string>
+    <string name="on_last">Sie befinden sich auf der letzten Seite.</string>
     
     
 

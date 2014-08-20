@@ -90,6 +90,10 @@
  	<string name="first_p">الصفحة الأولى</string>
 	<string name="previous_p">الصفحة السابقة</string>
 	<string name="next_p">الصفحة التالية</string>
+	
+	<string name="page">صفحة</string>
+    <string name="on_first">انت الان في الصفحه الاولى</string>
+    <string name="on_last">انت الان في الصفحه الاخيره</string>
     
 
 </resources>
