@@ -206,7 +206,9 @@ OnItemSelectedListener {
 					EditText cc = ((EditText) findViewById(R.id.ccAccs));
 					EditText bcc = ((EditText) findViewById(R.id.bccAccs));
 					EditText subject = ((EditText) findViewById(R.id.subject));
-					subject.setText(apv.getEmail().getSubject().toString());
+					if(apv.getEmail().getSubject() != null){
+						subject.setText(apv.getEmail().getSubject().toString());
+					}
 					recipients.setText("");
 					cc.setText("");
 					bcc.setText("");

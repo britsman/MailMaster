@@ -1,6 +1,7 @@
 package TIG055st2014.mailmaster.Adapters;
 
 import TIG055st2014.mailmaster.R;
+import TIG055st2014.mailmaster.Activities.AccountSettingsActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -53,10 +54,10 @@ public class AccountAdapter extends ArrayAdapter<String> {
 	 * Reference to the AccountSettingsActivity instance that the current list belongs to.
 	 * This is needed to update the options menu of the activity from within the adapter.
 	 */
-	private Activity act;
+	private AccountSettingsActivity act;
 
 
-	public AccountAdapter(Context c, int r, int tv, ArrayList<String> l, Activity a) {
+	public AccountAdapter(Context c, int r, int tv, ArrayList<String> l, AccountSettingsActivity a) {
 		super(c,r,tv,l);
 		this.context = c;
 		this.names = l;
@@ -125,11 +126,12 @@ public class AccountAdapter extends ArrayAdapter<String> {
 							else{
 								accEdit.remove("default");
 								accEdit.putInt("enabled", 0);
-								act.invalidateOptionsMenu();
 							}
 						}
 						accEdit.commit();
 						remove(name);
+						act.invalidateOptionsMenu();
+						act.updateList();	
 					}
 				}
 				);
