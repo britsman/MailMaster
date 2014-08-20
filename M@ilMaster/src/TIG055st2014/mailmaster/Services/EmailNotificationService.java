@@ -121,6 +121,9 @@ public class EmailNotificationService extends Service{
 				activeAccs = new HashSet<String>();
 				activeAccs.addAll(accounts.getStringSet("default", new HashSet<String>()));
 
+				/*
+				 * Contains the logic for autoupdating email list/notification
+				 */
 				while(running){
 					initVariables();
 					getLatest();
@@ -180,6 +183,9 @@ public class EmailNotificationService extends Service{
 		thread.setPriority(Thread.MIN_PRIORITY);
 	}
 
+	/**
+	 * Overriden method that gets called after the service has been stopped.
+	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -190,7 +196,9 @@ public class EmailNotificationService extends Service{
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notifyManager.cancel(emailId);
 	}
-
+	/**
+	 * Overriden method that gets called after the service has been started in the activity.
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Toast.makeText(this,getApplicationContext().getResources()
@@ -199,10 +207,16 @@ public class EmailNotificationService extends Service{
 		thread.start();
 		return super.onStartCommand(intent, flags, startId);
 	}
+	/**
+	 * Used when reseting values between each iteration of the main loop.
+	 */
 	private void initVariables(){
 		EmailNotificationVariables.nrUnreadEmail = 0;
 		emails = new ArrayList<Message>();
 	}
+	/**
+	 * Gets the emails of active account(s) and send them to sort().
+	 */
 	private void getLatest(){
 		String key = "Some Key";
 		Encryption decrypter = new Encryption();

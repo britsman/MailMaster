@@ -353,6 +353,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			mf.getFolder(this);
 		}
 	}
+	/**
+	 * Used when navigating to the next page (the next 20 emails). The menuitem
+	 * related to this function is only enabled when the number of active accounts
+	 * is exactly 1, since our page change algorithm does not support multiple
+	 * accounts. 
+	 */
 	public void toNextPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(emails.size() < 20){
@@ -377,6 +383,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			}
 		}
 	}
+	/**
+	 * Used when navigating to the previous page (the previous 20 emails). The menuitem
+	 * related to this function is only enabled when the number of active accounts
+	 * is exactly 1, since our page change algorithm does not support multiple
+	 * accounts. 
+	 */
 	public void toPreviousPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
@@ -401,6 +413,12 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			}
 		}
 	}
+	/**
+	 * Used when navigating to the first page (the newest 20 emails). The menuitem
+	 * related to this function is only enabled when the number of active accounts
+	 * is exactly 1, since our page change algorithm does not support multiple
+	 * accounts. 
+	 */
 	public void toFirstPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
@@ -425,6 +443,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			}
 		}
 	}
+	/**
+	 * Menu lifecycle function used to determine how many active accounts there
+	 * are, followed by enabling/disabling certain menuitems accordingly.
+	 */
 	@Override
 	public boolean onPrepareOptionsMenu (Menu menu){
 		testMenu = menu;
