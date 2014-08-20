@@ -30,8 +30,8 @@
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_attachments">AttachmentsActivity</string>
     <string name="folders">Välj folder...</string>
-     <string name="languages">Språk</string>
-   <string name="english">EN</string>
+    <string name="languages">Språk</string>
+    <string name="english">EN</string>
     <string name="swedish">SW</string>
     <string name="arabic">AR</string>
     <string name="german">DE</string>
@@ -46,41 +46,45 @@
     <string name="active_account">Aktiva Konton:</string>
     <string name="message_title">Avbryt Skrivande</string>
     <string name="message_dia">Vill du spara ett utkast?</string>
-   	<string name="yes_answer">Ja</string>
-   	<string name="no_answer">Nej</string>
-   	<string name="fetch_inbox">Hämtar Inkorgen...</string>
-   	<string name="fetch_drafts">Hämtar Utkast...</string>
+    <string name="yes_answer">Ja</string>
+    <string name="no_answer">Nej</string>
+    <string name="fetch_inbox">Hämtar Inkorgen...</string>
+    <string name="fetch_drafts">Hämtar Utkast...</string>
     <string name="fetch_sent">Hämtar skickad e-post...</string>
     <string name="read_email">Laddar EmailInnehåll...</string>
     <string name="construct_rep">Förbereder SvarMail...</string>
     <string name="read_contact">Hämtar kontakter (resultatet kommer att sparas för framtida användning)...</string>
-    <string name="save_draft">Spara Utkast...</string>
+    <string name="save_draft">Sparar Utkast...</string>
     <string name="no_attachments">Detts email innehåller inga bifogade filer.</string>
     <string name="hint_to">Skriv mottagare här...</string>
     <string name="hint_cc">Skriv CC addresser här...</string>
     <string name="hint_bcc">Skriv BCC addresser här...</string>
     <string name="hint_subject">Skriv ämne här...</string>
     <string name="hint_message">Skriv meddelande här...</string>
-    <string name="toast_addacc">Område(n) för kort / ofylld.</string>
-    <string name="toast_addacc1">E-post leverantör stöds inte.</string>
+    <string name="toast_addacc">Område(n) för kort / ofyllda.</string>
+    <string name="toast_addacc1">E-postleverantören stöds inte.</string>
     <string name="toast_addacc2">Kontot har redan lagts till.</string>
-    <string name="toast_attdownload">Framgångsrikt nedladdning!</string>
-    <string name="toast_attdownload1">Fel i nedladdning!</string>
-    <string name="toast_big_size">Det gick inte att skicka, filer är för stora för att bifoga!</string>
-    <string name="toast_emailsel">E-post har Väljat :</string>
+    <string name="toast_attdownload">Laddade ner</string>
+    <string name="toast_attdownload1">Kunde inte ladda ner</string>
+    <string name="toast_big_size">Meddelandet gick inte att skicka, filerna är för stora för att bifoga!</string>
+    <string name="toast_emailsel">E-post har valts :</string>
     <string name="toast_service_creat">Tjänsten har skapats</string>
-    <string name="toast_service_dest">Tjänsten förstört</string>
+    <string name="toast_service_dest">Tjänsten har förstörts</string>
     <string name="toast_service_start">Tjänsten startade</string>
-    <string name="toast_sendsucc">Skicka framgångsrik!(om e-post var nära max storlek kan detta visas minuter efter att trycka Skicka).</string>
-    <string name="toast_sendfail">Skicka misslyckades, en eller flera medföljande adresser innehåller otillåtna tecken (email har sparats som utkast).</string>
+    <string name="toast_sendsucc">Meddelandet har skickats!(om meddelandet var nära maxstorleken så kan detta visas någon minut efter att du skickade det).</string>
+    <string name="toast_sendfail">Meddelandet kunde inte skickas, en eller flera av dess adresser innehåller otillåtna tecken (meddelandet har istället sparats som utkast).</string>
     <string name="toast_wrongpass">Fel lösenord eller obefintlig konto.</string>
-    <string name="toast_save_draft">Utkast har sparat.</string>
-    <string name="toast_fail_save">Fel att spara i utkast.</string>
+    <string name="toast_save_draft">Utkastet har sparats.</string>
+    <string name="toast_fail_save">Utkastet kunde inte sparas.</string>
     <string name="send_email">Skickar E-post...</string>
-    <string name="download_att">nerladdning...</string>
-	<string name="first_p">Första sidan</string>
-	<string name="previous_p">Föregående sida</string>
-	<string name="next_p">Nästa sida</string>
-    
+    <string name="download_att">Hämtar fil...</string>
+    <string name="first_p">Första sidan</string>
+    <string name="previous_p">Föregående sida</string>
+    <string name="next_p">Nästa sida</string>
+
+    <!-- The strings below need German/Arabic translations -->
+    <string name="page">SID</string>
+    <string name="on_first">Du är redan på första sidan.</string>
+    <string name="on_last">Du är redan på sista sidan.</string>
 
 </resources>

@@ -83,9 +83,14 @@
     <string name="send_email">Sending Email...</string>
     <string name="title_activity_gplinfo">GPLInfoActivity</string>
     <string name="gpl_link">&lt;a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU General Public License&lt;/a></string>
-	<string name="download_att">downloading...</string>
-	
-	<string name="first_p">First page</string>
-	<string name="previous_p">Previous page</string>
-	<string name="next_p">Next page</string>
+    <string name="download_att">downloading...</string>
+    <string name="first_p">First page</string>
+    <string name="previous_p">Previous page</string>
+    <string name="next_p">Next page</string>
+
+    <!-- The strings below need German/Arabic translations -->
+    <string name="page">PG</string>
+    <string name="on_first">You are already on the first page.</string>
+    <string name="on_last">You are already on the last page.</string>
+
 </resources>

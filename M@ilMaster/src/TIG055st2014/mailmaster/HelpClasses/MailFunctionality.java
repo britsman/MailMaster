@@ -498,6 +498,10 @@ public class MailFunctionality extends Authenticator {
 			sort();
 			return null;
 		}
+		/** Used to sort between emails from the active account(s) to determine
+		 * which messages are the newest.If only one account is active no sorting occurs,
+		 * since there is no other source to compare with.
+		 */
 		private void sort(){
 			ArrayList<Message> temp = new ArrayList<Message>();
 			if(activity.emails.size() == 0){
@@ -748,8 +752,18 @@ public class MailFunctionality extends Authenticator {
 			if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
 				apv.getStore(user).connect(imapHost, user, password);
 			}
+			else if (apv.getStore(user) == null){
+				Store store = session.getStore("imaps");
+				store.connect(imapHost, user, password);
+				apv.setStore(user, store);
+			}
 			if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
 				apv.getEmailFolder(user).open(Folder.READ_WRITE);
+			}
+			else if (apv.getEmailFolder(user) == null){
+				Folder foldr = apv.getStore(user).getFolder(apv.getFolderName(user));
+				apv.setEmailFolder(user, foldr);
+				foldr.open(Folder.READ_WRITE);
 			}
 		}
 		catch(Exception ex){
@@ -877,8 +891,18 @@ public class MailFunctionality extends Authenticator {
 				if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
 					apv.getStore(user).connect(imapHost, user, password);
 				}
+				else if (apv.getStore(user) == null){
+					Store store = session.getStore("imaps");
+					store.connect(imapHost, user, password);
+					apv.setStore(user, store);
+				}
 				if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
 					apv.getEmailFolder(user).open(Folder.READ_WRITE);
+				}
+				else if (apv.getEmailFolder(user) == null){
+					Folder foldr = apv.getStore(user).getFolder(apv.getFolderName(user));
+					apv.setEmailFolder(user, foldr);
+					foldr.open(Folder.READ_WRITE);
 				}
 				//reply(true) = reply all
 				apv.setReply(m[0].reply(true));
@@ -917,8 +941,18 @@ public class MailFunctionality extends Authenticator {
 				if(apv.getStore(user)!=null && !apv.getStore(user).isConnected()){
 					apv.getStore(user).connect(imapHost, user, password);
 				}
+				else if (apv.getStore(user) == null){
+					Store store = session.getStore("imaps");
+					store.connect(imapHost, user, password);
+					apv.setStore(user, store);
+				}
 				if(apv.getEmailFolder(user)!=null && !apv.getEmailFolder(user).isOpen()){
 					apv.getEmailFolder(user).open(Folder.READ_WRITE);
+				}
+				else if (apv.getEmailFolder(user) == null){
+					Folder foldr = apv.getStore(user).getFolder(apv.getFolderName(user));
+					apv.setEmailFolder(user, foldr);
+					foldr.open(Folder.READ_WRITE);
 				}
 				//reply(true) = reply all
 				return m[0].reply(true);
@@ -955,6 +989,9 @@ public class MailFunctionality extends Authenticator {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * AsyncTask for saving a draft.
+	 */
 	private class DraftTask extends AsyncTask<Void, Void, Void>{
 
 		private String user, password;

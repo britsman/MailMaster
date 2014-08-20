@@ -23,11 +23,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /* M@ilMaster Multi-Account Email Client
 Copyright (C) 2014 Eric Britsman & Khaled Alnawasreh
@@ -116,15 +118,15 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			int page = pageNumbers.getInt("current", 1);
 			if(apv.getFolderNames().contains("Drafts")){
 				getActionBar().setTitle(getResources().getString(R.string.drafts) 
-						+ " " + page);
+						+ " " + getResources().getString(R.string.page) + " " + page);
 			}
 			else if(apv.getFolderNames().contains("Sent")){
 				getActionBar().setTitle(getResources().getString(R.string.sent)
-						+ " " + page);
+						+ " " + getResources().getString(R.string.page) + " " + page);
 			}
 			else{
 				getActionBar().setTitle(getResources().getString(R.string.inbox)
-						+ " " + page);
+						+ " " + getResources().getString(R.string.page) + " " + page);
 				if(!isServiceRunning() && !apv.isTesting()){
 					startBackground();
 				}
@@ -219,7 +221,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 			dialog.show();
 
 			getActionBar().setTitle(getResources().getString(R.string.inbox) 
-					+ " " + page);   
+					+ " " + getResources().getString(R.string.page) + " " + page);  
 			apv.setAllFolders("INBOX");
 			if(!isServiceRunning()){
 				startBackground();
@@ -238,7 +240,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				stopBackground();
 			}
 			getActionBar().setTitle(getResources().getString(R.string.sent) 
-					+ " " + page);
+					+ " " + getResources().getString(R.string.page) + " " + page);
 			apv.setAllFolders("[Gmail]/Sent Mail");
 			refreshList();
 		}
@@ -252,7 +254,7 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 				stopBackground();
 			}
 			getActionBar().setTitle(getResources().getString(R.string.drafts)
-					+ " " + page);
+					+ " " + getResources().getString(R.string.page) + " " + page);
 			apv.setAllFolders("[Gmail]/Drafts");
 			refreshList();
 		}
@@ -354,7 +356,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	public void toNextPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(emails.size() < 20){
-			//Do toast "On last page".
+			Toast toast = Toast.makeText(getApplicationContext(), getApplicationContext()
+					.getResources().getString(R.string.on_last), Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+			toast.show();
 		}
 		else{
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -375,7 +380,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	public void toPreviousPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
-			//Do toast "Already on first page".
+			Toast toast = Toast.makeText(getApplicationContext(), getApplicationContext()
+					.getResources().getString(R.string.on_first), Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+			toast.show();
 		}
 		else{
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();
@@ -396,7 +404,10 @@ public class MailFolderActivity extends Activity implements AdapterView.OnItemCl
 	public void toFirstPage(MenuItem m){
 		int current = pageNumbers.getInt("current", 1);
 		if(current == 1){
-			//Do toast "Already on first page".
+			Toast toast = Toast.makeText(getApplicationContext(), getApplicationContext()
+					.getResources().getString(R.string.on_first), Toast.LENGTH_SHORT);
+			toast.setGravity(Gravity.TOP | Gravity.LEFT, 0, 0);
+			toast.show();
 		}
 		else{
 			AppVariablesSingleton apv = AppVariablesSingleton.getInstance();

@@ -52,7 +52,7 @@ import android.widget.Toast;
  * will also be displayed in an imageview after the download is complete.
  */
 public class AttachmentsActivity extends Activity implements
-		AdapterView.OnItemClickListener {
+AdapterView.OnItemClickListener {
 
 	private ListView listView;
 	public ArrayList<String> fileNames;

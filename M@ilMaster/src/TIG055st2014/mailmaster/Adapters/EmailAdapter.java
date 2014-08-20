@@ -33,7 +33,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Contact Info: eric_britsman@hotmail.com / khaled.nawasreh@gmail.com
-*/
+ */
 
 /**
  * Adapter used to apply formatting to items in the emails list.
@@ -45,7 +45,7 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 	private SharedPreferences accounts;
 	private int[] colours;
 	private Set<String> activeAccs;
-	
+
 	public EmailAdapter(Context c, int r, int tv, ArrayList<Message> l) {
 		super(c,r,tv,l);
 		this.context = c;
@@ -91,11 +91,12 @@ public class EmailAdapter extends ArrayAdapter<Message> {
 			}
 			for(String s : activeAccs){
 				if(temp.getFolder().equals(apv.getEmailFolder(s))){
-					tv.setBackgroundColor(colours[i]);
+					convertView.setBackgroundColor(colours[i]);
 					break;
 				}
 				else{
 					i++;
+					convertView.setBackgroundColor(Color.TRANSPARENT);
 				}
 			}
 		}

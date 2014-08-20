@@ -213,6 +213,10 @@ public class EmailNotificationService extends Service{
 			sort(mf.getFolderTest(pageNumbers.getInt("current", 1)));
 		}
 	}
+	/** Used to sort between emails from the active account(s) to determine
+	 * which messages are the newest.If only one account is active no sorting occurs,
+	 * since there is no other source to compare with.
+	 */
 	private void sort(ArrayList<Message> list){
 		ArrayList<Message> temp = new ArrayList<Message>();
 		if(emails.size() == 0){
